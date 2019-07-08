@@ -25,16 +25,16 @@ FILES_DSP = \
 	sources/StringFilters.cpp \
 	sources/SolinaChorus.cpp \
 	sources/dsp/ADSREnvelope.cpp \
-	sources/dsp/OscillatorBlepRect.cpp \
 	sources/dsp/LFO3PhaseDual.cpp \
-	sources/dsp/Delay3Phase.cpp
+	sources/dsp/Delay3Phase.cpp \
+	thirdparty/vco/OscillatorBlepRect.cpp
 
 # --------------------------------------------------------------
 # Do some magic
 
 include ../../dpf/Makefile.plugins.mk
 
-BUILD_CXX_FLAGS += -Isources -Ithirdparty/blink
+BUILD_CXX_FLAGS += -Isources -Ithirdparty/blink -Ithirdparty/vco
 
 # --------------------------------------------------------------
 # Enable all possible plugin types

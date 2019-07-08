@@ -1,6 +1,6 @@
 #pragma once
-#include "dsp/OscillatorBlepRect.h"
 #include "dsp/OnePoleFilter.h"
+#include "OscillatorBlepRect.h"
 
 class StringOsc {
 public:
