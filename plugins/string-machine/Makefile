@@ -24,6 +24,8 @@ FILES_DSP = \
 	sources/StringSynth.cpp \
 	sources/StringFilters.cpp \
 	sources/SolinaChorus.cpp \
+	sources/bbd/bbd_line.cpp \
+	sources/bbd/bbd_filter.cpp \
 	sources/dsp/ADSREnvelope.cpp \
 	sources/dsp/OscillatorBlepRect.cpp \
 	sources/dsp/LFO3PhaseDual.cpp \

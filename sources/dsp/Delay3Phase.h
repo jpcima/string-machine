@@ -1,4 +1,5 @@
 #pragma once
+#include "bbd/bbd_line.h"
 
 class Delay3Phase {
 public:
@@ -7,9 +8,6 @@ public:
     void process(const float *input, const float *const mods[3], float *const outputs[3], unsigned count);
 
 private:
-    int fSamplingFreq;
-    int IOTA;
-    float fConst0;
-    int iConst1;
-    float fVec0[16384];
+    float fSampleTime;
+    BBD_Line fDelayLine[3];
 };
