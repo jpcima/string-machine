@@ -51,6 +51,7 @@ void StringSynth::init(double sampleRate)
         voice.active = false;
         voice.note = i;
         voice.pitch = 440.0 * std::pow(2.0, (i - 69.0) * (1.0 / 12.0));
+        voice.bend = 1.0;
 
         voice.env.init(&fEnvSettings, sampleRate);
 
@@ -63,6 +64,8 @@ void StringSynth::init(double sampleRate)
     fChorus.init(sampleRate);
 
     fMasterGain = 0.0;
+
+    resetAllControllers();
 }
 
 void StringSynth::handleMessage(const uint8_t *msg)
@@ -83,12 +86,28 @@ void StringSynth::handleMessage(const uint8_t *msg)
         break;
     case 0xb0:
         switch (d1) {
+        case 6: {
+            RpnIdentifier id = fCtlRpnIdentifier;
+            if (id.registered && id.lsb == 0 && id.msb == 0)
+                fCtlPitchBendSensitivity = d2;
+            break;
+        }
+        case 98:
+        case 100:
+            fCtlRpnIdentifier.lsb = d2;
+            fCtlRpnIdentifier.registered = d1 == 100;
+            break;
+        case 99:
+        case 101:
+            fCtlRpnIdentifier.msb = d2;
+            fCtlRpnIdentifier.registered = d1 == 101;
+            break;
         case 120:
             allSoundOff();
             break;
-        // case 121:
-        //     resetAllControllers();
-        //     break;
+        case 121:
+            resetAllControllers();
+            break;
         case 123:
         case 124: case 125:
         case 126: case 127:
@@ -96,7 +115,19 @@ void StringSynth::handleMessage(const uint8_t *msg)
             break;
         }
         break;
+    case 0xe0:
+        fCtlPitchBend = ((int)(d1 | (d2 << 7)) - 8192) * (1.0f / 8191.0f);
+        break;
     }
+}
+
+void StringSynth::resetAllControllers()
+{
+    fCtlPitchBend = 0.0;
+    fCtlPitchBendSensitivity = 2.0;
+    fCtlRpnIdentifier.registered = 1;
+    fCtlRpnIdentifier.msb = 0;
+    fCtlRpnIdentifier.lsb = 0;
 }
 
 void StringSynth::generate(float *outputs[2], unsigned count)
@@ -138,9 +169,11 @@ void StringSynth::generate(float *outputs[2], unsigned count)
 
     float *detune[2] = {detuneUpper, detuneLower};
 
+    float bend = std::exp2(fCtlPitchBend * fCtlPitchBendSensitivity * (1.0f / 12.0f));
+
     for (auto it = activeVoices.begin(), end = activeVoices.end(); it != end;) {
         Voice &voice = *it;
-        bool finished = generateVoiceAdding(voice, outL, detune, count);
+        bool finished = generateVoiceAdding(voice, outL, detune, bend, count);
         if (finished) activeVoices.erase(it++); else ++it;
     }
 
@@ -186,26 +219,29 @@ void StringSynth::allSoundOff()
 
     while (!activeVoices.empty()) {
         Voice &voice = activeVoices.front();
-        voice.active = false;
-        voice.env.release();
-        voice.env.clear();
-        voice.osc.clear();
+        clearFinishedVoice(voice);
         activeVoices.pop_front();
     }
 }
 
-bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], unsigned count)
+bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, unsigned count)
 {
+    // stop handling pitch bend after release
+    if (voiceHasReleased(voice))
+        bend = voice.bend;
+    else
+        voice.bend = bend;
+
     float oscOutputUpper[BufferLimit];
     float oscOutputLower[BufferLimit];
     float *oscOutputs[] = {oscOutputUpper, oscOutputLower};
-    voice.osc.process(oscOutputs, detune, count);
+    voice.osc.process(oscOutputs, detune, bend, count);
 
     float fltOutputUpper[BufferLimit];
     float fltOutputLower[BufferLimit];
     float fltOutputBrass[BufferLimit];
     float *fltOutputs[] = {fltOutputUpper, fltOutputLower, fltOutputBrass};
-    voice.flt.process(oscOutputs, fltOutputs, voice.pitch, count);
+    voice.flt.process(oscOutputs, fltOutputs, voice.pitch * bend, count);
 
     float env[BufferLimit];
     voice.env.process(env, count);
@@ -218,13 +254,29 @@ bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *
 
     // clean finished notes
     bool finished = false;
-    if (!voice.env.isTriggered() && voice.env.getCurrentLevel() < 1e-4f) {
-        voice.active = false;
-        voice.env.release();
-        voice.env.clear();
-        voice.osc.clear();
+    if (voiceHasFinished(voice)) {
+        clearFinishedVoice(voice);
         finished = true;
     }
 
     return finished;
+}
+
+void StringSynth::clearFinishedVoice(Voice &voice)
+{
+    voice.active = false;
+    voice.env.release();
+    voice.env.clear();
+    voice.osc.clear();
+    voice.bend = 1.0;
+}
+
+bool StringSynth::voiceHasReleased(const Voice &voice)
+{
+    return !voice.env.isTriggered();
+}
+
+bool StringSynth::voiceHasFinished(const Voice &voice)
+{
+    return !voice.env.isTriggered() && voice.env.getCurrentLevel() < 1e-4f;
 }

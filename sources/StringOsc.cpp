@@ -24,7 +24,7 @@ void StringOsc::setFrequency(float frequency)
     fFrequency[1] = frequency;
 }
 
-void StringOsc::process(float *const outputs[2], const float *const detune[2], unsigned count)
+void StringOsc::process(float *const outputs[2], const float *const detune[2], float bend, unsigned count)
 {
     float freqs[BufferLimit];
 
@@ -32,7 +32,7 @@ void StringOsc::process(float *const outputs[2], const float *const detune[2], u
     float hpCutoff[] = {settings.highpassUpperCutoff, settings.highpassLowerCutoff};
 
     for (unsigned osc = 0; osc < 2; ++osc) {
-        float baseFrequency = fFrequency[osc];
+        float baseFrequency = fFrequency[osc] * bend;
         const float *detuneRatio = detune[osc];
 
         for (unsigned i = 0; i < count; ++i)

@@ -16,6 +16,7 @@ public:
     void init(double sampleRate);
 
     void handleMessage(const uint8_t *msg);
+    void resetAllControllers();
     void generate(float *outputs[2], unsigned count);
 
     float getDetune() const { return fDetuneAmount; }
@@ -45,6 +46,7 @@ private:
     struct Voice : boost::intrusive::list_base_hook<> {
         unsigned note;
         float pitch;
+        float bend;
         bool active;
         ADSREnvelope env;
         StringOsc osc;
@@ -72,10 +74,23 @@ private:
 
     float fMasterGain;
 
+    float fCtlPitchBend;
+    float fCtlPitchBendSensitivity;
+
+    struct RpnIdentifier {
+        unsigned registered : 1;
+        unsigned msb : 7;
+        unsigned lsb : 7;
+    };
+    RpnIdentifier fCtlRpnIdentifier;
+
 private:
     void noteOn(unsigned note, unsigned vel);
     void noteOff(unsigned note, unsigned vel);
     void allNotesOff();
     void allSoundOff();
-    bool generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], unsigned count);
+    bool generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, unsigned count);
+    static void clearFinishedVoice(Voice &voice);
+    static bool voiceHasReleased(const Voice &voice);
+    static bool voiceHasFinished(const Voice &voice);
 };

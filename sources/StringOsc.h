@@ -12,7 +12,7 @@ public:
     void init(const Settings *settings, double sampleRate);
 
     void setFrequency(float frequency);
-    void process(float *const outputs[2], const float *const detune[2], unsigned count);
+    void process(float *const outputs[2], const float *const detune[2], float bend, unsigned count);
     void clear();
 
 private:
