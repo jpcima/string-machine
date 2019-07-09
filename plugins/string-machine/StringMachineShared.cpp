@@ -94,7 +94,8 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.symbol = "env_sustain";
         parameter.name = "Envelope sustain";
         parameter.hints = kParameterIsAutomable;
-        parameter.ranges = ParameterRanges(1.0, 0.0, 1.0);
+        parameter.unit = "dB";
+        parameter.ranges = ParameterRanges(0.0, -40.0, 0.0);
         break;
     case pIdEnvRelease:
         parameter.symbol = "env_release";

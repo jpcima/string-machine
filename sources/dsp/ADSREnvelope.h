@@ -31,10 +31,11 @@ public:
 
 private:
     const ADSREnvelope::Settings *fSettings;
-    int fSamplingFreq;
-    float fConst1;
-    int fTrigger;
     float fCurrentLevel;
-    int iRec1[2];
+    int fTrigger;
+
+    float fConst0;
+    float fConst1;
     float fRec0[2];
+    int iRec1[2];
 };
