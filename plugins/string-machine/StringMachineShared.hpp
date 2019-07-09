@@ -5,8 +5,7 @@
 void InitParameter(uint32_t index, Parameter &parameter);
 
 enum {
-    pIdDetune,
-
+    pIdOscDetune,
     pIdOscHpCutoffUpper,
     pIdOscHpCutoffLower,
 

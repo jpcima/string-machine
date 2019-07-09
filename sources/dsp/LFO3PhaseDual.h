@@ -20,6 +20,9 @@ public:
     float getRate2() const { return fRowsLFO[1].rate; }
     void setRate2(float value) { fRowsLFO[1].rate = value;}
 
+    float getPhase1() const { return fRowsLFO[0].lfos[0].phase; }
+    float getPhase2() const { return fRowsLFO[1].lfos[0].phase; }
+
 private:
     static float getLfoSine(float phase);
     static float wrapPhase(float phase);

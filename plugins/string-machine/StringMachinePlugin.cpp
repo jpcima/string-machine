@@ -14,6 +14,9 @@ StringMachinePlugin::StringMachinePlugin()
         InitParameter(p, param);
         setParameterValue(p, param.ranges.def);
     }
+
+    for (unsigned c = 0; c < 2; ++c)
+        fOutputLevelFollower[c].release(0.5 * sampleRate);
 }
 
 StringMachinePlugin::~StringMachinePlugin()
@@ -65,9 +68,8 @@ float StringMachinePlugin::getParameterValue(uint32_t index) const
     const StringSynth &synth = fSynth;
 
     switch (index) {
-    case pIdDetune:
+    case pIdOscDetune:
         return synth.getDetune();
-
     case pIdOscHpCutoffUpper:
         return synth.getOscSettings().highpassUpperCutoff;
     case pIdOscHpCutoffLower:
@@ -127,10 +129,9 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
     StringSynth &synth = fSynth;
 
     switch (index) {
-    case pIdDetune:
+    case pIdOscDetune:
         synth.setDetune(value);
         break;
-
     case pIdOscHpCutoffUpper:
         synth.getOscSettings().highpassUpperCutoff = value;
         break;
@@ -234,6 +235,13 @@ void StringMachinePlugin::run(const float **, float **outputs, uint32_t totalFra
         synth.generate(outputsAtIndex, frames);
 
         frameIndex += frames;
+    }
+
+    for (unsigned c = 0; c < 2; ++c) {
+        AmpFollower &follower = fOutputLevelFollower[c];
+        const float *output = outputs[c];
+        for (uint32_t i = 0; i < totalFrames; ++i)
+            follower.process(output[i]);
     }
 }
 

@@ -42,6 +42,9 @@ public:
     float getMasterGain() const { return fMasterGain; }
     void setMasterGain(float value) { fMasterGain = value; }
 
+    float getLastDetuneUpper() const { return fLastDetuneUpper; }
+    float getLastDetuneLower() const { return fLastDetuneLower; }
+
 private:
     struct Voice : boost::intrusive::list_base_hook<> {
         unsigned note;

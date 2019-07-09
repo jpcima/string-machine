@@ -16,7 +16,10 @@ all: plugins gen
 
 PLUGINS := string-machine
 
-plugins:
+dgl:
+	$(MAKE) -C dpf/dgl ../build/libdgl-cairo.a
+
+plugins: dgl
 	$(foreach p,$(PLUGINS),$(MAKE) all -C plugins/$(p);)
 
 ifneq ($(CROSS_COMPILING),true)
@@ -35,6 +38,7 @@ endif
 # --------------------------------------------------------------
 
 clean:
+	$(MAKE) clean -C dpf/dgl
 	$(MAKE) clean -C dpf/utils/lv2-ttl-generator
 	$(foreach p,$(PLUGINS),$(MAKE) clean -C plugins/$(p);)
 	rm -rf bin build
