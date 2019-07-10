@@ -56,5 +56,10 @@ void PlotView::onDisplay()
     cairo_set_source_rgba8(cr, fBrushColor);
     cairo_fill(cr);
 
+    // contour
+    cairo_rectangle(cr, 0, 0, w, h);
+    cairo_set_source_rgba8(cr, {0x2e, 0x34, 0x35, 0xff});
+    cairo_stroke(cr);
+
     cairo_restore(cr);
 }
