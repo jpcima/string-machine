@@ -3,13 +3,12 @@
 void InitParameter(uint32_t index, Parameter &parameter)
 {
     switch (index) {
-    case pIdDetune:
-        parameter.symbol = "detune";
-        parameter.name = "Detune";
+    case pIdOscDetune:
+        parameter.symbol = "osc_detune";
+        parameter.name = "Oscillator detune";
         parameter.hints = kParameterIsAutomable;
         parameter.ranges = ParameterRanges(0.0016, 0.0, 0.1);
         break;
-
     case pIdOscHpCutoffUpper:
         parameter.symbol = "osc_hp_cutoff_upper";
         parameter.name = "Oscillator HP Cutoff 4'";

@@ -13,6 +13,9 @@ public:
     const LFO3PhaseDual &getLfo() const { return fLfo; }
     LFO3PhaseDual &getLfo() { return fLfo; }
 
+    float getPhase1() const { return fLfo.getPhase1(); }
+    float getPhase2() const { return fLfo.getPhase2(); }
+
 private:
     class AntialiasFilter {
     public:

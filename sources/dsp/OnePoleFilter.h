@@ -1,4 +1,5 @@
 #pragma once
+#include <complex>
 #include <cmath>
 
 class OnePoleLPF {
@@ -6,6 +7,7 @@ public:
     void init(double sampleRate);
     void setCutoff(double frequency);
     double process(double input);
+    std::complex<double> getResponse(double frequency) const;
     void clear();
 
 private:
@@ -43,6 +45,7 @@ public:
     void init(double sampleRate);
     void setCutoff(double frequency);
     double process(double input);
+    std::complex<double> getResponse(double frequency) const;
     void clear();
 
 private:
