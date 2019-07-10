@@ -15,7 +15,7 @@ namespace Artwork
     const unsigned int knobDataSize = 9416;
 
     extern const char* ledData;
-    const unsigned int ledDataSize = 189;
+    const unsigned int ledDataSize = 199;
 
     extern const char* sliderData;
     const unsigned int sliderDataSize = 11348;
