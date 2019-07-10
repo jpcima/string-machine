@@ -57,7 +57,7 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.name = "Filters HS Boost 4'";
         parameter.hints = kParameterIsAutomable;
         parameter.unit = "dB";
-        parameter.ranges = ParameterRanges(2.5, -20.0, 20.0);
+        parameter.ranges = ParameterRanges(6.0, -20.0, 20.0);
         break;
 
     case pIdMixGainUpper:
@@ -101,7 +101,7 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.name = "Envelope release";
         parameter.hints = kParameterIsAutomable;
         parameter.unit = "s";
-        parameter.ranges = ParameterRanges(0.0126, 0.0, 10.0);
+        parameter.ranges = ParameterRanges(3.0, 0.0, 10.0);
         break;
 
     case pIdChoEnabled:
@@ -146,7 +146,7 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.name = "Master Gain";
         parameter.hints = kParameterIsAutomable;
         parameter.unit = "dB";
-        parameter.ranges = ParameterRanges(0.0, -60.0, +20.0);
+        parameter.ranges = ParameterRanges(3.0, -60.0, +20.0);
         break;
 
     default:
