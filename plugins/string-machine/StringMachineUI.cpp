@@ -145,6 +145,10 @@ void StringMachineUI::onDisplay()
     cairo_set_source_rgba8(cr, bgColor);
     cairo_paint(cr);
 
+    cairo_set_line_width(cr, 1.0);
+
+    cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
+
     const Label *group_labels[] = {
         &MainLayout::group_StringOsc_label,
         &MainLayout::group_StringFilters_label,
@@ -202,7 +206,7 @@ void StringMachineUI::onDisplay()
 
         fe.drawInBox(cr, label->text, font, bounds, label->align);
 
-        RectF frame = label->bounds.to<double>();
+        RectF frame = label->bounds.to<double>().off_by({0.5, 0.5});
         cairo_rounded_rectangle(cr, frame, 5.0);
         cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
         cairo_stroke(cr);
@@ -219,7 +223,7 @@ void StringMachineUI::onDisplay()
 
         fe.drawInBox(cr, label->text, font, bounds, label->align);
 
-        RectF frame = label->bounds.to<double>();
+        RectF frame = label->bounds.to<double>().off_by({0.5, 0.5});
         cairo_rounded_rectangle(cr, frame, 5.0);
         cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
         cairo_stroke(cr);
