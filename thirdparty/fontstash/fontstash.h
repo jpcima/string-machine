@@ -254,6 +254,7 @@ static int fons__tt_getGlyphKernAdvance(FONSttFontImpl *font, int glyph1, int gl
 #else
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <stddef.h>
 #define STB_TRUETYPE_IMPLEMENTATION
 #define STBTT_STATIC
