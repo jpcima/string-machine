@@ -5,6 +5,7 @@
 #include "Window.hpp"
 #include "ui/components/SkinSlider.hpp"
 #include "ui/components/SkinToggleButton.hpp"
+#include "ui/components/SkinTriggerButton.hpp"
 #include "ui/components/SkinIndicator.hpp"
 #include "ui/components/PlotView.hpp"
 #include "ui/FontEngine.h"
@@ -19,9 +20,11 @@ StringMachineUI::StringMachineUI()
       fSkinKnob(Artwork::knobData, Artwork::knobDataSize, 31),
       fSkinSlider(Artwork::sliderData, Artwork::sliderDataSize, 31),
       fSkinToggleButton(Artwork::toggle_buttonData, Artwork::toggle_buttonDataSize, 2),
+      fSkinTriggerButton(Artwork::trigger_buttonData, Artwork::trigger_buttonDataSize, 2),
       fSkinLed(Artwork::ledData, Artwork::ledDataSize, 2),
       fSkinVu(Artwork::vuData, Artwork::vuDataSize, 31),
-      fSkinValueDisplay(Artwork::value_displayData, Artwork::value_displayDataSize, 1)
+      fSkinValueDisplay(Artwork::value_displayData, Artwork::value_displayDataSize, 1),
+      fRandomGenerator(std::random_device{}())
 {
     for (unsigned p = 0; p < Parameter_Count; ++p)
         InitParameter(p, fParameters[p]);
@@ -251,6 +254,26 @@ void StringMachineUI::onDisplay()
 
         fe.drawInBox(cr, label->text, font, bounds, label->align);
     }
+
+    if (fDeveloperMode) {
+        RectF rect(5.5, 5.5, 100.0, 15.0);
+
+        cairo_rounded_rectangle(cr, rect, 5.0);
+        cairo_set_source_rgba8(cr, ColorRGBA8{0xff, 0x7e, 0x00, 0xff});
+        cairo_fill_preserve(cr);
+        cairo_set_source_rgba8(cr, ColorRGBA8{0x00, 0x00, 0x00, 0xff});
+        cairo_stroke(cr);
+
+        Font font;
+        font.size = 9.0;
+        font.color = ColorRGBA8{0xff, 0xff, 0xff, 0xff};
+        fe.drawInBox(cr, "Developer mode", font, rect.off_by({0, 1}), FontEngine::AlignCenter);
+
+        SkinTriggerButton &randButton = *fRandomizeButton;
+        font.size = 9.0;
+        font.color = ColorRGBA8{0x00, 0x00, 0x00, 0xff};
+        fe.drawInBox(cr, "Random", font, Rect(randButton.getAbsoluteX(), randButton.getAbsoluteY(), randButton.getWidth(), randButton.getHeight()).off_by({-8, 2}), FontEngine::AlignLeft);
+    }
 }
 
 void StringMachineUI::parameterChanged(uint32_t index, float value)
@@ -300,6 +323,28 @@ void StringMachineUI::uiIdle()
             levelLog = (20.0 * std::log10(levelLin) - levelMin) * (1.0 / (- levelMin));
         fVuDisplay[i]->setValue(levelLog);
     }
+}
+
+bool StringMachineUI::onKeyboard(const KeyboardEvent &event)
+{
+    if (event.press && event.mod == 0) {
+        fKeyHistory[fKeyHistoryIndex++] = KeyPress{event.key, false};
+        fKeyHistoryIndex %= KeyHistorySize;
+        checkForDeveloperCode();
+    }
+
+    return UI::onKeyboard(event);
+}
+
+bool StringMachineUI::onSpecial(const SpecialEvent &event)
+{
+    if (event.press && event.mod == 0) {
+        fKeyHistory[fKeyHistoryIndex++] = KeyPress{event.key, true};
+        fKeyHistoryIndex %= KeyHistorySize;
+        checkForDeveloperCode();
+    }
+
+    return UI::onSpecial(event);
 }
 
 void StringMachineUI::updateParameterValue(uint32_t index, float value)
@@ -433,6 +478,52 @@ void StringMachineUI::computeAdsrPlot(float *data, unsigned size)
         data[i] *= 0.9f;
 }
 
+void StringMachineUI::checkForDeveloperCode()
+{
+    const KeyPress sequence[] = {
+        {kKeyUp, true},
+        {kKeyUp, true},
+        {kKeyDown, true},
+        {kKeyDown, true},
+        {kKeyLeft, true},
+        {kKeyRight, true},
+        {kKeyLeft, true},
+        {kKeyRight, true},
+        {'\r', false},
+    };
+    unsigned sequenceSize = sizeof(sequence) / sizeof(sequence[0]);
+
+    if (KeyHistorySize < sequenceSize)
+        return;
+
+    bool sequencesEqual = true;
+    unsigned historyIndex = (fKeyHistoryIndex + KeyHistorySize - sequenceSize) % KeyHistorySize;
+    for (unsigned i = 0; i < sequenceSize && sequencesEqual; ++i)
+    {
+        sequencesEqual = sequence[i] == fKeyHistory[historyIndex];
+        historyIndex = (historyIndex + 1) % KeyHistorySize;
+    }
+
+
+    if (sequencesEqual)
+        enableDeveloperMode();
+}
+
+void StringMachineUI::enableDeveloperMode()
+{
+    if (fDeveloperMode)
+        return;
+
+    fDeveloperMode = true;
+
+    SkinTriggerButton *randButton = new SkinTriggerButton(fSkinTriggerButton, this);
+    fRandomizeButton.reset(randButton);
+    randButton->setAbsolutePos(165, 6);
+    randButton->TriggerCallback = [this]() { randomizeParameters(); };
+
+    repaint();
+}
+
 double StringMachineUI::convertNormalizedToParameter(unsigned index, double value)
 {
     DISTRHO_SAFE_ASSERT_RETURN(index < Parameter_Count, 0.0)
@@ -466,6 +557,31 @@ double StringMachineUI::convertNormalizedFromParameter(unsigned index, double va
         value = (value - min) / (max - min);
 
     return value;
+}
+
+void StringMachineUI::randomizeParameters()
+{
+    std::minstd_rand &rand = fRandomGenerator;
+
+    for (unsigned p = 0; p < Parameter_Count; ++p) {
+        if (!isRandomizableParameter(p))
+            continue;
+
+        double value = std::uniform_real_distribution<double>{0.0, 1.0}(rand);
+        value = convertNormalizedToParameter(p, value);
+        setParameterValue(p, value);
+        parameterChanged(p, value);
+    }
+}
+
+bool StringMachineUI::isRandomizableParameter(unsigned index)
+{
+    switch (index) {
+    case pIdMasterGain:
+        return false;
+    default:
+        return true;
+    }
 }
 
 std::string StringMachineUI::formatDisplayValue(double value)

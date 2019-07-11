@@ -23,6 +23,9 @@ namespace Artwork
     extern const char* toggle_buttonData;
     const unsigned int toggle_buttonDataSize = 837;
 
+    extern const char* trigger_buttonData;
+    const unsigned int trigger_buttonDataSize = 1313;
+
     extern const char* value_displayData;
     const unsigned int value_displayDataSize = 131;
 

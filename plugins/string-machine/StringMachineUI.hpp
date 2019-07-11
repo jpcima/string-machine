@@ -4,11 +4,13 @@
 #include "ui/components/KnobSkin.hpp"
 #include "ui/Geometry.h"
 #include "dsp/ADSREnvelope.h"
+#include <random>
 #include <string>
 #include <memory>
 
 class SkinSlider;
 class SkinToggleButton;
+class SkinTriggerButton;
 class SkinIndicator;
 class PlotView;
 class FontEngine;
@@ -19,9 +21,13 @@ public:
     StringMachineUI();
     ~StringMachineUI();
 
+protected:
     void onDisplay() override;
     void parameterChanged(uint32_t index, float value) override;
     void uiIdle() override;
+
+    bool onKeyboard(const KeyboardEvent &event) override;
+    bool onSpecial(const SpecialEvent &event) override;
 
 private:
     void updateParameterValue(uint32_t index, float value);
@@ -32,8 +38,14 @@ private:
 
     void computeAdsrPlot(float *data, unsigned size);
 
+    void checkForDeveloperCode();
+    void enableDeveloperMode();
+
     double convertNormalizedToParameter(unsigned index, double value);
     double convertNormalizedFromParameter(unsigned index, double value);
+
+    void randomizeParameters();
+    static bool isRandomizableParameter(unsigned index);
 
     static std::string formatDisplayValue(double value);
 
@@ -45,6 +57,7 @@ private:
     KnobSkin fSkinKnob;
     KnobSkin fSkinSlider;
     KnobSkin fSkinToggleButton;
+    KnobSkin fSkinTriggerButton;
     KnobSkin fSkinLed;
     KnobSkin fSkinVu;
     KnobSkin fSkinValueDisplay;
@@ -58,4 +71,22 @@ private:
     std::unique_ptr<PlotView> fAdsrView;
 
     Parameter fParameters[Parameter_Count];
+
+    struct KeyPress {
+        uint32_t key;
+        bool special;
+
+        bool operator==(const KeyPress &other) const
+            { return key == other.key && special == other.special; }
+        bool operator!=(const KeyPress &other) const
+            { return !operator==(other); }
+    };
+
+    enum { KeyHistorySize = 16 };
+    KeyPress fKeyHistory[KeyHistorySize] = {};
+    unsigned fKeyHistoryIndex = 0;
+
+    bool fDeveloperMode = false;
+    std::unique_ptr<SkinTriggerButton> fRandomizeButton;
+    std::minstd_rand fRandomGenerator;
 };

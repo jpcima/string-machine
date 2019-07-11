@@ -39,6 +39,7 @@ FILES_UI = \
 	sources/ui/components/KnobSkin.cpp \
 	sources/ui/components/SkinSlider.cpp \
 	sources/ui/components/SkinToggleButton.cpp \
+	sources/ui/components/SkinTriggerButton.cpp \
 	sources/ui/components/SkinIndicator.cpp \
 	sources/ui/components/PlotView.cpp \
 	sources/ui/FontEngine.cpp \
