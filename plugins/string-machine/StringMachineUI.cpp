@@ -198,15 +198,21 @@ void StringMachineUI::onDisplay()
     for (const Label *label : group_labels) {
         Font font;
         font.name = "title";
-        font.size = 12.0;
+        font.size = 13.0;
+        font.color = ColorRGBA8{0xff, 0xff, 0xff, 0xff};
 
-        Rect bounds = label->bounds;
+        RectF frame = label->bounds.to<double>().off_by({0.5, 0.5}).reduced({1, 1});
+        RectF titleFrame = RectF(frame).take_from_top(14);
 
-        bounds.y += 2;
+        cairo_rounded_rectangle_with_corners(cr, titleFrame, 5.0, RectangleNW|RectangleNE);
+        cairo_set_source_rgba8(cr, ColorRGBA8{0x58, 0x58, 0x56, 0xff});
+        cairo_fill_preserve(cr);
+        cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
+        cairo_stroke(cr);
 
-        fe.drawInBox(cr, label->text, font, bounds, label->align);
+        Rect textBounds = label->bounds.off_by({0, 2});
+        fe.drawInBox(cr, label->text, font, textBounds, label->align);
 
-        RectF frame = label->bounds.to<double>().off_by({0.5, 0.5});
         cairo_rounded_rectangle(cr, frame, 5.0);
         cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
         cairo_stroke(cr);
@@ -217,13 +223,10 @@ void StringMachineUI::onDisplay()
         font.name = "title";
         font.size = 12.0;
 
-        Rect bounds = label->bounds;
+        Rect textBounds = label->bounds.off_by({0, 2});
+        fe.drawInBox(cr, label->text, font, textBounds, label->align);
 
-        bounds.y += 2;
-
-        fe.drawInBox(cr, label->text, font, bounds, label->align);
-
-        RectF frame = label->bounds.to<double>().off_by({0.5, 0.5});
+        RectF frame = label->bounds.to<double>().off_by({0.5, 0.5}).reduced({1, 1});
         cairo_rounded_rectangle(cr, frame, 5.0);
         cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
         cairo_stroke(cr);

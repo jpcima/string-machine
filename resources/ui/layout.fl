@@ -4,7 +4,7 @@ header_name {.h}
 code_name {.cxx}
 Function {make_window()} {open
 } {
-  Fl_Window window_TopLevel {open selected
+  Fl_Window window_TopLevel {open
     xywh {741 151 935 245} type Double visible
   } {
     Fl_Group group_StringOsc {
@@ -223,8 +223,8 @@ Function {make_window()} {open
         xywh {770 193 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Box plot_Env {
-        label {ADSR - Env}
-        xywh {815 155 105 45} box ENGRAVED_BOX labelsize 10 align 1
+        label {ADSR - Env} selected
+        xywh {815 160 105 45} box ENGRAVED_BOX labelsize 10 align 1
       }
     }
   }
