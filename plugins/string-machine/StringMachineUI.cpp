@@ -1,6 +1,7 @@
 #include "StringMachineUI.hpp"
 #include "StringMachineUILayouts.hpp"
 #include "StringMachinePlugin.hpp"
+#include "StringMachinePresets.hpp"
 #include "Artwork.hpp"
 #include "Window.hpp"
 #include "ui/components/SkinSlider.hpp"
@@ -293,6 +294,14 @@ void StringMachineUI::parameterChanged(uint32_t index, float value)
     }
 
     updateParameterValue(index, value);
+}
+
+void StringMachineUI::programLoaded(uint32_t index)
+{
+    DISTRHO_SAFE_ASSERT_RETURN(index < NumPrograms, );
+
+    for (unsigned p = 0; p < Parameter_Count; ++p)
+        parameterChanged(index, Programs[index][p]);
 }
 
 void StringMachineUI::uiIdle()

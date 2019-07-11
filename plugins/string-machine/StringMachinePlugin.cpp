@@ -1,9 +1,10 @@
 #include "StringMachinePlugin.hpp"
+#include "StringMachinePresets.hpp"
 #include "StringSynthDefs.h"
 #include "DenormalDisabler.h"
 
 StringMachinePlugin::StringMachinePlugin()
-    : Plugin(Parameter_Count, DISTRHO_PLUGIN_NUM_PROGRAMS, State_Count)
+    : Plugin(Parameter_Count, NumPrograms, State_Count)
 {
     double sampleRate = getSampleRate();
 
@@ -205,6 +206,21 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
         DISTRHO_SAFE_ASSERT(false);
         break;
     }
+}
+
+void StringMachinePlugin::initProgramName(uint32_t index, String &programName)
+{
+    DISTRHO_SAFE_ASSERT_RETURN(index < NumPrograms, );
+
+    programName = "Program " + String(index + 1);
+}
+
+void StringMachinePlugin::loadProgram(uint32_t index)
+{
+    DISTRHO_SAFE_ASSERT_RETURN(index < NumPrograms, );
+
+    for (unsigned p = 0; p < Parameter_Count; ++p)
+        setParameterValue(p, Programs[index][p]);
 }
 
 void StringMachinePlugin::run(const float **, float **outputs, uint32_t totalFrames,

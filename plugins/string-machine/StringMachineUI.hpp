@@ -24,6 +24,7 @@ public:
 protected:
     void onDisplay() override;
     void parameterChanged(uint32_t index, float value) override;
+    void programLoaded(uint32_t index) override;
     void uiIdle() override;
 
     bool onKeyboard(const KeyboardEvent &event) override;

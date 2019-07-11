@@ -20,6 +20,9 @@ public:
     float getParameterValue(uint32_t index) const override;
     void setParameterValue(uint32_t index, float value) override;
 
+    void initProgramName(uint32_t index, String &programName);
+    void loadProgram(uint32_t index);
+
     void run(const float **inputs, float **outputs, uint32_t frames,
              const MidiEvent *midiEvents, uint32_t midiEventCount) override;
 
