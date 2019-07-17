@@ -65,7 +65,7 @@ TARGETS += vst
 
 all: $(TARGETS)
 
-Artwork.cpp Artwork.hpp: $(wildcard artwork/*)
-	../../dpf/utils/res2c.py Artwork artwork
+#Artwork.cpp Artwork.hpp: $(wildcard artwork/*)
+#	../../dpf/utils/res2c.py Artwork artwork
 
 # --------------------------------------------------------------
