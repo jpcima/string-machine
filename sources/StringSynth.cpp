@@ -190,6 +190,9 @@ void StringSynth::generate(float *outputs[2], unsigned count)
 
 void StringSynth::noteOn(unsigned note, unsigned vel)
 {
+    // TODO the key-on velocity
+    (void)vel;
+
     Voice &voice = fVoices[note];
 
     if (!voice.active) {
@@ -201,6 +204,8 @@ void StringSynth::noteOn(unsigned note, unsigned vel)
 
 void StringSynth::noteOff(unsigned note, unsigned vel)
 {
+    (void)vel;
+
     Voice &voice = fVoices[note];
 
     if (voice.active)

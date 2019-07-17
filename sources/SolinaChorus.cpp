@@ -81,7 +81,7 @@ void SolinaChorus::AntialiasFilter::process(const float *input, float *output, u
 {
     const float* input0 = input;
     float* output0 = output;
-    for (int i = 0; (i < count); i = (i + 1)) {
+    for (unsigned i = 0; (i < count); i = (i + 1)) {
         fRec2[0] = (float(input0[i]) - (fConst12 * ((fConst13 * fRec2[1]) + (fConst14 * fRec2[2]))));
         fRec1[0] = (0.0f - (fConst12 * (((fConst13 * fRec1[1]) + (fConst14 * fRec1[2])) - (fConst8 * ((fRec2[1] + (0.5f * fRec2[0])) + (0.5f * fRec2[2]))))));
         fRec0[0] = ((fConst11 * ((fRec1[1] + (0.5f * fRec1[0])) + (0.5f * fRec1[2]))) - (fConst15 * ((fConst16 * fRec0[1]) + (fConst17 * fRec0[2]))));

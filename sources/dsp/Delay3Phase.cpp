@@ -29,7 +29,7 @@ void Delay3Phase::process(const float *input, const float *const mods[3], float 
     float* output1 = outputs[1];
     float* output2 = outputs[2];
 
-    for (int i = 0; (i < count); i = (i + 1)) {
+    for (unsigned i = 0; (i < count); i = (i + 1)) {
         float fTemp0 = (fConst0 * ((0.00100000005f * float(input2[i])) + 0.00499999989f));
         float fTemp1 = (fTemp0 + 4.99999987e-06f);
         float fTemp2 = std::floor(fTemp1);

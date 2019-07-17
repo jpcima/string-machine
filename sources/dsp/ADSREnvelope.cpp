@@ -37,7 +37,7 @@ void ADSREnvelope::process(float *output, uint32_t count)
     float fSlow4 = float(settings.decay);
     float fSlow5 = float(iSlow0);
     float fSlow6 = (fSlow5 * std::pow(10.0f, (0.0500000007f * float(settings.sustain))));
-    for (int i = 0; (i < count); i = (i + 1)) {
+    for (unsigned i = 0; (i < count); i = (i + 1)) {
         iRec1[0] = (iSlow0 * (iRec1[1] + 1));
         int iTemp0 = (iRec1[0] < iSlow3);
         float fTemp1 = std::exp((0.0f - (fConst1 / (iSlow0?(iTemp0?fSlow2:fSlow4):fSlow1))));

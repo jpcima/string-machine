@@ -84,7 +84,7 @@ void StringFilters::HighshelfFilter::process(const float *input, float *output, 
     float fSlow10 = (2.0f * (fSlow0 + (-1.0f - fSlow9)));
     float fSlow11 = ((0.0f - (2.0f * fSlow0)) * ((fSlow9 + fSlow0) + -1.0f));
     float fSlow12 = ((fSlow6 + (1.0f - fSlow2)) * fSlow0);
-    for (int i = 0; (i < count); i = (i + 1)) {
+    for (unsigned i = 0; (i < count); i = (i + 1)) {
         fRec0[0] = (float(input0[i]) - (fSlow5 * ((fSlow8 * fRec0[2]) + (fSlow10 * fRec0[1]))));
         output0[i] = float((fSlow5 * (((fSlow7 * fRec0[0]) + (fSlow11 * fRec0[1])) + (fSlow12 * fRec0[2]))));
         fRec0[2] = fRec0[1];
