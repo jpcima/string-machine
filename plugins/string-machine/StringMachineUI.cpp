@@ -301,7 +301,7 @@ void StringMachineUI::programLoaded(uint32_t index)
     DISTRHO_SAFE_ASSERT_RETURN(index < NumPrograms, );
 
     for (unsigned p = 0; p < Parameter_Count; ++p)
-        parameterChanged(index, Programs[index][p]);
+        parameterChanged(p, Programs[index][p]);
 }
 
 void StringMachineUI::uiIdle()
