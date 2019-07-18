@@ -10,6 +10,12 @@ endif
 
 include dpf/Makefile.base.mk
 
+PREFIX ?= /usr
+BINDIR ?= $(PREFIX)/bin
+LIBDIR ?= $(PREFIX)/lib
+LV2DIR ?= $(LIBDIR)/lv2
+VSTDIR ?= $(LIBDIR)/vst
+
 all: plugins gen
 
 # --------------------------------------------------------------
@@ -35,6 +41,16 @@ else
 gen:
 endif
 
+install: all
+	install -D -m 755 bin/string-machine-vst$(LIB_EXT) -t $(DESTDIR)$(VSTDIR)
+	install -D -m 755 bin/string-machine.lv2/*$(LIB_EXT) -t $(DESTDIR)$(LV2DIR)/string-machine.lv2
+	install -D -m 644 bin/string-machine.lv2/*.ttl -t $(DESTDIR)$(LV2DIR)/string-machine.lv2
+
+install-user: all
+	install -D -m 755 bin/string-machine-vst$(LIB_EXT) -t $(HOME)/.vst
+	install -D -m 755 bin/string-machine.lv2/*$(LIB_EXT) -t $(HOME)/.lv2/string-machine.lv2
+	install -D -m 644 bin/string-machine.lv2/*.ttl -t $(HOME)/.lv2/string-machine.lv2
+
 # --------------------------------------------------------------
 
 clean:
@@ -45,4 +61,4 @@ clean:
 
 # --------------------------------------------------------------
 
-.PHONY: plugins
+.PHONY: plugins clean install install-user
