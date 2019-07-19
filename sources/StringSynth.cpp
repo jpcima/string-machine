@@ -16,8 +16,6 @@ StringSynth::~StringSynth()
 
 void StringSynth::init(double sampleRate)
 {
-    fDetuneAmount = 0.0;
-
     fDetuneLFO[0].init(sampleRate);
     fDetuneLFO[0].setFrequency(69.0);
     fDetuneLFO[1].init(sampleRate);
@@ -25,24 +23,6 @@ void StringSynth::init(double sampleRate)
 
     fLastDetuneUpper = 0.0;
     fLastDetuneLower = 0.0;
-
-    fMixGainUpper = 0.0;
-    fMixGainLower = 0.0;
-
-    fOscSettings.highpassUpperCutoff = 0.0;
-    fOscSettings.highpassLowerCutoff = 0.0;
-
-    fEnvSettings.attack = 1.0;
-    fEnvSettings.decay = 1.0;
-    fEnvSettings.sustain = 1.0;
-    fEnvSettings.release = 1.0;
-
-    fFltSettings.lowpassUpperCutoff = 0.0;
-    fFltSettings.highpassUpperCutoff = 0.0;
-    fFltSettings.lowpassLowerCutoff = 0.0;
-    fFltSettings.highpassLowerCutoff = 0.0;
-    fFltSettings.highshelfEqCutoff = 0.0;
-    fFltSettings.highshelfEqBoost = 0.0;
 
     Voice *voices = fVoices.get();
 
@@ -62,8 +42,6 @@ void StringSynth::init(double sampleRate)
     }
 
     fChorus.init(sampleRate);
-
-    fMasterGain = 0.0;
 
     resetAllControllers();
 }

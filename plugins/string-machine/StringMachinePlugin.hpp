@@ -23,6 +23,9 @@ public:
     void initProgramName(uint32_t index, String &programName) override;
     void loadProgram(uint32_t index) override;
 
+    void activate() override;
+    void deactivate() override;
+
     void run(const float **inputs, float **outputs, uint32_t frames,
              const MidiEvent *midiEvents, uint32_t midiEventCount) override;
 

@@ -4,12 +4,12 @@
 class StringFilters {
 public:
     struct Settings {
-        float lowpassUpperCutoff;
-        float highpassUpperCutoff;
-        float lowpassLowerCutoff;
-        float highpassLowerCutoff;
-        float highshelfEqCutoff;
-        float highshelfEqBoost;
+        float lowpassUpperCutoff = 0;
+        float highpassUpperCutoff = 0;
+        float lowpassLowerCutoff = 0;
+        float highpassLowerCutoff = 0;
+        float highshelfEqCutoff = 0;
+        float highshelfEqBoost = 0;
     };
 
     void init(const Settings *settings, double sampleRate);
@@ -17,9 +17,9 @@ public:
     void process(const float *const inputs[2], float *const outputs[3], float noteFreq, unsigned count);
 
 private:
-    float fSampleTime;
+    float fSampleTime = 0;
 
-    const Settings *fSettings;
+    const Settings *fSettings = nullptr;
 
     OnePoleLPF fLowpassUpper;
     OnePoleHPF fHighpassUpper;
@@ -36,10 +36,10 @@ private:
         void setGain(float value) { fHslider0 = value; }
 
     private:
-        float fHslider0;
-        float fHslider1;
-        float fConst0;
-        float fRec0[3];
+        float fHslider0 = 0;
+        float fHslider1 = 0;
+        float fConst0 = 0;
+        float fRec0[3] = {};
     };
 
     HighshelfFilter fHighshelfEq;

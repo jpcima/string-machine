@@ -5,8 +5,8 @@
 class StringOsc {
 public:
     struct Settings {
-        float highpassUpperCutoff;
-        float highpassLowerCutoff;
+        float highpassUpperCutoff = 0;
+        float highpassLowerCutoff = 0;
     };
 
     void init(const Settings *settings, double sampleRate);
@@ -16,8 +16,8 @@ public:
     void clear();
 
 private:
-    const Settings *fSettings;
-    float fFrequency[2];
+    const Settings *fSettings = nullptr;
+    float fFrequency[2] = {};
     OscillatorBlepRect fOscillator[2];
     OnePoleHPF fFilter[2];
 };

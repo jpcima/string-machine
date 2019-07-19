@@ -8,9 +8,9 @@ public:
     float process(float input);
 
 private:
-    float fSampleTime;
-    float fPole;
-    float fMemory;
+    float fSampleTime = 0;
+    float fPole = 0;
+    float fMemory = 0;
 };
 
 inline void SmoothFilter::init(double sampleRate)

@@ -60,14 +60,14 @@ private:
     std::unique_ptr<Voice[]> fVoices;
     boost::intrusive::list<Voice> fActiveVoices;
 
-    float fDetuneAmount;
+    float fDetuneAmount = 0;
     TriangleLFO fDetuneLFO[2];
 
-    float fLastDetuneUpper;
-    float fLastDetuneLower;
+    float fLastDetuneUpper = 0;
+    float fLastDetuneLower = 0;
 
-    float fMixGainUpper;
-    float fMixGainLower;
+    float fMixGainUpper = 0;
+    float fMixGainLower = 0;
 
     StringOsc::Settings fOscSettings;
     ADSREnvelope::Settings fEnvSettings;
@@ -75,17 +75,17 @@ private:
 
     SolinaChorus fChorus;
 
-    float fMasterGain;
+    float fMasterGain = 0;
 
-    float fCtlPitchBend;
-    float fCtlPitchBendSensitivity;
+    float fCtlPitchBend = 0;
+    float fCtlPitchBendSensitivity = 0;
 
     struct RpnIdentifier {
         unsigned registered : 1;
         unsigned msb : 7;
         unsigned lsb : 7;
     };
-    RpnIdentifier fCtlRpnIdentifier;
+    RpnIdentifier fCtlRpnIdentifier = {};
 
 private:
     void noteOn(unsigned note, unsigned vel);

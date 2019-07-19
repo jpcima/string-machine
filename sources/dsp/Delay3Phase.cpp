@@ -4,7 +4,6 @@
 
 void Delay3Phase::init(double sampleRate)
 {
-    fSamplingFreq = sampleRate;
     fConst0 = float(sampleRate);
     iConst1 = int(std::ceil((0.0500000007f * fConst0)));
 

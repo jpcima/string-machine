@@ -8,9 +8,9 @@ public:
     float process();
 
 private:
-    float fPhase;
-    float fPhaseIncrement;
-    float fSampleTime;
+    float fPhase = 0;
+    float fPhaseIncrement = 0;
+    float fSampleTime = 0;
 };
 
 inline void TriangleLFO::init(double sampleRate)

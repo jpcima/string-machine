@@ -8,9 +8,6 @@ void StringOsc::init(const Settings *settings, double sampleRate)
 {
     fSettings = settings;
 
-    fFrequency[0] = 0.0;
-    fFrequency[1] = 0.0;
-
     fOscillator[0].init(sampleRate);
     fOscillator[1].init(sampleRate);
 

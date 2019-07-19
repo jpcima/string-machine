@@ -54,9 +54,6 @@ void StringFilters::HighshelfFilter::init(double sampleRate)
 {
     fConst0 = (6.28318548f / float(sampleRate));
 
-    fHslider0 = float(0.0f);
-    fHslider1 = float(0.0f);
-
     clear();
 }
 

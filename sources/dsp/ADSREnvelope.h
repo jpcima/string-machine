@@ -4,10 +4,10 @@
 class ADSREnvelope {
 public:
     struct Settings {
-        float attack;
-        float decay;
-        float sustain;
-        float release;
+        float attack = 0;
+        float decay = 0;
+        float sustain = 0;
+        float release = 0;
     };
 
     void init(const Settings *settings, double sampleRate);
@@ -21,21 +21,13 @@ public:
 
     float getCurrentLevel() const { return fCurrentLevel; }
 
-    enum ADSRState {
-        IDLE,
-        ATTACK,
-        DECAY,
-        SUSTAIN,
-        RELEASE
-    };
-
 private:
-    const ADSREnvelope::Settings *fSettings;
-    float fCurrentLevel;
-    int fTrigger;
+    const ADSREnvelope::Settings *fSettings = nullptr;
+    float fCurrentLevel = 0;
+    int fTrigger = 0;
 
-    float fConst0;
-    float fConst1;
-    float fRec0[2];
-    int iRec1[2];
+    float fConst0 = 0;
+    float fConst1 = 0;
+    float fRec0[2] = {};
+    int iRec1[2] = {};
 };

@@ -6,18 +6,11 @@
 StringMachinePlugin::StringMachinePlugin()
     : Plugin(Parameter_Count, NumPrograms, State_Count)
 {
-    double sampleRate = getSampleRate();
-
-    fSynth.init(sampleRate);
-
     for (unsigned p = 0; p < Parameter_Count; ++p) {
         Parameter param;
         InitParameter(p, param);
         setParameterValue(p, param.ranges.def);
     }
-
-    for (unsigned c = 0; c < 2; ++c)
-        fOutputLevelFollower[c].release(0.5 * sampleRate);
 }
 
 StringMachinePlugin::~StringMachinePlugin()
@@ -221,6 +214,20 @@ void StringMachinePlugin::loadProgram(uint32_t index)
 
     for (unsigned p = 0; p < Parameter_Count; ++p)
         setParameterValue(p, Programs[index][p]);
+}
+
+void StringMachinePlugin::activate()
+{
+    double sampleRate = getSampleRate();
+
+    fSynth.init(sampleRate);
+
+    for (unsigned c = 0; c < 2; ++c)
+        fOutputLevelFollower[c].release(0.5 * sampleRate);
+}
+
+void StringMachinePlugin::deactivate()
+{
 }
 
 void StringMachinePlugin::run(const float **, float **outputs, uint32_t totalFrames,

@@ -11,13 +11,8 @@ void LFO3PhaseDual::init(double sampleRate)
 {
     fSampleTime = 1.0 / sampleRate;
 
-    fDepth = 0.0;
-
     for (unsigned r = 0; r < 2; ++r) {
         RowLFOs &row = fRowsLFO[r];
-        row.rate = 0.0;
-        row.depth = 0.0;
-
         for (unsigned l = 0; l < 3; ++l)
             row.lfos[l].phase = row.lfos[l].phase0 = l / 3.0f;
     }

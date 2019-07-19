@@ -10,7 +10,6 @@ void SolinaChorus::init(double sampleRate)
     fFilter.init(sampleRate);
     fLfo.init(sampleRate);
     fDelay.init(sampleRate);
-    fEnabled = false;
 }
 
 void SolinaChorus::process(const float *input, float *const outputs[3], unsigned count)

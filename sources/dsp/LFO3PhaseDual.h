@@ -29,18 +29,18 @@ private:
 
 private:
     struct SingleLFO {
-        float phase;
-        float phase0;
+        float phase = 0;
+        float phase0 = 0;
     };
 
     struct RowLFOs {
-        float rate;
-        float depth;
+        float rate = 0;
+        float depth = 0;
         SingleLFO lfos[3];
     };
 
-    float fSampleTime;
-    float fDepth;
+    float fSampleTime = 0;
+    float fDepth = 0;
     RowLFOs fRowsLFO[2];
     SmoothFilter fSmoothOutput[3];
 };
