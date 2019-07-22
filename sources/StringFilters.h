@@ -17,6 +17,7 @@ public:
     void process(const float *const inputs[2], float *const outputs[3], float noteFreq, unsigned count);
 
 private:
+    float fSampleRate = 0;
     float fSampleTime = 0;
 
     const Settings *fSettings = nullptr;

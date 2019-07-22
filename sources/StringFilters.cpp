@@ -4,6 +4,7 @@
 
 void StringFilters::init(const Settings *settings, double sampleRate)
 {
+    fSampleRate = sampleRate;
     fSampleTime = 1.0 / sampleRate;
 
     fSettings = settings;
@@ -18,6 +19,7 @@ void StringFilters::init(const Settings *settings, double sampleRate)
 void StringFilters::process(const float *const inputs[2], float *const outputs[3], float noteFreq, unsigned count)
 {
     Settings settings = *fSettings;
+    float nyquistFreq = 0.5 * fSampleRate;
 
     OnePoleLPF &lowpassUpper = fLowpassUpper;
     OnePoleHPF &highpassUpper = fHighpassUpper;
@@ -25,11 +27,23 @@ void StringFilters::process(const float *const inputs[2], float *const outputs[3
     OnePoleHPF &highpassLower = fHighpassLower;
     HighshelfFilter &highshelfEq = fHighshelfEq;
 
-    lowpassUpper.setCutoff(noteFreq * 2 + std::exp2(settings.lowpassUpperCutoff * (1.0f / 12.0f)));
-    highpassUpper.setCutoff(noteFreq * 2 + std::exp2(settings.highpassUpperCutoff * (1.0f / 12.0f)));
-    lowpassLower.setCutoff(noteFreq + std::exp2(settings.lowpassLowerCutoff * (1.0f / 12.0f)));
-    highpassLower.setCutoff(noteFreq * 2 + std::exp2(settings.highpassLowerCutoff * (1.0f / 12.0f)));
-    highshelfEq.setCutoff(noteFreq * 2 + std::exp2(settings.highshelfEqCutoff * (1.0f / 12.0f)));
+    float upperFreq = noteFreq + noteFreq;
+
+    double cutoffMin = 10.0;
+    double cutoffMax = 0.9 * nyquistFreq;
+
+    auto limitCutoff = [cutoffMin, cutoffMax](double f) -> double
+                           {
+                               f = (f > cutoffMin) ? f : cutoffMin;
+                               f = (f < cutoffMax) ? f : cutoffMax;
+                               return f;
+                           };
+
+    lowpassUpper.setCutoff(limitCutoff(upperFreq * std::exp2(settings.lowpassUpperCutoff * (1.0f / 12.0f))));
+    highpassUpper.setCutoff(limitCutoff(upperFreq * std::exp2(settings.highpassUpperCutoff * (1.0f / 12.0f))));
+    lowpassLower.setCutoff(limitCutoff(noteFreq * std::exp2(settings.lowpassLowerCutoff * (1.0f / 12.0f))));
+    highpassLower.setCutoff(limitCutoff(upperFreq * std::exp2(settings.highpassLowerCutoff * (1.0f / 12.0f))));
+    highshelfEq.setCutoff(limitCutoff(upperFreq * std::exp2(settings.highshelfEqCutoff * (1.0f / 12.0f))));
     highshelfEq.setGain(settings.highshelfEqBoost);
 
     const float *inputUpper = inputs[0];
