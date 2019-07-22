@@ -2,6 +2,8 @@
 
 void InitParameter(uint32_t index, Parameter &parameter)
 {
+    ParameterEnumerationValue *pev;
+
     switch (index) {
     case pIdOscDetune:
         parameter.symbol = "osc_detune";
@@ -139,6 +141,16 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.name = "Chorus depth 2";
         parameter.hints = kParameterIsAutomable;
         parameter.ranges = ParameterRanges(0.9055, 0.0, 1.0);
+        break;
+    case pIdChoModel:
+        parameter.symbol = "cho_model";
+        parameter.name = "Chorus model";
+        parameter.hints = kParameterIsInteger;
+        parameter.ranges = ParameterRanges(1.0, 0.0, 1.0);
+        parameter.enumValues.values = pev = new ParameterEnumerationValue[(parameter.enumValues.count = 2)];
+        parameter.enumValues.restrictedMode = true;
+        pev[0] = {0.0, "Digital"};
+        pev[1] = {1.0, "Analog"};
         break;
 
     case pIdMasterGain:

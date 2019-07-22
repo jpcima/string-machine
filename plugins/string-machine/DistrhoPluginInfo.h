@@ -49,6 +49,7 @@ enum {
     pIdChoDepth1,
     pIdChoRate2,
     pIdChoDepth2,
+    pIdChoModel,
 
     pIdMasterGain,
 

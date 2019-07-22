@@ -70,6 +70,7 @@ StringMachineUI::StringMachineUI()
     KNOB(ChoDepth1);
     KNOB(ChoRate2);
     KNOB(ChoDepth2);
+    TOGGLE_BUTTON(ChoModel);
     KNOB(MasterGain);
     VALUE_DISPLAY(OscDetune);
     VALUE_DISPLAY(OscHpCutoffUpper);
@@ -183,6 +184,7 @@ void StringMachineUI::onDisplay()
         &MainLayout::knob_ChoDepth2_label,
         &MainLayout::knob_ChoRate1_label,
         &MainLayout::knob_ChoRate2_label,
+        &MainLayout::btn_ChoModel_label,
         &MainLayout::slider_ChoDepth_label,
         &MainLayout::led_Lfo1_label,
         &MainLayout::led_Lfo2_label,

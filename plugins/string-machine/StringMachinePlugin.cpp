@@ -108,6 +108,8 @@ float StringMachinePlugin::getParameterValue(uint32_t index) const
         return synth.getChorus().getLfo().getRate2();
     case pIdChoDepth2:
         return synth.getChorus().getLfo().getDepth2();
+    case pIdChoModel:
+        return synth.getChorus().getAnalogMode();
 
     case pIdMasterGain:
         return synth.getMasterGain();
@@ -189,6 +191,9 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
         break;
     case pIdChoDepth2:
         synth.getChorus().getLfo().setDepth2(value);
+        break;
+    case pIdChoModel:
+        synth.getChorus().setAnalogMode((int)value);
         break;
 
     case pIdMasterGain:
