@@ -59,7 +59,8 @@ namespace MainLayout {
     DECL_IGNORABLE static Rect slider_ChoDepth = {510, 200, 100, 25};
     DECL_IGNORABLE static Rect led_Lfo1 = {537, 90, 9, 9};
     DECL_IGNORABLE static Rect led_Lfo2 = {537, 155, 9, 9};
-    DECL_IGNORABLE static Rect btn_ChoEnabled = {480, 40, 35, 15};
+    DECL_IGNORABLE static Rect btn_ChoEnabled = {485, 40, 35, 15};
+    DECL_IGNORABLE static Rect btn_ChoModel = {565, 40, 35, 15};
     DECL_IGNORABLE static Rect group_Level = {625, 30, 175, 90};
     DECL_IGNORABLE static Rect knob_MasterGain = {640, 65, 30, 30};
     DECL_IGNORABLE static Rect val_MasterGain = {635, 98, 40, 12};
@@ -101,7 +102,8 @@ namespace MainLayout {
     DECL_IGNORABLE static Label slider_ChoDepth_label = {"Depth", 4, {510, 200, 100, 25}};
     DECL_IGNORABLE static Label led_Lfo1_label = {"LFO 1", 1, {537, 90, 9, 9}};
     DECL_IGNORABLE static Label led_Lfo2_label = {"LFO 2", 1, {537, 155, 9, 9}};
-    DECL_IGNORABLE static Label btn_ChoEnabled_label = {"On/Off", 1, {480, 40, 35, 15}};
+    DECL_IGNORABLE static Label btn_ChoEnabled_label = {"On/Off", 1, {485, 40, 35, 15}};
+    DECL_IGNORABLE static Label btn_ChoModel_label = {"Analog mode", 1, {565, 40, 35, 15}};
     DECL_IGNORABLE static Label group_Level_label = {"Level", 17, {625, 30, 175, 90}};
     DECL_IGNORABLE static Label knob_MasterGain_label = {"Output", 1, {640, 65, 30, 30}};
     DECL_IGNORABLE static Label vu_LeftVolume_label = {"L", 4, {700, 67, 95, 11}};
