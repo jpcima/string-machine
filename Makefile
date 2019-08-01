@@ -20,7 +20,7 @@ all: plugins gen
 
 # --------------------------------------------------------------
 
-PLUGINS := string-machine
+PLUGINS := string-machine string-machine-chorus string-machine-chorus-stereo
 
 dgl:
 	$(MAKE) -C dpf/dgl ../build/libdgl-cairo.a

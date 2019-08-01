@@ -149,8 +149,8 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.ranges = ParameterRanges(1.0, 0.0, 1.0);
         parameter.enumValues.values = pev = new ParameterEnumerationValue[(parameter.enumValues.count = 2)];
         parameter.enumValues.restrictedMode = true;
-        pev[0] = {0.0, "Digital"};
-        pev[1] = {1.0, "Analog"};
+        pev[0] = {0.0, "Digital delay"};
+        pev[1] = {1.0, "Analog bucket-brigade delay"};
         break;
 
     case pIdMasterGain:
