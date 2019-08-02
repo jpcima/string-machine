@@ -39,7 +39,7 @@ void Delay3Phase::setAnalogMode(bool analog)
 }
 
 ///
-static constexpr unsigned NumAnalogBBDStages = 512;
+static constexpr unsigned NumAnalogBBDStages = 185; // the TCA-350-Y IC
 
 void Delay3Phase::AnalogDelay::init(double sampleRate)
 {
