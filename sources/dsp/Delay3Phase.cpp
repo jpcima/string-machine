@@ -40,13 +40,14 @@ void Delay3Phase::setAnalogMode(bool analog)
 
 ///
 static constexpr unsigned NumAnalogBBDStages = 185; // the TCA-350-Y IC
+extern const BBD_Filter_Spec bbd_fout_custom;
 
 void Delay3Phase::AnalogDelay::init(double sampleRate)
 {
     fSampleTime = 1.0 / sampleRate;
 
     for (unsigned l = 0; l < 3; ++l)
-        fDelayLine[l].setup(sampleRate, NumAnalogBBDStages, bbd_fin_j60, bbd_fout_j60);
+        fDelayLine[l].setup(sampleRate, NumAnalogBBDStages, bbd_fin_j60, bbd_fout_custom);
 
     clear();
 }
@@ -87,6 +88,37 @@ void Delay3Phase::AnalogDelay::process(const float *input, const float *const mo
     for (unsigned i = 0; i < count; ++i)
         outputMono[i] = lineOutputs[0][i] + lineOutputs[1][i] + lineOutputs[2][i];
 }
+
+namespace BBDOut {
+
+// 5th order Butterworth 8 kHz
+
+/*
+[b,a]=butter(5,2*pi*8000,'low','s');
+[r,p,k]=residue(b,a)
+*/
+
+static constexpr unsigned M = 5;
+
+static constexpr cdouble R[M] = {
+    {95224.2967360951, -5.093170329928398e-11},
+    {-6946.518829526461, 21379.18664231187},
+    {-6946.518829526442, -21379.18664231189},
+    {-40665.62953852107, -55971.43728140101},
+    {-40665.62953852112, 55971.43728140108},
+};
+
+static constexpr cdouble P[M] = {
+    {-50265.48245743721, 0},
+    {-15532.88830980377, 47805.31463586497},
+    {-15532.88830980377, -47805.31463586497},
+    {-40665.62953852185, 29545.30928784726},
+    {-40665.62953852185, -29545.30928784726},
+};
+
+} // namespace BBDOut
+
+const BBD_Filter_Spec bbd_fout_custom = {BBD_Filter_Kind::Input, BBDOut::M, BBDOut::R, BBDOut::P};
 
 ///
 void Delay3Phase::DigitalDelay::init(double sampleRate)
