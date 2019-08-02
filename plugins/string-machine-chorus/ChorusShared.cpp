@@ -54,14 +54,14 @@ void InitParameter(uint32_t index, Parameter &parameter)
 
     case pIdWetGain:
         parameter.symbol = "wet_gain";
-        parameter.name = "Wet Gain";
+        parameter.name = "Wet gain";
         parameter.hints = kParameterIsAutomable;
         parameter.unit = "dB";
         parameter.ranges = ParameterRanges(0.0, -60.0, +20.0);
         break;
     case pIdDryGain:
         parameter.symbol = "dry_gain";
-        parameter.name = "Dry Gain";
+        parameter.name = "Dry gain";
         parameter.hints = kParameterIsAutomable;
         parameter.unit = "dB";
         parameter.ranges = ParameterRanges(-60.0, -60.0, +20.0);
