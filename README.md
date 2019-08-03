@@ -20,7 +20,7 @@ Install needed packages:
 - `libx11-dev`
 - `libgl-dev`
 - `libcairo2-dev`
-- `libboost1.62-dev`
+- `libboost-dev`
 
 2. Check out the repository and submodules
 
