@@ -21,6 +21,7 @@ Install needed packages:
 - `libgl-dev`
 - `libcairo2-dev`
 - `libjack-jackd2-dev` or `libjack-dev`
+- `libboost1.62-dev`
 
 2. Check out the repository and submodules
 
