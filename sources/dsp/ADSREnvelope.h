@@ -15,19 +15,38 @@ public:
     void clear();
     void process(float *output, uint32_t sampleCount);
 
-    void trigger() { fTrigger = 1; }
-    void release() { fTrigger = 0; }
+    void trigger();
+    void release();
     bool isTriggered() const { return fTrigger != 0; }
 
     float getCurrentLevel() const { return fCurrentLevel; }
 
 private:
+    void updateRates();
+
+private:
+    enum {
+        Attack = 0,
+        Decay = 1,
+        Sustain = 2,
+        Release = 3,
+    };
+
+private:
+    float fSampleTime = 0;
+
+    //
     const ADSREnvelope::Settings *fSettings = nullptr;
+    int fCurrentStage = 0;
     float fCurrentLevel = 0;
     int fTrigger = 0;
 
-    float fConst0 = 0;
-    float fConst1 = 0;
-    float fRec0[2] = {};
-    int iRec1[2] = {};
+    //
+    float fAttack = 0;
+    float fDecay = 0;
+    float fRelease = 0;
+
+    float fAttackRate = 0;
+    float fDecayRate = 0;
+    float fReleaseRate = 0;
 };

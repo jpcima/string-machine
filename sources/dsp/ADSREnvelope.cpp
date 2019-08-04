@@ -3,61 +3,100 @@
 
 void ADSREnvelope::init(const Settings *settings, double sampleRate)
 {
+    fSampleTime = 1.0 / sampleRate;
     fSettings = settings;
     fTrigger = 0;
 
-    fConst0 = float(sampleRate);
-    fConst1 = (6.90999985f / fConst0);
-
+    updateRates();
     clear();
 }
 
 void ADSREnvelope::clear()
 {
+    fCurrentStage = Release;
     fCurrentLevel = 0.0f;
+    fTrigger = 0;
+}
 
-    for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) {
-        iRec1[l0] = 0;
-    }
-    for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) {
-        fRec0[l1] = 0.0f;
-    }
+void ADSREnvelope::trigger()
+{
+    fCurrentStage = Attack;
+    fTrigger = 1;
+}
+
+void ADSREnvelope::release()
+{
+    fCurrentStage = Release;
+    fTrigger = 0;
 }
 
 void ADSREnvelope::process(float *output, uint32_t count)
 {
-    const Settings settings = *fSettings;
-    float currentLevel = fCurrentLevel;
+    updateRates();
 
-    float* output0 = output;
-    int iSlow0 = fTrigger;
-    float fSlow1 = float(settings.release);
-    float fSlow2 = float(settings.attack);
-    int iSlow3 = int((fConst0 * fSlow2));
-    float fSlow4 = float(settings.decay);
-    float fSlow5 = float(iSlow0);
-    float fSlow6 = (fSlow5 * std::pow(10.0f, (0.0500000007f * float(settings.sustain))));
-    for (unsigned i = 0; (i < count); i = (i + 1)) {
-        iRec1[0] = (iSlow0 * (iRec1[1] + 1));
-        int iTemp0 = (iRec1[0] < iSlow3);
-        float fTemp1 = std::exp((0.0f - (fConst1 / (iSlow0?(iTemp0?fSlow2:fSlow4):fSlow1))));
-        fRec0[0] = ((fRec0[1] * fTemp1) + ((iSlow0?(iTemp0?fSlow5:fSlow6):0.0f) * (1.0f - fTemp1)));
-        output0[i] = currentLevel = float(fRec0[0]);
-        iRec1[1] = iRec1[0];
-        fRec0[1] = fRec0[0];
+    float ar = fAttackRate;
+    float dr = fDecayRate;
+    float sl = std::pow(10.0f, 0.05f * fSettings->sustain);
+    float rr = fReleaseRate;
+
+    int stage = fCurrentStage;
+    float level = fCurrentLevel;
+
+    for (uint32_t i = 0; i < count; ++i) {
+        switch (stage) {
+        case Attack:
+            if (level < 1) {
+                const float target = 1.1; // set higher so 1 is reached in reasonable time
+                level = ar * level + (1 - ar) * target;
+                break;
+            }
+            stage = Decay;
+            // fall through
+        case Decay:
+            if (level > sl) {
+                level = dr * level + (1 - dr) * sl;
+                break;
+            }
+            stage = Sustain;
+            // fall through
+        case Sustain:
+            level = dr * level + (1 - dr) * sl;
+            break;
+        case Release:
+            level = rr * level;
+            break;
+        }
+
+        output[i] = level;
     }
 
-    fCurrentLevel = currentLevel;
+    fCurrentStage = stage;
+    fCurrentLevel = level;
 }
 
-/**
-import("stdfaust.lib");
+void ADSREnvelope::updateRates()
+{
+    const Settings settings = *fSettings;
+    float sampleTime = fSampleTime;
 
-process = en.adsre(attack, decay, sustain, release, trigger) with {
-  attack = hslider("[1] Attack [unit:s]", 0., 0., 10.0, 0.01);
-  decay = hslider("[2] Decay [unit:s]", 0., 0., 10.0, 0.01);
-  sustain = hslider("[3] Sustain [unit:dB]", 0, -40.0, 0.0, 1.0) : ba.db2linear;
-  release = hslider("[4] Release [unit:s]", 0., 0., 10.0, 0.01);
-  trigger = checkbox("[5] Trigger");
-};
- */
+    const float kt = 1.0 / 2.2; // ~ 90% time constant
+
+    if (fAttack != settings.attack) {
+        fAttack = settings.attack;
+        fAttackRate = 0.0;
+        if (settings.attack > 0)
+            fAttackRate = std::exp(-sampleTime / (kt * settings.attack));
+    }
+    if (fDecay != settings.decay) {
+        fDecay = settings.decay;
+        fDecayRate = 0.0;
+        if (settings.decay > 0)
+            fDecayRate = std::exp(-sampleTime / (kt * settings.decay));
+    }
+    if (fRelease != settings.release) {
+        fRelease = settings.release;
+        fReleaseRate = 0.0;
+        if (settings.release > 0)
+            fReleaseRate = std::exp(-sampleTime / (kt * settings.release));
+    }
+}

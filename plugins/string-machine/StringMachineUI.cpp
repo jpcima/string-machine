@@ -471,7 +471,7 @@ void StringMachineUI::computeAdsrPlot(float *data, unsigned size)
     env.release();
     env.process(data + keyOnSamples, size - keyOnSamples);
 
-#if 1
+#if 0
     // to decibel
     for (unsigned i = 0; i < size; ++i) {
         constexpr double dbMin = -40.0;
