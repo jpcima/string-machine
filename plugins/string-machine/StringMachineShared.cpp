@@ -80,16 +80,16 @@ void InitParameter(uint32_t index, Parameter &parameter)
     case pIdEnvAttack:
         parameter.symbol = "env_attack";
         parameter.name = "Envelope attack";
-        parameter.hints = kParameterIsAutomable;
+        parameter.hints = kParameterIsAutomable|kParameterIsLogarithmic;
         parameter.unit = "s";
-        parameter.ranges = ParameterRanges(0.1939, 0.0, 10.0);
+        parameter.ranges = ParameterRanges(0.1939, 0.01, 10.0);
         break;
     case pIdEnvDecay:
         parameter.symbol = "env_decay";
         parameter.name = "Envelope decay";
-        parameter.hints = kParameterIsAutomable;
+        parameter.hints = kParameterIsAutomable|kParameterIsLogarithmic;
         parameter.unit = "s";
-        parameter.ranges = ParameterRanges(10.0, 0.0, 10.0);
+        parameter.ranges = ParameterRanges(10.0, 0.01, 10.0);
         break;
     case pIdEnvSustain:
         parameter.symbol = "env_sustain";
@@ -101,9 +101,9 @@ void InitParameter(uint32_t index, Parameter &parameter)
     case pIdEnvRelease:
         parameter.symbol = "env_release";
         parameter.name = "Envelope release";
-        parameter.hints = kParameterIsAutomable;
+        parameter.hints = kParameterIsAutomable|kParameterIsLogarithmic;
         parameter.unit = "s";
-        parameter.ranges = ParameterRanges(3.0, 0.0, 10.0);
+        parameter.ranges = ParameterRanges(3.0, 0.01, 10.0);
         break;
 
     case pIdChoEnabled:
