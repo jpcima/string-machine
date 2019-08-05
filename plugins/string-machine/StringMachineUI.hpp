@@ -3,7 +3,7 @@
 #include "DistrhoUI.hpp"
 #include "ui/components/KnobSkin.hpp"
 #include "ui/Geometry.h"
-#include "dsp/ADSREnvelope.h"
+#include "dsp/AHDSREnvelope.h"
 #include <random>
 #include <string>
 #include <memory>
@@ -56,7 +56,7 @@ private:
 private:
     static std::unique_ptr<FontEngine> fFontEngine;
 
-    ADSREnvelope::Settings fEnvSettings;
+    AHDSREnvelope::Settings fEnvSettings;
 
     KnobSkin fSkinKnob;
     KnobSkin fSkinSlider;

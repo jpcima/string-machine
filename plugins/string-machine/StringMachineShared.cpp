@@ -84,6 +84,13 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.unit = "s";
         parameter.ranges = ParameterRanges(0.1939, 0.01, 10.0);
         break;
+    case pIdEnvHold:
+        parameter.symbol = "env_hold";
+        parameter.name = "Envelope hold";
+        parameter.hints = kParameterIsAutomable|kParameterIsLogarithmic;
+        parameter.unit = "s";
+        parameter.ranges = ParameterRanges(0.01, 0.01, 10.0);
+        break;
     case pIdEnvDecay:
         parameter.symbol = "env_decay";
         parameter.name = "Envelope decay";

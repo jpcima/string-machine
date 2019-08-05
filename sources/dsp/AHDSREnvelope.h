@@ -1,10 +1,11 @@
 #pragma once
 #include <cstdint>
 
-class ADSREnvelope {
+class AHDSREnvelope {
 public:
     struct Settings {
         float attack = 0;
+        float hold = 0;
         float decay = 0;
         float sustain = 0;
         float release = 0;
@@ -27,26 +28,30 @@ private:
 private:
     enum {
         Attack = 0,
-        Decay = 1,
-        Sustain = 2,
-        Release = 3,
+        Hold = 1,
+        Decay = 2,
+        Sustain = 3,
+        Release = 4,
     };
 
 private:
-    float fSampleTime = 0;
+    float fSampleRate = 0;
 
     //
-    const ADSREnvelope::Settings *fSettings = nullptr;
+    const AHDSREnvelope::Settings *fSettings = nullptr;
     int fCurrentStage = 0;
     float fCurrentLevel = 0;
+    unsigned fCurrentFrames = 0;
     int fTrigger = 0;
 
     //
     float fAttack = 0;
+    float fHold = 0;
     float fDecay = 0;
     float fRelease = 0;
 
     float fAttackRate = 0;
+    unsigned fHoldFrames = 0;
     float fDecayRate = 0;
     float fReleaseRate = 0;
 };

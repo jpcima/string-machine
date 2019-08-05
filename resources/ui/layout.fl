@@ -4,8 +4,8 @@ header_name {.h}
 code_name {.cxx}
 Function {make_window()} {open
 } {
-  Fl_Window window_TopLevel {open selected
-    xywh {741 151 935 245} type Double visible
+  Fl_Window window_TopLevel {open
+    xywh {448 50 975 245} type Double visible
   } {
     Fl_Group group_StringOsc {
       label {String Osc} open
@@ -195,8 +195,8 @@ Function {make_window()} {open
       }
     }
     Fl_Group group_Envelope {
-      label {ADSR Envelope} open
-      xywh {625 130 305 85} box DOWN_BOX labelfont 1 labelsize 10 align 17
+      label {AHDSR Envelope} open
+      xywh {625 130 345 85} box DOWN_BOX labelfont 1 labelsize 10 align 17
     } {
       Fl_Dial knob_EnvAttack {
         label A
@@ -205,30 +205,37 @@ Function {make_window()} {open
       Fl_Box val_EnvAttack {
         xywh {635 193 40 12} box THIN_UP_BOX labelsize 10
       }
-      Fl_Dial knob_EnvDecay {
-        label D
+      Fl_Dial knob_EnvHold {
+        label H
         xywh {685 160 30 30} labelsize 10 align 1
       }
-      Fl_Box val_EnvDecay {
+      Fl_Box val_EnvHold {
         xywh {680 193 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_EnvSustain {
         label S
-        xywh {730 160 30 30} labelsize 10 align 1
+        xywh {775 160 30 30} labelsize 10 align 1
       }
       Fl_Box val_EnvSustain {
-        xywh {725 193 40 12} box THIN_UP_BOX labelsize 10
+        xywh {770 193 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_EnvRelease {
         label R
-        xywh {775 160 30 30} labelsize 10 align 1
+        xywh {820 160 30 30} labelsize 10 align 1
       }
       Fl_Box val_EnvRelease {
-        xywh {770 193 40 12} box THIN_UP_BOX labelsize 10
+        xywh {815 193 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Box plot_Env {
-        label {ADSR - Env}
-        xywh {815 160 105 45} box ENGRAVED_BOX labelsize 10 align 1
+        label {AHDSR - Env} selected
+        xywh {860 160 105 45} box ENGRAVED_BOX labelsize 10 align 1
+      }
+      Fl_Dial knob_EnvDecay {
+        label D
+        xywh {730 160 30 30} labelsize 10 align 1
+      }
+      Fl_Box val_EnvDecay {
+        xywh {725 193 40 12} box THIN_UP_BOX labelsize 10
       }
     }
   }

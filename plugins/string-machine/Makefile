@@ -25,7 +25,7 @@ FILES_SHARED = \
 	sources/SolinaChorus.cpp \
 	sources/bbd/bbd_line.cpp \
 	sources/bbd/bbd_filter.cpp \
-	sources/dsp/ADSREnvelope.cpp \
+	sources/dsp/AHDSREnvelope.cpp \
 	sources/dsp/LFO3PhaseDual.cpp \
 	sources/dsp/Delay3Phase.cpp \
 	sources/dsp/DelayAntialiasFilter.cpp \

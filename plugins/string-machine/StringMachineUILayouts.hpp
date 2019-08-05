@@ -17,7 +17,7 @@ struct Label {
 
 namespace MainLayout {
     // Positioning generated from Fluid UI "resources/ui/layout.fl".
-    DECL_IGNORABLE static Rect window_TopLevel = {741, 151, 935, 245};
+    DECL_IGNORABLE static Rect window_TopLevel = {448, 50, 975, 245};
     DECL_IGNORABLE static Rect group_StringOsc = {5, 30, 185, 170};
     DECL_IGNORABLE static Rect subgroup_AutoDetune = {10, 50, 85, 145};
     DECL_IGNORABLE static Rect knob_OscDetune = {50, 145, 30, 30};
@@ -66,16 +66,18 @@ namespace MainLayout {
     DECL_IGNORABLE static Rect val_MasterGain = {635, 98, 40, 12};
     DECL_IGNORABLE static Rect vu_LeftVolume = {700, 67, 95, 11};
     DECL_IGNORABLE static Rect vu_RightVolume = {700, 82, 95, 11};
-    DECL_IGNORABLE static Rect group_Envelope = {625, 130, 305, 85};
+    DECL_IGNORABLE static Rect group_Envelope = {625, 130, 345, 85};
     DECL_IGNORABLE static Rect knob_EnvAttack = {640, 160, 30, 30};
     DECL_IGNORABLE static Rect val_EnvAttack = {635, 193, 40, 12};
-    DECL_IGNORABLE static Rect knob_EnvDecay = {685, 160, 30, 30};
-    DECL_IGNORABLE static Rect val_EnvDecay = {680, 193, 40, 12};
-    DECL_IGNORABLE static Rect knob_EnvSustain = {730, 160, 30, 30};
-    DECL_IGNORABLE static Rect val_EnvSustain = {725, 193, 40, 12};
-    DECL_IGNORABLE static Rect knob_EnvRelease = {775, 160, 30, 30};
-    DECL_IGNORABLE static Rect val_EnvRelease = {770, 193, 40, 12};
-    DECL_IGNORABLE static Rect plot_Env = {815, 160, 105, 45};
+    DECL_IGNORABLE static Rect knob_EnvHold = {685, 160, 30, 30};
+    DECL_IGNORABLE static Rect val_EnvHold = {680, 193, 40, 12};
+    DECL_IGNORABLE static Rect knob_EnvSustain = {775, 160, 30, 30};
+    DECL_IGNORABLE static Rect val_EnvSustain = {770, 193, 40, 12};
+    DECL_IGNORABLE static Rect knob_EnvRelease = {820, 160, 30, 30};
+    DECL_IGNORABLE static Rect val_EnvRelease = {815, 193, 40, 12};
+    DECL_IGNORABLE static Rect plot_Env = {860, 160, 105, 45};
+    DECL_IGNORABLE static Rect knob_EnvDecay = {730, 160, 30, 30};
+    DECL_IGNORABLE static Rect val_EnvDecay = {725, 193, 40, 12};
     DECL_IGNORABLE static Label group_StringOsc_label = {"String Osc", 17, {5, 30, 185, 170}};
     DECL_IGNORABLE static Label subgroup_AutoDetune_label = {"Auto Detune", 17, {10, 50, 85, 145}};
     DECL_IGNORABLE static Label knob_OscDetune_label = {"Detune", 1, {50, 145, 30, 30}};
@@ -108,10 +110,11 @@ namespace MainLayout {
     DECL_IGNORABLE static Label knob_MasterGain_label = {"Output", 1, {640, 65, 30, 30}};
     DECL_IGNORABLE static Label vu_LeftVolume_label = {"L", 4, {700, 67, 95, 11}};
     DECL_IGNORABLE static Label vu_RightVolume_label = {"R", 4, {700, 82, 95, 11}};
-    DECL_IGNORABLE static Label group_Envelope_label = {"ADSR Envelope", 17, {625, 130, 305, 85}};
+    DECL_IGNORABLE static Label group_Envelope_label = {"AHDSR Envelope", 17, {625, 130, 345, 85}};
     DECL_IGNORABLE static Label knob_EnvAttack_label = {"A", 1, {640, 160, 30, 30}};
-    DECL_IGNORABLE static Label knob_EnvDecay_label = {"D", 1, {685, 160, 30, 30}};
-    DECL_IGNORABLE static Label knob_EnvSustain_label = {"S", 1, {730, 160, 30, 30}};
-    DECL_IGNORABLE static Label knob_EnvRelease_label = {"R", 1, {775, 160, 30, 30}};
-    DECL_IGNORABLE static Label plot_Env_label = {"ADSR - Env", 1, {815, 160, 105, 45}};
+    DECL_IGNORABLE static Label knob_EnvHold_label = {"H", 1, {685, 160, 30, 30}};
+    DECL_IGNORABLE static Label knob_EnvSustain_label = {"S", 1, {775, 160, 30, 30}};
+    DECL_IGNORABLE static Label knob_EnvRelease_label = {"R", 1, {820, 160, 30, 30}};
+    DECL_IGNORABLE static Label plot_Env_label = {"AHDSR - Env", 1, {860, 160, 105, 45}};
+    DECL_IGNORABLE static Label knob_EnvDecay_label = {"D", 1, {730, 160, 30, 30}};
 };

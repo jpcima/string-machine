@@ -2,7 +2,7 @@
 #include "StringOsc.h"
 #include "StringFilters.h"
 #include "SolinaChorus.h"
-#include "dsp/ADSREnvelope.h"
+#include "dsp/AHDSREnvelope.h"
 #include "dsp/TriangleLFO.h"
 #include <boost/intrusive/list.hpp>
 #include <memory>
@@ -25,8 +25,8 @@ public:
     const StringOsc::Settings &getOscSettings() const { return fOscSettings; }
     StringOsc::Settings &getOscSettings() { return fOscSettings; }
 
-    const ADSREnvelope::Settings &getEnvSettings() const { return fEnvSettings; }
-    ADSREnvelope::Settings &getEnvSettings() { return fEnvSettings; }
+    const AHDSREnvelope::Settings &getEnvSettings() const { return fEnvSettings; }
+    AHDSREnvelope::Settings &getEnvSettings() { return fEnvSettings; }
 
     const StringFilters::Settings &getFltSettings() const { return fFltSettings; }
     StringFilters::Settings &getFltSettings() { return fFltSettings; }
@@ -51,7 +51,7 @@ private:
         float pitch;
         float bend;
         bool active;
-        ADSREnvelope env;
+        AHDSREnvelope env;
         StringOsc osc;
         StringFilters flt;
     };
@@ -70,7 +70,7 @@ private:
     float fMixGainLower = 0;
 
     StringOsc::Settings fOscSettings;
-    ADSREnvelope::Settings fEnvSettings;
+    AHDSREnvelope::Settings fEnvSettings;
     StringFilters::Settings fFltSettings;
 
     SolinaChorus fChorus;

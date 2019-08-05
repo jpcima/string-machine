@@ -39,6 +39,7 @@ enum {
     pIdMixGainLower,
 
     pIdEnvAttack,
+    pIdEnvHold,
     pIdEnvDecay,
     pIdEnvSustain,
     pIdEnvRelease,

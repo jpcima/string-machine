@@ -32,6 +32,7 @@ StringMachineUI::StringMachineUI()
         InitParameter(p, fParameters[p]);
 
     fEnvSettings.attack = 0.0;
+    fEnvSettings.hold = 0.0;
     fEnvSettings.decay = 0.0;
     fEnvSettings.sustain = 0.0;
     fEnvSettings.release = 0.0;
@@ -62,6 +63,7 @@ StringMachineUI::StringMachineUI()
     KNOB(MixGainUpper);
     KNOB(MixGainLower);
     KNOB(EnvAttack);
+    KNOB(EnvHold);
     KNOB(EnvDecay);
     KNOB(EnvSustain);
     KNOB(EnvRelease);
@@ -90,6 +92,7 @@ StringMachineUI::StringMachineUI()
     VALUE_DISPLAY(ChoRate2);
     VALUE_DISPLAY(MasterGain);
     VALUE_DISPLAY(EnvAttack);
+    VALUE_DISPLAY(EnvHold);
     VALUE_DISPLAY(EnvDecay);
     VALUE_DISPLAY(EnvSustain);
     VALUE_DISPLAY(EnvRelease);
@@ -194,6 +197,7 @@ void StringMachineUI::onDisplay()
         &MainLayout::vu_LeftVolume_label,
         &MainLayout::vu_RightVolume_label,
         &MainLayout::knob_EnvAttack_label,
+        &MainLayout::knob_EnvHold_label,
         &MainLayout::knob_EnvDecay_label,
         &MainLayout::knob_EnvSustain_label,
         &MainLayout::knob_EnvRelease_label,
@@ -372,6 +376,10 @@ void StringMachineUI::updateParameterValue(uint32_t index, float value)
         fEnvSettings.attack = value;
         fAdsrView->invalidateData();
         break;
+    case pIdEnvHold:
+        fEnvSettings.hold = value;
+        fAdsrView->invalidateData();
+        break;
     case pIdEnvDecay:
         fEnvSettings.decay = value;
         fAdsrView->invalidateData();
@@ -451,10 +459,10 @@ SkinIndicator *StringMachineUI::createValueDisplayForParameter(unsigned index, c
 
 void StringMachineUI::computeAdsrPlot(float *data, unsigned size)
 {
-    ADSREnvelope env;
-    ADSREnvelope::Settings settings = fEnvSettings;
+    AHDSREnvelope env;
+    AHDSREnvelope::Settings settings = fEnvSettings;
 
-    double keyOnTime = settings.attack + settings.decay;
+    double keyOnTime = settings.attack + settings.hold + settings.decay;
     double nonSustainTime = keyOnTime + std::min<double>(settings.release, 1.0);
     double sustainTime = nonSustainTime * (1.0 / 4.0);
     double totalRunTime = nonSustainTime + sustainTime;

@@ -89,6 +89,8 @@ float StringMachinePlugin::getParameterValue(uint32_t index) const
 
     case pIdEnvAttack:
         return synth.getEnvSettings().attack;
+    case pIdEnvHold:
+        return synth.getEnvSettings().hold;
     case pIdEnvDecay:
         return synth.getEnvSettings().decay;
     case pIdEnvSustain:
@@ -163,6 +165,9 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
 
     case pIdEnvAttack:
         synth.getEnvSettings().attack = value;
+        break;
+    case pIdEnvHold:
+        synth.getEnvSettings().hold = value;
         break;
     case pIdEnvDecay:
         synth.getEnvSettings().decay = value;
