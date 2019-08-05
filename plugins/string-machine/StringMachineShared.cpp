@@ -9,7 +9,7 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.symbol = "osc_detune";
         parameter.name = "Oscillator detune";
         parameter.hints = kParameterIsAutomable;
-        parameter.ranges = ParameterRanges(0.0016, 0.0, 0.1);
+        parameter.ranges = ParameterRanges(0.0016, 0.0, 1.0);
         break;
     case pIdOscHpCutoffUpper:
         parameter.symbol = "osc_hp_cutoff_upper";
