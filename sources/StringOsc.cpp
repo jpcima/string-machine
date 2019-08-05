@@ -6,6 +6,7 @@ using StringSynthDefs::BufferLimit;
 
 void StringOsc::init(const Settings *settings, double sampleRate)
 {
+    fSampleRate = sampleRate;
     fSettings = settings;
 
     fOscillator[0].init(sampleRate);
@@ -26,7 +27,18 @@ void StringOsc::process(float *const outputs[2], const float *const detune[2], f
     float freqs[BufferLimit];
 
     Settings settings = *fSettings;
+    float nyquistFreq = 0.5 * fSampleRate;
     float hpCutoff[] = {settings.highpassUpperCutoff, settings.highpassLowerCutoff};
+
+    double cutoffMin = 10.0;
+    double cutoffMax = 0.9 * nyquistFreq;
+
+    auto limitCutoff = [cutoffMin, cutoffMax](double f) -> double
+                           {
+                               f = (f > cutoffMin) ? f : cutoffMin;
+                               f = (f < cutoffMax) ? f : cutoffMax;
+                               return f;
+                           };
 
     for (unsigned osc = 0; osc < 2; ++osc) {
         float baseFrequency = fFrequency[osc] * bend;
@@ -42,7 +54,7 @@ void StringOsc::process(float *const outputs[2], const float *const detune[2], f
         float cutoffRatio = std::exp2(hpCutoff[osc] * (1.0f / 12.0f));
         for (unsigned i = 0; i < count; ++i) {
             float freq = freqs[i];
-            filter.setCutoff(cutoffRatio * freq);
+            filter.setCutoff(limitCutoff(cutoffRatio * freq));
             output[i] = filter.process(output[i]);
         }
 

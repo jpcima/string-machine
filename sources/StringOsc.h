@@ -16,6 +16,7 @@ public:
     void clear();
 
 private:
+    float fSampleRate = 0;
     const Settings *fSettings = nullptr;
     float fFrequency[2] = {};
     OscillatorBlepRect fOscillator[2];
