@@ -39,6 +39,9 @@ private:
 
     void computeAdsrPlot(float *data, unsigned size);
 
+    struct KeyPress;
+    bool checkForKeySequence(const KeyPress *sequence, unsigned sequenceSize);
+
     void checkForDeveloperCode();
     void enableDeveloperMode();
 

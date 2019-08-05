@@ -11,6 +11,7 @@
 #include "ui/components/PlotView.hpp"
 #include "ui/FontEngine.h"
 #include "ui/Cairo++.h"
+#include <array>
 #include <cstdio>
 
 static constexpr ColorRGBA8 bgColor{0xbd, 0xbc, 0xb5, 0xff};
@@ -489,34 +490,43 @@ void StringMachineUI::computeAdsrPlot(float *data, unsigned size)
         data[i] *= 0.9f;
 }
 
-void StringMachineUI::checkForDeveloperCode()
+bool StringMachineUI::checkForKeySequence(const KeyPress *sequence, unsigned sequenceSize)
 {
-    const KeyPress sequence[] = {
-        {kKeyUp, true},
-        {kKeyUp, true},
-        {kKeyDown, true},
-        {kKeyDown, true},
-        {kKeyLeft, true},
-        {kKeyRight, true},
-        {kKeyLeft, true},
-        {kKeyRight, true},
-        {'\r', false},
-    };
-    unsigned sequenceSize = sizeof(sequence) / sizeof(sequence[0]);
-
     if (KeyHistorySize < sequenceSize)
-        return;
+        return false;
 
     bool sequencesEqual = true;
     unsigned historyIndex = (fKeyHistoryIndex + KeyHistorySize - sequenceSize) % KeyHistorySize;
-    for (unsigned i = 0; i < sequenceSize && sequencesEqual; ++i)
-    {
+    for (unsigned i = 0; i < sequenceSize && sequencesEqual; ++i) {
         sequencesEqual = sequence[i] == fKeyHistory[historyIndex];
         historyIndex = (historyIndex + 1) % KeyHistorySize;
     }
 
+    return sequencesEqual;
+}
 
-    if (sequencesEqual)
+void StringMachineUI::checkForDeveloperCode()
+{
+    const std::array<KeyPress, 9> sequence1{{
+        {kKeyUp, true}, {kKeyUp, true},
+        {kKeyDown, true}, {kKeyDown, true},
+        {kKeyLeft, true}, {kKeyRight, true},
+        {kKeyLeft, true}, {kKeyRight, true},
+        {'\r', false},
+    }};
+
+    const std::array<KeyPress, 10> sequence2{{
+        {kKeyUp, true}, {kKeyUp, true},
+        {kKeyDown, true}, {kKeyDown, true},
+        {kKeyLeft, true}, {kKeyRight, true},
+        {kKeyLeft, true}, {kKeyRight, true},
+        {'b', false}, {'a', false},
+    }};
+
+    bool entered = checkForKeySequence(sequence1.data(), sequence1.size()) ||
+        checkForKeySequence(sequence2.data(), sequence2.size());
+
+    if (entered)
         enableDeveloperMode();
 }
 
