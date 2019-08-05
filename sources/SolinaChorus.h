@@ -5,6 +5,7 @@
 class SolinaChorus {
 public:
     void init(double sampleRate);
+    void clear() { fDelay.clear(); }
     void process(const float *input, float *const outputs[3], unsigned count);
 
     bool getEnabled() const { return fEnabled; }

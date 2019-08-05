@@ -5,12 +5,10 @@ void InitParameter(uint32_t index, Parameter &parameter)
     ParameterEnumerationValue *pev;
 
     switch (index) {
-    case pIdChoEnabled:
-        parameter.symbol = "cho_enabled";
-        parameter.name = "Chorus enabled";
-        parameter.hints = kParameterIsInteger|kParameterIsBoolean;
-        parameter.ranges = ParameterRanges(1.0, 0.0, 1.0);
+    case pIdBypass:
+        parameter.designation = kParameterDesignationBypass;
         break;
+
     case pIdChoDepth:
         parameter.symbol = "cho_depth";
         parameter.name = "Chorus global depth";

@@ -25,6 +25,8 @@ public:
     void run(const float **inputs, float **outputs, uint32_t frames) override;
 
 private:
+    bool fBypass = false;
+    bool fWasBypassed = false;
     float fWetGain = 0.0;
     float fDryGain = 0.0;
 

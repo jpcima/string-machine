@@ -24,7 +24,8 @@
 #define DISTRHO_PLUGIN_WANT_DIRECT_ACCESS 1
 
 enum {
-    pIdChoEnabled,
+    pIdBypass,
+
     pIdChoDepth,
     pIdChoRate1,
     pIdChoDepth1,

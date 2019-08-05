@@ -64,8 +64,9 @@ float ChorusPlugin::getParameterValue(uint32_t index) const
     const SolinaChorus &chorus = fChorus[0];
 
     switch (index) {
-    case pIdChoEnabled:
-        return chorus.getEnabled();
+    case pIdBypass:
+        return fBypass;
+
     case pIdChoDepth:
         return chorus.getLfo().getDepth();
     case pIdChoRate1:
@@ -93,10 +94,10 @@ float ChorusPlugin::getParameterValue(uint32_t index) const
 void ChorusPlugin::setParameterValue(uint32_t index, float value)
 {
     switch (index) {
-    case pIdChoEnabled:
-        for (SolinaChorus &chorus : fChorus)
-            chorus.setEnabled(value > 0.5f);
+    case pIdBypass:
+        fBypass = value > 0.5f;
         break;
+
     case pIdChoDepth:
         for (SolinaChorus &chorus : fChorus)
             chorus.getLfo().setDepth(value);
@@ -139,8 +140,12 @@ void ChorusPlugin::activate()
 {
     double sampleRate = getSampleRate();
 
-    for (SolinaChorus &chorus : fChorus)
+    for (SolinaChorus &chorus : fChorus) {
         chorus.init(sampleRate);
+        chorus.setEnabled(true);
+    }
+
+    fWasBypassed = false;
 }
 
 void ChorusPlugin::deactivate()
@@ -149,6 +154,27 @@ void ChorusPlugin::deactivate()
 
 void ChorusPlugin::run(const float **inputs, float **outputs, uint32_t totalFrames)
 {
+    bool bypass = fBypass;
+    bool wasBypassed = fWasBypassed;
+    fWasBypassed = bypass;
+
+    if (bypass) {
+        if (DISTRHO_PLUGIN_NUM_INPUTS == 1) {
+            memcpy(outputs[0], inputs[0], totalFrames * sizeof(float));
+            memcpy(outputs[1], inputs[0], totalFrames * sizeof(float));
+        }
+        else if (DISTRHO_PLUGIN_NUM_INPUTS == 2) {
+            memcpy(outputs[0], inputs[0], totalFrames * sizeof(float));
+            memcpy(outputs[1], inputs[1], totalFrames * sizeof(float));
+        }
+        return;
+    }
+
+    if (wasBypassed) {
+        for (SolinaChorus &chorus : fChorus)
+            chorus.clear();
+    }
+
     WebCore::DenormalDisabler denormalsDisabled;
 
     constexpr unsigned bufferLimit = StringSynthDefs::BufferLimit;
