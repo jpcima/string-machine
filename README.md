@@ -3,10 +3,29 @@
 This is a virtual-analog string ensemble synthesizer.
 
 This implementation is based on a digital model designed by Peter Whiting.
+The improvement of the model adds various abilities, in particular a virtual-analog emulation of the bucket brigade delay circuit.
 
 ## Download
 
 Get from [Open Build Service](https://software.opensuse.org/download.html?project=home%3Ajpcima&package=string-machine).
+
+## Change log
+
+**0.1.1 (dev)**
+
+This release breaks backwards compatibility.
+
+- envelope generator fixed, rewritten as exponential AHDSR
+- adjusted the value domain of controls to be more useful: detune, shape filters
+- fixed computation errors regarding the filters
+- implemented the bucket brigade delay
+- provided two switchable chorus models, digital and BBD
+- provided the Solina chorus as independent plugins, 1-in 2-out and 2-in 2-out
+- supported dynamic changes of sample rate
+
+**0.1.0**
+
+- initial release
 
 ## Build instructions
 
