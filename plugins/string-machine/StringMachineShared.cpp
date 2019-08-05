@@ -15,13 +15,13 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.symbol = "osc_hp_cutoff_upper";
         parameter.name = "Oscillator HP Cutoff 4'";
         parameter.hints = kParameterIsAutomable;
-        parameter.ranges = ParameterRanges(8.0, 0.0, 20.0);
+        parameter.ranges = ParameterRanges(8.0, -20.0, 60.0);
         break;
     case pIdOscHpCutoffLower:
         parameter.symbol = "osc_hp_cutoff_lower";
         parameter.name = "Oscillator HP Cutoff 8'";
         parameter.hints = kParameterIsAutomable;
-        parameter.ranges = ParameterRanges(8.0, 0.0, 20.0);
+        parameter.ranges = ParameterRanges(8.0, -20.0, 60.0);
         break;
 
     case pIdFltLpCutoffUpper:
