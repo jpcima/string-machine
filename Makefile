@@ -41,15 +41,23 @@ else
 gen:
 endif
 
+define install-plugin
+	install -D -m 755 bin/$(1)-vst$(LIB_EXT) -t $(DESTDIR)$(VSTDIR);
+	install -D -m 755 bin/$(1).lv2/*$(LIB_EXT) -t $(DESTDIR)$(LV2DIR)/$(1).lv2;
+	install -D -m 644 bin/$(1).lv2/*.ttl -t $(DESTDIR)$(LV2DIR)/$(1).lv2;
+endef
+
 install: all
-	install -D -m 755 bin/string-machine-vst$(LIB_EXT) -t $(DESTDIR)$(VSTDIR)
-	install -D -m 755 bin/string-machine.lv2/*$(LIB_EXT) -t $(DESTDIR)$(LV2DIR)/string-machine.lv2
-	install -D -m 644 bin/string-machine.lv2/*.ttl -t $(DESTDIR)$(LV2DIR)/string-machine.lv2
+	$(foreach p,$(PLUGINS),$(call install-plugin,$(p)))
+
+define install-user-plugin
+	install -D -m 755 bin/$(1)-vst$(LIB_EXT) -t $(HOME)/.vst;
+	install -D -m 755 bin/$(1).lv2/*$(LIB_EXT) -t $(HOME)/.lv2/$(1).lv2;
+	install -D -m 644 bin/$(1).lv2/*.ttl -t $(HOME)/.lv2/$(1).lv2;
+endef
 
 install-user: all
-	install -D -m 755 bin/string-machine-vst$(LIB_EXT) -t $(HOME)/.vst
-	install -D -m 755 bin/string-machine.lv2/*$(LIB_EXT) -t $(HOME)/.lv2/string-machine.lv2
-	install -D -m 644 bin/string-machine.lv2/*.ttl -t $(HOME)/.lv2/string-machine.lv2
+	$(foreach p,$(PLUGINS),$(call install-user-plugin,$(p)))
 
 # --------------------------------------------------------------
 
