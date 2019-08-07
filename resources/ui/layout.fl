@@ -227,8 +227,7 @@ Function {make_window()} {open
         xywh {815 193 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Box plot_Env {
-        label {AHDSR - Env}
-        xywh {860 160 105 45} box ENGRAVED_BOX labelsize 10 align 1
+        xywh {860 155 105 50} box ENGRAVED_BOX labelsize 10
       }
       Fl_Dial knob_EnvDecay {
         label D

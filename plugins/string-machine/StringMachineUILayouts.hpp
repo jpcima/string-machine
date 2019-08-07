@@ -75,7 +75,7 @@ namespace MainLayout {
     DECL_IGNORABLE static Rect val_EnvSustain = {770, 193, 40, 12};
     DECL_IGNORABLE static Rect knob_EnvRelease = {820, 160, 30, 30};
     DECL_IGNORABLE static Rect val_EnvRelease = {815, 193, 40, 12};
-    DECL_IGNORABLE static Rect plot_Env = {860, 160, 105, 45};
+    DECL_IGNORABLE static Rect plot_Env = {860, 155, 105, 50};
     DECL_IGNORABLE static Rect knob_EnvDecay = {730, 160, 30, 30};
     DECL_IGNORABLE static Rect val_EnvDecay = {725, 193, 40, 12};
     DECL_IGNORABLE static Label group_StringOsc_label = {"String Osc", 17, {5, 30, 185, 170}};
@@ -115,6 +115,5 @@ namespace MainLayout {
     DECL_IGNORABLE static Label knob_EnvHold_label = {"H", 1, {685, 160, 30, 30}};
     DECL_IGNORABLE static Label knob_EnvSustain_label = {"S", 1, {775, 160, 30, 30}};
     DECL_IGNORABLE static Label knob_EnvRelease_label = {"R", 1, {820, 160, 30, 30}};
-    DECL_IGNORABLE static Label plot_Env_label = {"AHDSR - Env", 1, {860, 160, 105, 45}};
     DECL_IGNORABLE static Label knob_EnvDecay_label = {"D", 1, {730, 160, 30, 30}};
 };

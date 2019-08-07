@@ -201,7 +201,6 @@ void StringMachineUI::onDisplay()
         &MainLayout::knob_EnvDecay_label,
         &MainLayout::knob_EnvSustain_label,
         &MainLayout::knob_EnvRelease_label,
-        &MainLayout::plot_Env_label,
         &MainLayout::val_OscDetune1_label,
         &MainLayout::val_OscDetune2_label,
     };
