@@ -4,7 +4,7 @@ header_name {.h}
 code_name {.cxx}
 Function {make_window()} {open
 } {
-  Fl_Window window_TopLevel {open
+  Fl_Window window_TopLevel {open selected
     xywh {448 50 975 245} type Double visible
   } {
     Fl_Group group_StringOsc {
@@ -17,10 +17,10 @@ Function {make_window()} {open
       } {
         Fl_Dial knob_OscDetune {
           label Detune
-          xywh {50 145 30 30} labelsize 10 align 1
+          xywh {40 145 30 30} labelsize 10 align 1
         }
         Fl_Box val_OscDetune {
-          xywh {45 178 40 12} box THIN_UP_BOX labelsize 10
+          xywh {35 178 40 12} box THIN_UP_BOX labelsize 10
         }
         Fl_Box val_OscDetune1 {
           label {4'}
@@ -36,11 +36,11 @@ Function {make_window()} {open
         xywh {105 50 80 145} box UP_BOX labelfont 1 labelsize 10 align 17
       } {
         Fl_Dial knob_OscHpCutoffUpper {
-          label {HP cutoff 4'}
+          label {4' HP}
           xywh {130 80 30 30} labelsize 10 align 1
         }
         Fl_Dial knob_OscHpCutoffLower {
-          label {HP cutoff 8'}
+          label {8' HP}
           xywh {130 145 30 30} labelsize 10 align 1
         }
         Fl_Box val_OscHpCutoffUpper {
@@ -167,11 +167,11 @@ Function {make_window()} {open
       }
       Fl_Button btn_ChoEnabled {
         label {On/Off}
-        xywh {485 40 35 15} labelsize 10 align 1
+        xywh {485 45 35 15} labelsize 10 align 1
       }
       Fl_Button btn_ChoModel {
         label {Analog mode}
-        xywh {565 40 35 15} labelsize 10 align 1
+        xywh {565 45 35 15} labelsize 10 align 1
       }
     }
     Fl_Group group_Level {
@@ -227,7 +227,7 @@ Function {make_window()} {open
         xywh {815 193 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Box plot_Env {
-        label {AHDSR - Env} selected
+        label {AHDSR - Env}
         xywh {860 160 105 45} box ENGRAVED_BOX labelsize 10 align 1
       }
       Fl_Dial knob_EnvDecay {
