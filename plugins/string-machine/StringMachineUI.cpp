@@ -217,7 +217,9 @@ void StringMachineUI::onDisplay()
 
         cairo_rounded_rectangle_with_corners(cr, titleFrame, 5.0, RectangleNW|RectangleNE);
         cairo_set_source_rgba8(cr, ColorRGBA8{0x58, 0x58, 0x56, 0xff});
-        cairo_fill_preserve(cr);
+        cairo_fill(cr);
+        cairo_move_to(cr, titleFrame.x, titleFrame.y + titleFrame.h);
+        cairo_line_to(cr, titleFrame.x + titleFrame.w, titleFrame.y + titleFrame.h);
         cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
         cairo_stroke(cr);
 
