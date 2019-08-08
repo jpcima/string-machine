@@ -10,18 +10,19 @@ CXXFLAGS += -Isources
 TARGET_MACHINE := $(shell $(CXX) -dumpmachine)
 ifneq (,$(findstring mingw,$(TARGET_MACHINE)))
 APP_EXT := .exe
+LDFLAGS += -static
 endif
 
 SOURCES := sources/layout.cpp sources/reader.cpp sources/main.cpp
 OBJS := $(patsubst sources/%.cpp,build/%.o,$(SOURCES))
 
-all: layout-tool$(APP_EXT)
+all: bin/layout-tool$(APP_EXT)
 
 clean:
-	rm -f layout-tool$(APP_EXT)
-	rm -rf build
+	rm -rf bin build
 
-layout-tool$(APP_EXT): $(OBJS)
+bin/layout-tool$(APP_EXT): $(OBJS)
+	@mkdir -p bin
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 build/%.o: sources/%.cpp

@@ -68,8 +68,19 @@ TARGETS += vst
 
 all: $(TARGETS)
 
+RES2C := ../../dpf/utils/res2c.py
 artwork:
-	../../dpf/utils/res2c.py Artwork artwork
+	$(RES2C) Artwork artwork
 .PHONY: artwork
+
+layouts: StringMachineUILayouts.Main.inc
+.PHONY: layouts
+
+LAYOUT_TOOL := ../../tools/layout-tool/bin/layout-tool$(APP_EXT)
+$(LAYOUT_TOOL):
+	$(MAKE) -C ../../tools/layout-tool
+
+StringMachineUILayouts.%.inc: layouts/%.fl $(LAYOUT_TOOL)
+	$(LAYOUT_TOOL) $< > $@
 
 # --------------------------------------------------------------
