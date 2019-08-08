@@ -1,6 +1,7 @@
 #pragma once
 #include "ui/FontEngine.h"
 #include "ui/Color.h"
+#include "ui/Geometry.h"
 #include "Widget.hpp"
 #include <string>
 #include <functional>
@@ -35,6 +36,9 @@ public:
     int textAlign() const { return fTextAlign; }
     void setTextAlign(int align) { fTextAlign = align; }
 
+    PointF textOffset() const { return fTextOffset; }
+    void setTextOffset(PointF off) { fTextOffset = off; }
+
     //
     void onDisplay() override;
 
@@ -54,4 +58,5 @@ private:
     Font fTextFont;
     ColorRGBA8 fTextColor;
     int fTextAlign = 0;
+    PointF fTextOffset;
 };

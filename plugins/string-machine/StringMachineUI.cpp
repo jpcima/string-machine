@@ -452,6 +452,8 @@ SkinIndicator *StringMachineUI::createValueDisplayForParameter(unsigned index, c
     font.color = ColorRGBA8{0xff, 0xff, 0xff, 0xff};
     vd->setTextFont(font);
 
+    vd->setTextOffset({0.0, 1.0});
+
     const Parameter &param = fParameters[index];
     vd->setText(formatDisplayValue(param.ranges.def));
 

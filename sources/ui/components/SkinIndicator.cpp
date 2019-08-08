@@ -79,7 +79,7 @@ void SkinIndicator::onDisplay()
     //
     const std::string &text = fText;
     if (!text.empty())
-        fFontEngine.drawInBox(cr, text.c_str(), fTextFont, RectF(0.0, 0.0, w, h), fTextAlign);
+        fFontEngine.drawInBox(cr, text.c_str(), fTextFont, RectF(fTextOffset.x, fTextOffset.y, w, h), fTextAlign);
 }
 
 double SkinIndicator::clampToBounds(double value)
