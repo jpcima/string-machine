@@ -5,11 +5,11 @@
 
 namespace Artwork
 {
-    extern const char* CrispData;
-    const unsigned int CrispDataSize = 67688;
-
     extern const char* ProggySquareData;
     const unsigned int ProggySquareDataSize = 41588;
+
+    extern const char* ProggyTinyData;
+    const unsigned int ProggyTinyDataSize = 35656;
 
     extern const char* knobData;
     const unsigned int knobDataSize = 8079;

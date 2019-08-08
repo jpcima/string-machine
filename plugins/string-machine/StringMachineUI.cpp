@@ -41,8 +41,8 @@ StringMachineUI::StringMachineUI()
     if (!fe) {
         fe = new FontEngine;
         fFontEngine.reset(fe);
-        fe->addFont("default", (const uint8_t *)Artwork::ProggySquareData, Artwork::ProggySquareDataSize);
-        fe->addFont("title", (const uint8_t *)Artwork::CrispData, Artwork::CrispDataSize);
+        fe->addFont("default", (const uint8_t *)Artwork::ProggyTinyData, Artwork::ProggyTinyDataSize);
+        fe->addFont("title", (const uint8_t *)Artwork::ProggySquareData, Artwork::ProggySquareDataSize);
     }
 
     #define KNOB(x) { SkinSlider *s = createKnobForParameter(pId##x, MainLayout::knob_##x, fSkinKnob); \
@@ -119,7 +119,7 @@ StringMachineUI::StringMachineUI()
         }
 
         Font font;
-        font.size = 9.0;
+        font.size = 10.0;
         font.color = ColorRGBA8{0xff, 0xff, 0xff, 0xff};
         vd->setTextFont(font);
 
@@ -208,10 +208,10 @@ void StringMachineUI::onDisplay()
     for (const Label *label : group_labels) {
         Font font;
         font.name = "title";
-        font.size = 13.0;
+        font.size = 11.0;
         font.color = ColorRGBA8{0xff, 0xff, 0xff, 0xff};
 
-        RectF frame = label->bounds.to<double>().off_by({0.5, 0.5}).reduced({1, 1});
+        RectF frame = label->bounds.to<double>().off_by({0.5, 0.5}).reduced({1, 0});
         RectF titleFrame = RectF(frame).take_from_top(14);
 
         cairo_rounded_rectangle_with_corners(cr, titleFrame, 5.0, RectangleNW|RectangleNE);
@@ -222,7 +222,7 @@ void StringMachineUI::onDisplay()
         cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
         cairo_stroke(cr);
 
-        Rect textBounds = label->bounds.off_by({0, 2});
+        Rect textBounds = label->bounds.off_by({0, 3});
         fe.drawInBox(cr, label->text, font, textBounds, label->align);
 
         cairo_rounded_rectangle(cr, frame, 5.0);
@@ -233,12 +233,12 @@ void StringMachineUI::onDisplay()
     for (const Label *label : subgroup_labels) {
         Font font;
         font.name = "title";
-        font.size = 12.0;
+        font.size = 11.0;
 
-        Rect textBounds = label->bounds.off_by({0, 2});
+        Rect textBounds = label->bounds.off_by({0, 3});
         fe.drawInBox(cr, label->text, font, textBounds, label->align);
 
-        RectF frame = label->bounds.to<double>().off_by({0.5, 0.5}).reduced({1, 1});
+        RectF frame = label->bounds.to<double>().off_by({0.5, 0.5}).reduced({1, 0});
         cairo_rounded_rectangle(cr, frame, 5.0);
         cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
         cairo_stroke(cr);
@@ -246,7 +246,7 @@ void StringMachineUI::onDisplay()
 
     for (const Label *label : control_labels) {
         Font font;
-        font.size = 9.0;
+        font.size = 10.0;
 
         Rect bounds = label->bounds;
 
@@ -265,7 +265,7 @@ void StringMachineUI::onDisplay()
     }
 
     if (fDeveloperMode) {
-        RectF rect(5.5, 5.5, 100.0, 15.0);
+        RectF rect(5.5, 7.5, 100.0, 15.0);
 
         cairo_rounded_rectangle(cr, rect, 5.0);
         cairo_set_source_rgba8(cr, ColorRGBA8{0xff, 0x7e, 0x00, 0xff});
@@ -274,12 +274,12 @@ void StringMachineUI::onDisplay()
         cairo_stroke(cr);
 
         Font font;
-        font.size = 9.0;
+        font.size = 10.0;
         font.color = ColorRGBA8{0xff, 0xff, 0xff, 0xff};
         fe.drawInBox(cr, "Developer mode", font, rect.off_by({0, 1}), FontEngine::AlignCenter);
 
         SkinTriggerButton &randButton = *fRandomizeButton;
-        font.size = 9.0;
+        font.size = 10.0;
         font.color = ColorRGBA8{0x00, 0x00, 0x00, 0xff};
         fe.drawInBox(cr, "Random", font, Rect(randButton.getAbsoluteX(), randButton.getAbsoluteY(), randButton.getWidth(), randButton.getHeight()).off_by({-8, 2}), FontEngine::AlignLeft);
     }
@@ -448,7 +448,7 @@ SkinIndicator *StringMachineUI::createValueDisplayForParameter(unsigned index, c
     vd->setAbsolutePos(bounds.x, bounds.y);
 
     Font font;
-    font.size = 9.0;
+    font.size = 10.0;
     font.color = ColorRGBA8{0xff, 0xff, 0xff, 0xff};
     vd->setTextFont(font);
 
