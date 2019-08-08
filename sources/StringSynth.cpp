@@ -231,9 +231,11 @@ bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *
 
     float mixGainUpper = std::pow(10.0f, 0.05f * fMixGainUpper);
     float mixGainLower = std::pow(10.0f, 0.05f * fMixGainLower);
+    float mixGainBrass = std::pow(10.0f, 0.05f * fMixGainBrass);
     for (unsigned i = 0; i < count; ++i)
         output[i] += env[i] * (mixGainUpper * fltOutputUpper[i] +
-                               mixGainLower * fltOutputLower[i]);
+                               mixGainLower * fltOutputLower[i] +
+                               mixGainBrass * fltOutputBrass[i]);
 
     // clean finished notes
     bool finished = false;

@@ -60,8 +60,10 @@ StringMachineUI::StringMachineUI()
     KNOB(FltHpCutoffLower);
     KNOB(FltHsCutoffEq);
     KNOB(FltHsBoostEq);
+    KNOB(FltFormantCutoff);
     KNOB(MixGainUpper);
     KNOB(MixGainLower);
+    KNOB(MixGainBrass);
     KNOB(EnvAttack);
     KNOB(EnvHold);
     KNOB(EnvDecay);
@@ -84,8 +86,10 @@ StringMachineUI::StringMachineUI()
     VALUE_DISPLAY(FltHpCutoffLower);
     VALUE_DISPLAY(FltHsCutoffEq);
     VALUE_DISPLAY(FltHsBoostEq);
+    VALUE_DISPLAY(FltFormantCutoff);
     VALUE_DISPLAY(MixGainUpper);
     VALUE_DISPLAY(MixGainLower);
+    VALUE_DISPLAY(MixGainBrass);
     VALUE_DISPLAY(ChoDepth1);
     VALUE_DISPLAY(ChoDepth2);
     VALUE_DISPLAY(ChoRate1);
@@ -182,8 +186,10 @@ void StringMachineUI::onDisplay()
         &MainLayout::knob_FltHpCutoffLower_label,
         &MainLayout::knob_FltHsCutoffEq_label,
         &MainLayout::knob_FltHsBoostEq_label,
+        &MainLayout::knob_FltFormantCutoff_label,
         &MainLayout::knob_MixGainUpper_label,
         &MainLayout::knob_MixGainLower_label,
+        &MainLayout::knob_MixGainBrass_label,
         &MainLayout::knob_ChoDepth1_label,
         &MainLayout::knob_ChoDepth2_label,
         &MainLayout::knob_ChoRate1_label,

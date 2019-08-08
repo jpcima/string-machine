@@ -34,9 +34,11 @@ enum {
     pIdFltHpCutoffLower,
     pIdFltHsCutoffEq,
     pIdFltHsBoostEq,
+    pIdFltFormantCutoff,
 
     pIdMixGainUpper,
     pIdMixGainLower,
+    pIdMixGainBrass,
 
     pIdEnvAttack,
     pIdEnvHold,

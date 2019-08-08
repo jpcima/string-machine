@@ -10,6 +10,7 @@ public:
         float highpassLowerCutoff = 0;
         float highshelfEqCutoff = 0;
         float highshelfEqBoost = 0;
+        float formantCutoff = 0;
     };
 
     void init(const Settings *settings, double sampleRate);
@@ -44,4 +45,21 @@ private:
     };
 
     HighshelfFilter fHighshelfEq;
+
+    class FormantFilter {
+    public:
+        void init(double sampleRate);
+        void clear();
+        void process(const float *input, float *output, unsigned count);
+
+        void setCutoff(float value) { fHslider0 = value; }
+
+    private:
+        float fConst0 = 0;
+        float fHslider0 = 0;
+        float fRec1[3] = {};
+        float fRec0[3] = {};
+    };
+
+    FormantFilter fFormant;
 };

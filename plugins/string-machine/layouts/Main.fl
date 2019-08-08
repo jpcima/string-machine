@@ -5,7 +5,7 @@ code_name {.cxx}
 Function {make_window()} {open
 } {
   Fl_Window window_TopLevel {open selected
-    xywh {448 50 975 245} type Double visible
+    xywh {503 77 975 245} type Double visible
   } {
     Fl_Group group_StringOsc {
       label {String Osc} open
@@ -97,24 +97,38 @@ Function {make_window()} {open
       Fl_Box val_FltHsBoostEq {
         xywh {350 173 40 12} box THIN_UP_BOX labelsize 10
       }
+      Fl_Dial knob_FltFormantCutoff {
+        label Brass
+        xywh {305 75 30 30} labelsize 10 align 1
+      }
+      Fl_Box val_FltFormantCutoff {
+        xywh {300 108 40 12} box THIN_UP_BOX labelsize 10
+      }
     }
     Fl_Group group_Mixer {
       label Mixer open
-      xywh {400 40 60 155} box DOWN_BOX labelfont 1 labelsize 10 align 17
+      xywh {400 15 60 220} box DOWN_BOX labelfont 1 labelsize 10 align 17
     } {
       Fl_Dial knob_MixGainUpper {
         label {Vol 4'}
-        xywh {415 75 30 30} labelsize 10 align 1
+        xywh {415 50 30 30} labelsize 10 align 1
       }
       Fl_Box val_MixGainUpper {
-        xywh {410 108 40 12} box THIN_UP_BOX labelsize 10
+        xywh {410 83 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_MixGainLower {
         label {Vol 8'}
-        xywh {415 140 30 30} labelsize 10 align 1
+        xywh {415 115 30 30} labelsize 10 align 1
       }
       Fl_Box val_MixGainLower {
-        xywh {410 173 40 12} box THIN_UP_BOX labelsize 10
+        xywh {410 148 40 12} box THIN_UP_BOX labelsize 10
+      }
+      Fl_Dial knob_MixGainBrass {
+        label {Vol Brass}
+        xywh {415 180 30 30} labelsize 10 align 1
+      }
+      Fl_Box val_MixGainBrass {
+        xywh {410 213 40 12} box THIN_UP_BOX labelsize 10
       }
     }
     Fl_Group group_SolinaChorus {

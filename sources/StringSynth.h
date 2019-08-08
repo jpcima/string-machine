@@ -35,6 +35,8 @@ public:
     void setMixGainUpper(float value) { fMixGainUpper = value; }
     float getMixGainLower() const { return fMixGainLower; }
     void setMixGainLower(float value) { fMixGainLower = value; }
+    float getMixGainBrass() const { return fMixGainBrass; }
+    void setMixGainBrass(float value) { fMixGainBrass = value; }
 
     const SolinaChorus &getChorus() const { return fChorus; }
     SolinaChorus &getChorus() { return fChorus; }
@@ -68,6 +70,7 @@ private:
 
     float fMixGainUpper = 0;
     float fMixGainLower = 0;
+    float fMixGainBrass = 0;
 
     StringOsc::Settings fOscSettings;
     AHDSREnvelope::Settings fEnvSettings;

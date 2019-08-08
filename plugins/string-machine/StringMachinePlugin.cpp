@@ -81,11 +81,15 @@ float StringMachinePlugin::getParameterValue(uint32_t index) const
         return synth.getFltSettings().highshelfEqCutoff;
     case pIdFltHsBoostEq:
         return synth.getFltSettings().highshelfEqBoost;
+    case pIdFltFormantCutoff:
+        return synth.getFltSettings().formantCutoff;
 
     case pIdMixGainUpper:
         return synth.getMixGainUpper();
     case pIdMixGainLower:
         return synth.getMixGainLower();
+    case pIdMixGainBrass:
+        return synth.getMixGainBrass();
 
     case pIdEnvAttack:
         return synth.getEnvSettings().attack;
@@ -155,12 +159,18 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
     case pIdFltHsBoostEq:
         synth.getFltSettings().highshelfEqBoost = value;
         break;
+    case pIdFltFormantCutoff:
+        synth.getFltSettings().formantCutoff = value;
+        break;
 
     case pIdMixGainUpper:
         synth.setMixGainUpper(value);
         break;
     case pIdMixGainLower:
         synth.setMixGainLower(value);
+        break;
+    case pIdMixGainBrass:
+        synth.setMixGainBrass(value);
         break;
 
     case pIdEnvAttack:

@@ -61,6 +61,12 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.unit = "dB";
         parameter.ranges = ParameterRanges(6.0, -20.0, 20.0);
         break;
+    case pIdFltFormantCutoff:
+        parameter.symbol = "flt_formant_cutoff";
+        parameter.name = "Filters Formant Cutoff";
+        parameter.hints = kParameterIsAutomable;
+        parameter.ranges = ParameterRanges(0.12, -20.0, 120.0);
+        break;
 
     case pIdMixGainUpper:
         parameter.symbol = "mix_gain_upper";
@@ -72,6 +78,13 @@ void InitParameter(uint32_t index, Parameter &parameter)
     case pIdMixGainLower:
         parameter.symbol = "mix_gain_lower";
         parameter.name = "Mix Gain 8'";
+        parameter.hints = kParameterIsAutomable;
+        parameter.unit = "dB";
+        parameter.ranges = ParameterRanges(0.0, -20.0, 0.0);
+        break;
+    case pIdMixGainBrass:
+        parameter.symbol = "mix_gain_brass";
+        parameter.name = "Mix Gain Brass";
         parameter.hints = kParameterIsAutomable;
         parameter.unit = "dB";
         parameter.ranges = ParameterRanges(0.0, -20.0, 0.0);
