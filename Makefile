@@ -41,6 +41,23 @@ else
 gen:
 endif
 
+# --------------------------------------------------------------
+
+# macro faustgen: (1)faust args (2)input file (3)output file
+define faustgen
+	@echo faustgen: $(1) $(2) $(3)
+	@install -d $(dir $(3))
+	@faust -cn $(notdir $(basename $(3))) -scn Base$(notdir $(basename $(3))) $(1) -a dsp/Architecture.cpp $(2) > $(3)
+	@faustmd -cn $(notdir $(basename $(3))) $(patsubst %,-X%,$(1)) $(2) >> $(3)
+	@cat dsp/ArchitectureFooter.cpp >> $(3)
+endef
+
+dsp:
+	$(call faustgen,-vec -uim,dsp/Delay3PhaseDigital.dsp,gen/dsp/Delay3PhaseDigitalDsp.cpp)
+	$(call faustgen,-vec -uim,dsp/StringFiltersHighshelf.dsp,gen/dsp/StringFiltersHighshelfDsp.cpp)
+
+# --------------------------------------------------------------
+
 define install-plugin
 	install -D -m 755 bin/$(1)-vst$(LIB_EXT) -t $(DESTDIR)$(VSTDIR);
 	install -D -m 755 bin/$(1).lv2/*$(LIB_EXT) -t $(DESTDIR)$(LV2DIR)/$(1).lv2;
@@ -69,4 +86,4 @@ clean:
 
 # --------------------------------------------------------------
 
-.PHONY: plugins clean install install-user
+.PHONY: all dgl plugins gen dsp install install-user clean

@@ -28,7 +28,6 @@ FILES_SHARED = \
 	sources/dsp/AHDSREnvelope.cpp \
 	sources/dsp/LFO3PhaseDual.cpp \
 	sources/dsp/Delay3Phase.cpp \
-	sources/dsp/DelayAntialiasFilter.cpp \
 	sources/dsp/OnePoleFilter.cpp \
 	thirdparty/vco/OscillatorBlepRect.cpp
 
@@ -57,7 +56,7 @@ UI_TYPE = cairo
 include ../../dpf/Makefile.plugins.mk
 
 BUILD_CXX_FLAGS += \
-	-Isources -Imeta -Ithirdparty/blink -Ithirdparty/vco \
+	-Isources -Igen -Imeta -Ithirdparty/blink -Ithirdparty/vco \
 	-Ithirdparty/fontstash -Ithirdparty/stb
 
 # --------------------------------------------------------------

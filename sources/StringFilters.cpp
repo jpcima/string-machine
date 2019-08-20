@@ -64,51 +64,44 @@ void StringFilters::process(const float *const inputs[2], float *const outputs[3
         outputLower[i] = highpassLower.process(outputBrass[i]);
 }
 
+///
+#include "dsp/StringFiltersHighshelfDsp.cpp"
+
+StringFilters::HighshelfFilter::HighshelfFilter()
+    : fDsp(new StringFiltersHighshelfDsp)
+{
+}
+
+StringFilters::HighshelfFilter::~HighshelfFilter()
+{
+}
+
 void StringFilters::HighshelfFilter::init(double sampleRate)
 {
-    fConst0 = (6.28318548f / float(sampleRate));
+    fDsp->classInit(sampleRate);
+    fDsp->instanceConstants(sampleRate);
 
     clear();
 }
 
 void StringFilters::HighshelfFilter::clear()
 {
-    for (int l0 = 0; (l0 < 3); l0 = (l0 + 1)) {
-        fRec0[l0] = 0.0f;
-    }
+    fDsp->instanceClear();
 }
 
 void StringFilters::HighshelfFilter::process(const float *input, float *output, unsigned count)
 {
-    const float* input0 = input;
-    float* output0 = output;
-    float fSlow0 = std::pow(10.0f, (0.0250000004f * float(fHslider0)));
-    float fSlow1 = (fConst0 * std::max<float>(0.0f, float(fHslider1)));
-    float fSlow2 = (1.41421354f * (std::sqrt(fSlow0) * std::sin(fSlow1)));
-    float fSlow3 = std::cos(fSlow1);
-    float fSlow4 = ((fSlow0 + -1.0f) * fSlow3);
-    float fSlow5 = (1.0f / ((fSlow0 + fSlow2) + (1.0f - fSlow4)));
-    float fSlow6 = (fSlow4 + fSlow0);
-    float fSlow7 = (((fSlow6 + fSlow2) + 1.0f) * fSlow0);
-    float fSlow8 = (fSlow0 + (1.0f - (fSlow4 + fSlow2)));
-    float fSlow9 = ((fSlow0 + 1.0f) * fSlow3);
-    float fSlow10 = (2.0f * (fSlow0 + (-1.0f - fSlow9)));
-    float fSlow11 = ((0.0f - (2.0f * fSlow0)) * ((fSlow9 + fSlow0) + -1.0f));
-    float fSlow12 = ((fSlow6 + (1.0f - fSlow2)) * fSlow0);
-    for (unsigned i = 0; (i < count); i = (i + 1)) {
-        fRec0[0] = (float(input0[i]) - (fSlow5 * ((fSlow8 * fRec0[2]) + (fSlow10 * fRec0[1]))));
-        output0[i] = float((fSlow5 * (((fSlow7 * fRec0[0]) + (fSlow11 * fRec0[1])) + (fSlow12 * fRec0[2]))));
-        fRec0[2] = fRec0[1];
-        fRec0[1] = fRec0[0];
-    }
+    float *inputs[] = {(float *)input};
+    float *outputs[] = {(float *)output};
+    fDsp->compute(count, inputs, outputs);
 }
 
-/**
-import("stdfaust.lib");
-msp = library("maxmsp.lib");
+void StringFilters::HighshelfFilter::setCutoff(float value)
+{
+    StringFiltersHighshelfDsp_meta::set_Cutoff(*fDsp, value);
+}
 
-process(x) = msp.highShelf(x, cutoff, gain, 1./sqrt(2.)) with {
-  cutoff = hslider("[1]Cutoff [unit:Hz]", 1000., 10., 10000., 1.);
-  gain = hslider("[2]Gain [unit:dB]", 3., 1., 10., 0.1);
-};
-*/
+void StringFilters::HighshelfFilter::setGain(float value)
+{
+    StringFiltersHighshelfDsp_meta::set_Gain(*fDsp, value);
+}

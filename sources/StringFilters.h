@@ -1,6 +1,10 @@
 #pragma once
 #include "dsp/OnePoleFilter.h"
+#include <memory>
 
+class StringFiltersHighshelfDsp;
+
+///
 class StringFilters {
 public:
     struct Settings {
@@ -29,18 +33,18 @@ private:
 
     class HighshelfFilter {
     public:
+        HighshelfFilter();
+        ~HighshelfFilter();
+
         void init(double sampleRate);
         void clear();
         void process(const float *input, float *output, unsigned count);
 
-        void setCutoff(float value) { fHslider1 = value; }
-        void setGain(float value) { fHslider0 = value; }
+        void setCutoff(float value);
+        void setGain(float value);
 
     private:
-        float fHslider0 = 0;
-        float fHslider1 = 0;
-        float fConst0 = 0;
-        float fRec0[3] = {};
+        std::unique_ptr<StringFiltersHighshelfDsp> fDsp;
     };
 
     HighshelfFilter fHighshelfEq;

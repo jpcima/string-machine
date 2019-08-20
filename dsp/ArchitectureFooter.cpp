@@ -1,0 +1,3 @@
+#undef FAUSTFLOAT
+#undef FAUSTCLASS
+#undef FAUSTMETA

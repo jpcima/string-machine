@@ -23,8 +23,7 @@ FILES_SHARED = \
 	sources/bbd/bbd_line.cpp \
 	sources/bbd/bbd_filter.cpp \
 	sources/dsp/LFO3PhaseDual.cpp \
-	sources/dsp/Delay3Phase.cpp \
-	sources/dsp/DelayAntialiasFilter.cpp
+	sources/dsp/Delay3Phase.cpp
 
 FILES_DSP = \
 	StereoChorusPlugin.cpp \
@@ -36,7 +35,7 @@ FILES_DSP = \
 include ../../dpf/Makefile.plugins.mk
 
 BUILD_CXX_FLAGS += \
-	-Isources -Imeta -Ithirdparty/blink
+	-Isources -Igen -Imeta -Ithirdparty/blink
 
 # --------------------------------------------------------------
 # Enable all possible plugin types

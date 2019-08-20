@@ -1,7 +1,10 @@
 #pragma once
-#include "DelayAntialiasFilter.h"
 #include "bbd/bbd_line.h"
+#include <memory>
 
+class Delay3PhaseDigitalDsp;
+
+///
 class Delay3Phase {
 public:
     void init(double sampleRate);
@@ -25,16 +28,14 @@ private:
 
     class DigitalDelay {
     public:
+        DigitalDelay();
+        ~DigitalDelay();
         void init(double sampleRate);
         void clear();
         void process(const float *input, const float *const mods[3], float *const outputs[3], unsigned count);
 
     private:
-        DelayAntialiasFilter fAntialiasFilter;
-        int IOTA = 0;
-        float fConst0 = 0;
-        int iConst1 = 0;
-        float fVec0[16384] = {};
+        std::unique_ptr<Delay3PhaseDigitalDsp> fDsp;
     };
 
 private:
