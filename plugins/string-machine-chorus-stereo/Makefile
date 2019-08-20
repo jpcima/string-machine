@@ -36,7 +36,7 @@ FILES_DSP = \
 include ../../dpf/Makefile.plugins.mk
 
 BUILD_CXX_FLAGS += \
-	-Isources -Ithirdparty/blink
+	-Isources -Imeta -Ithirdparty/blink
 
 # --------------------------------------------------------------
 # Enable all possible plugin types

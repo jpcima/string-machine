@@ -57,7 +57,7 @@ UI_TYPE = cairo
 include ../../dpf/Makefile.plugins.mk
 
 BUILD_CXX_FLAGS += \
-	-Isources -Ithirdparty/blink -Ithirdparty/vco \
+	-Isources -Imeta -Ithirdparty/blink -Ithirdparty/vco \
 	-Ithirdparty/fontstash -Ithirdparty/stb
 
 # --------------------------------------------------------------
