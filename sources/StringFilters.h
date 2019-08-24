@@ -1,5 +1,6 @@
 #pragma once
 #include "dsp/OnePoleFilter.h"
+#include "dsp/StringFiltersHighshelf.hpp"
 #include <memory>
 
 class StringFiltersHighshelfDsp;
@@ -30,22 +31,5 @@ private:
     OnePoleHPF fHighpassUpper;
     OnePoleLPF fLowpassLower;
     OnePoleHPF fHighpassLower;
-
-    class HighshelfFilter {
-    public:
-        HighshelfFilter();
-        ~HighshelfFilter();
-
-        void init(double sampleRate);
-        void clear();
-        void process(const float *input, float *output, unsigned count);
-
-        void setCutoff(float value);
-        void setGain(float value);
-
-    private:
-        std::unique_ptr<StringFiltersHighshelfDsp> fDsp;
-    };
-
-    HighshelfFilter fHighshelfEq;
+    StringFiltersHighshelf fHighshelfEq;
 };

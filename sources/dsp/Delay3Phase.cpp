@@ -26,7 +26,7 @@ void Delay3Phase::process(const float *input, const float *const mods[3], float 
     if (fAnalogMode)
         fAnalog.process(input, mods, outputs, count);
     else
-        fDigital.process(input, mods, outputs, count);
+        fDigital.process(input, mods[0], mods[1], mods[2], outputs[0], outputs[1], outputs[2], count);
 }
 
 void Delay3Phase::setAnalogMode(bool analog)
@@ -86,36 +86,4 @@ void Delay3Phase::AnalogDelay::process(const float *input, const float *const mo
     float *outputMono = outputs[2];
     for (unsigned i = 0; i < count; ++i)
         outputMono[i] = lineOutputs[0][i] + lineOutputs[1][i] + lineOutputs[2][i];
-}
-
-///
-#include "dsp/Delay3PhaseDigitalDsp.cpp"
-
-Delay3Phase::DigitalDelay::DigitalDelay()
-    : fDsp(new Delay3PhaseDigitalDsp)
-{
-    fDsp->instanceResetUserInterface();
-}
-
-Delay3Phase::DigitalDelay::~DigitalDelay()
-{
-}
-
-void Delay3Phase::DigitalDelay::init(double sampleRate)
-{
-    fDsp->classInit(sampleRate);
-    fDsp->instanceConstants(sampleRate);
-
-    clear();
-}
-
-void Delay3Phase::DigitalDelay::clear()
-{
-    fDsp->instanceClear();
-}
-
-void Delay3Phase::DigitalDelay::process(const float *input, const float *const mods[3], float *const outputs[3], unsigned count)
-{
-    float *inputs[] = {(float *)input, (float *)mods[0], (float *)mods[1], (float *)mods[2]};
-    fDsp->compute(count, inputs, (float **)outputs);
 }

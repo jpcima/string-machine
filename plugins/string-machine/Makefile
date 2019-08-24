@@ -29,6 +29,8 @@ FILES_SHARED = \
 	sources/dsp/LFO3PhaseDual.cpp \
 	sources/dsp/Delay3Phase.cpp \
 	sources/dsp/OnePoleFilter.cpp \
+	gen/dsp/Delay3PhaseDigital.cpp \
+	gen/dsp/StringFiltersHighshelf.cpp \
 	thirdparty/vco/OscillatorBlepRect.cpp
 
 FILES_DSP = \

@@ -25,7 +25,7 @@ void StringFilters::process(const float *const inputs[2], float *const outputs[3
     OnePoleHPF &highpassUpper = fHighpassUpper;
     OnePoleLPF &lowpassLower = fLowpassLower;
     OnePoleHPF &highpassLower = fHighpassLower;
-    HighshelfFilter &highshelfEq = fHighshelfEq;
+    StringFiltersHighshelf &highshelfEq = fHighshelfEq;
 
     float upperFreq = noteFreq + noteFreq;
 
@@ -43,8 +43,8 @@ void StringFilters::process(const float *const inputs[2], float *const outputs[3
     highpassUpper.setCutoff(limitCutoff(upperFreq * std::exp2(settings.highpassUpperCutoff * (1.0f / 12.0f))));
     lowpassLower.setCutoff(limitCutoff(noteFreq * std::exp2(settings.lowpassLowerCutoff * (1.0f / 12.0f))));
     highpassLower.setCutoff(limitCutoff(upperFreq * std::exp2(settings.highpassLowerCutoff * (1.0f / 12.0f))));
-    highshelfEq.setCutoff(limitCutoff(upperFreq * std::exp2(settings.highshelfEqCutoff * (1.0f / 12.0f))));
-    highshelfEq.setGain(settings.highshelfEqBoost);
+    highshelfEq.set_cutoff(limitCutoff(upperFreq * std::exp2(settings.highshelfEqCutoff * (1.0f / 12.0f))));
+    highshelfEq.set_gain(settings.highshelfEqBoost);
 
     const float *inputUpper = inputs[0];
     const float *inputLower = inputs[1];
@@ -62,46 +62,4 @@ void StringFilters::process(const float *const inputs[2], float *const outputs[3
         outputBrass[i] = lowpassLower.process(inputLower[i]);
     for (unsigned i = 0; i < count; ++i)
         outputLower[i] = highpassLower.process(outputBrass[i]);
-}
-
-///
-#include "dsp/StringFiltersHighshelfDsp.cpp"
-
-StringFilters::HighshelfFilter::HighshelfFilter()
-    : fDsp(new StringFiltersHighshelfDsp)
-{
-}
-
-StringFilters::HighshelfFilter::~HighshelfFilter()
-{
-}
-
-void StringFilters::HighshelfFilter::init(double sampleRate)
-{
-    fDsp->classInit(sampleRate);
-    fDsp->instanceConstants(sampleRate);
-
-    clear();
-}
-
-void StringFilters::HighshelfFilter::clear()
-{
-    fDsp->instanceClear();
-}
-
-void StringFilters::HighshelfFilter::process(const float *input, float *output, unsigned count)
-{
-    float *inputs[] = {(float *)input};
-    float *outputs[] = {(float *)output};
-    fDsp->compute(count, inputs, outputs);
-}
-
-void StringFilters::HighshelfFilter::setCutoff(float value)
-{
-    StringFiltersHighshelfDsp_meta::set_Cutoff(*fDsp, value);
-}
-
-void StringFilters::HighshelfFilter::setGain(float value)
-{
-    StringFiltersHighshelfDsp_meta::set_Gain(*fDsp, value);
 }

@@ -43,18 +43,19 @@ endif
 
 # --------------------------------------------------------------
 
-# macro faustgen: (1)faust args (2)input file (3)output file
+FAUSTPP ?= faustpp
+
+# macro faustgen: (1)faustpp args (2)input file (3)output base
 define faustgen
 	@echo faustgen: $(1) $(2) $(3)
 	@install -d $(dir $(3))
-	@faust -cn $(notdir $(basename $(3))) -scn Base$(notdir $(basename $(3))) $(1) -a dsp/Architecture.cpp $(2) > $(3)
-	@faustmd -cn $(notdir $(basename $(3))) $(patsubst %,-X%,$(1)) $(2) >> $(3)
-	@cat dsp/ArchitectureFooter.cpp >> $(3)
+	@$(FAUSTPP) -DIdentifier=$(notdir $(3)) -X-cn -X$(notdir $(3))Dsp -a sources/dsp/architecture/Generic.hpp $(2) > $(3).hpp
+	@$(FAUSTPP) -DIdentifier=$(notdir $(3)) -X-cn -X$(notdir $(3))Dsp -a sources/dsp/architecture/Generic.cpp $(2) > $(3).cpp
 endef
 
 dsp:
-	$(call faustgen,-vec -uim,dsp/Delay3PhaseDigital.dsp,gen/dsp/Delay3PhaseDigitalDsp.cpp)
-	$(call faustgen,-vec -uim,dsp/StringFiltersHighshelf.dsp,gen/dsp/StringFiltersHighshelfDsp.cpp)
+	$(call faustgen,-X-vec,sources/dsp/Delay3PhaseDigital.dsp,gen/dsp/Delay3PhaseDigital)
+	$(call faustgen,-X-vec,sources/dsp/StringFiltersHighshelf.dsp,gen/dsp/StringFiltersHighshelf)
 
 # --------------------------------------------------------------
 

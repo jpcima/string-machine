@@ -1,6 +1,6 @@
 #pragma once
 #include "bbd/bbd_line.h"
-#include <memory>
+#include "dsp/Delay3PhaseDigital.hpp"
 
 class Delay3PhaseDigitalDsp;
 
@@ -26,20 +26,8 @@ private:
         BBD_Line fDelayLine[3];
     };
 
-    class DigitalDelay {
-    public:
-        DigitalDelay();
-        ~DigitalDelay();
-        void init(double sampleRate);
-        void clear();
-        void process(const float *input, const float *const mods[3], float *const outputs[3], unsigned count);
-
-    private:
-        std::unique_ptr<Delay3PhaseDigitalDsp> fDsp;
-    };
-
 private:
     bool fAnalogMode = true;
     AnalogDelay fAnalog;
-    DigitalDelay fDigital;
+    Delay3PhaseDigital fDigital;
 };

@@ -23,7 +23,8 @@ FILES_SHARED = \
 	sources/bbd/bbd_line.cpp \
 	sources/bbd/bbd_filter.cpp \
 	sources/dsp/LFO3PhaseDual.cpp \
-	sources/dsp/Delay3Phase.cpp
+	sources/dsp/Delay3Phase.cpp \
+	gen/dsp/Delay3PhaseDigital.cpp
 
 FILES_DSP = \
 	ChorusPlugin.cpp \
