@@ -13,7 +13,8 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.symbol = "cho_depth";
         parameter.name = "Chorus global depth";
         parameter.hints = kParameterIsAutomable;
-        parameter.ranges = ParameterRanges(1.0, 0.0, 1.0);
+        parameter.unit = "%";
+        parameter.ranges = ParameterRanges(100.0, 0.0, 100.0);
         break;
     case pIdChoRate1:
         parameter.symbol = "cho_rate1";
@@ -25,7 +26,8 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.symbol = "cho_depth1";
         parameter.name = "Chorus depth 1";
         parameter.hints = kParameterIsAutomable;
-        parameter.ranges = ParameterRanges(0.3071, 0.0, 1.0);
+        parameter.unit = "%";
+        parameter.ranges = ParameterRanges(30.71, 0.0, 100.0);
         break;
     case pIdChoRate2:
         parameter.symbol = "cho_rate2";
@@ -37,7 +39,8 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.symbol = "cho_depth2";
         parameter.name = "Chorus depth 2";
         parameter.hints = kParameterIsAutomable;
-        parameter.ranges = ParameterRanges(0.9055, 0.0, 1.0);
+        parameter.unit = "%";
+        parameter.ranges = ParameterRanges(90.55, 0.0, 100.0);
         break;
     case pIdChoModel:
         parameter.symbol = "cho_model";

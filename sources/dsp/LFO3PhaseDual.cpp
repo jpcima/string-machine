@@ -27,7 +27,7 @@ void LFO3PhaseDual::init(double sampleRate)
 void LFO3PhaseDual::process(float *outputs[3], unsigned count)
 {
     float sampleTime = fSampleTime;
-    float globalDepth = fDepth;
+    float globalDepth = fDepth * 0.01;
     RowLFOs *rows = fRowsLFO;
 
     float phaseIncr[2][3];
@@ -42,7 +42,7 @@ void LFO3PhaseDual::process(float *outputs[3], unsigned count)
     for (unsigned i = 0; i < count; ++i) {
         for (unsigned r = 0; r < 2; ++r) {
             RowLFOs &row = rows[r];
-            float rowDepth = globalDepth * row.depth;
+            float rowDepth = globalDepth * 0.01 * row.depth;
 
             for (unsigned l = 0; l < 3; ++l)
                 outputs[l][i] += rowDepth * getLfoSine(row.lfos[l].phase);
