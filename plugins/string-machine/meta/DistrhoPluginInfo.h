@@ -21,8 +21,6 @@
 #define DISTRHO_PLUGIN_WANT_STATE      0
 #define DISTRHO_PLUGIN_WANT_FULL_STATE 0
 
-#define DISTRHO_PLUGIN_WANT_DIRECT_ACCESS 1
-
 enum {
     pIdOscDetune,
     pIdOscHpCutoffUpper,
@@ -53,6 +51,14 @@ enum {
     pIdChoModel,
 
     pIdMasterGain,
+
+    ///
+    pIdOutDetuneUpper,
+    pIdOutDetuneLower,
+    pIdOutChorusPhase1,
+    pIdOutChorusPhase2,
+    pIdOutMasterLevel1,
+    pIdOutMasterLevel2,
 
     ///
     Parameter_Count

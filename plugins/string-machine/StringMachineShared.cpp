@@ -1,4 +1,5 @@
 #include "StringMachineShared.hpp"
+#include <cmath>
 
 void InitParameter(uint32_t index, Parameter &parameter)
 {
@@ -169,6 +170,47 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.hints = kParameterIsAutomable;
         parameter.unit = "dB";
         parameter.ranges = ParameterRanges(3.0, -60.0, +20.0);
+        break;
+
+    case pIdOutDetuneUpper:
+        parameter.symbol = "osc_current_detune_upper";
+        parameter.name = "Oscillator detune 4'";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        parameter.ranges = ParameterRanges(0.0, -1.0, +1.0);
+        break;
+    case pIdOutDetuneLower:
+        parameter.symbol = "osc_current_detune_lower";
+        parameter.name = "Oscillator detune 8'";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        parameter.ranges = ParameterRanges(0.0, -1.0, +1.0);
+        break;
+    case pIdOutChorusPhase1:
+        parameter.symbol = "cho_current_phase1";
+        parameter.name = "Chorus phase 1";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        parameter.unit = "rad";
+        parameter.ranges = ParameterRanges(0.0, 0.0, 2 * M_PI);
+        break;
+    case pIdOutChorusPhase2:
+        parameter.symbol = "cho_current_phase2";
+        parameter.name = "Chorus phase 2";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        parameter.unit = "rad";
+        parameter.ranges = ParameterRanges(0.0, 0.0, 2 * M_PI);
+        break;
+    case pIdOutMasterLevel1:
+        parameter.symbol = "master_current_level1";
+        parameter.name = "Master level 1";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        parameter.unit = "dB";
+        parameter.ranges = ParameterRanges(0.0, -100.0, +100.0);
+        break;
+    case pIdOutMasterLevel2:
+        parameter.symbol = "master_current_level2";
+        parameter.name = "Master level 2";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        parameter.unit = "dB";
+        parameter.ranges = ParameterRanges(0.0, -100.0, +100.0);
         break;
 
     default:

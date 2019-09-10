@@ -65,7 +65,7 @@ BUILD_CXX_FLAGS += \
 # --------------------------------------------------------------
 # Enable all possible plugin types
 
-TARGETS += lv2
+TARGETS += lv2_sep
 TARGETS += vst
 
 all: $(TARGETS)

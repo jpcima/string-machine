@@ -1,6 +1,5 @@
 #include "StringMachineUI.hpp"
 #include "StringMachineUILayouts.hpp"
-#include "StringMachinePlugin.hpp"
 #include "StringMachinePresets.hpp"
 #include "Artwork.hpp"
 #include "Window.hpp"
@@ -316,32 +315,6 @@ void StringMachineUI::programLoaded(uint32_t index)
 
 void StringMachineUI::uiIdle()
 {
-    StringMachinePlugin *plugin = (StringMachinePlugin *)getPluginInstancePointer();
-
-    fLfoIndicator[0]->setValue(plugin->getChorusPhase1() > 0.5f);
-    fLfoIndicator[1]->setValue(plugin->getChorusPhase2() > 0.5f);
-
-    fOscDetuneDisplay[0]->setText(formatDisplayValue(std::fabs(plugin->getLastDetuneUpper())));
-    fOscDetuneDisplay[1]->setText(formatDisplayValue(std::fabs(plugin->getLastDetuneLower())));
-
-    double leftLevel = plugin->getLeftOutputLevel();
-    double rightLevel = plugin->getRightOutputLevel();
-
-    for (unsigned i = 0; i < 2; ++i) {
-        constexpr double levelMin = -20.0;
-
-        double levelLin = 0.0;
-        double levelLog = 0.0;
-
-        switch (i) {
-        case 0: levelLin = leftLevel; break;
-        case 1: levelLin = rightLevel; break;
-        }
-
-        if (levelLin > 0.0)
-            levelLog = (20.0 * std::log10(levelLin) - levelMin) * (1.0 / (- levelMin));
-        fVuDisplay[i]->setValue(levelLog);
-    }
 }
 
 bool StringMachineUI::onKeyboard(const KeyboardEvent &event)
@@ -395,6 +368,28 @@ void StringMachineUI::updateParameterValue(uint32_t index, float value)
         fEnvSettings.release = value;
         fAdsrView->invalidateData();
         break;
+
+    case pIdOutDetuneUpper:
+        fOscDetuneDisplay[0]->setText(formatDisplayValue(std::fabs(value)));
+        break;
+    case pIdOutDetuneLower:
+        fOscDetuneDisplay[1]->setText(formatDisplayValue(std::fabs(value)));
+        break;
+    case pIdOutChorusPhase1:
+    case pIdOutChorusPhase2:
+    {
+        SkinIndicator &x = *fLfoIndicator[index - pIdOutChorusPhase1];
+        x.setValue(value > M_PI);
+        break;
+    }
+    case pIdOutMasterLevel1:
+    case pIdOutMasterLevel2:
+    {
+        SkinIndicator &x = *fVuDisplay[index - pIdOutMasterLevel1];
+        constexpr double levelMin = -20.0, levelMax = 0.0;
+        x.setValue((value - levelMin) * (1.0 / (levelMax - levelMin)));
+        break;
+    }
     }
 }
 
