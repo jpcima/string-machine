@@ -171,6 +171,38 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.ranges = ParameterRanges(3.0, -60.0, +20.0);
         break;
 
+#warning TODO these parameters metadata and ranges
+    case pIdWatchDetuneUpper:
+        parameter.symbol = "_osc_detune_upper";
+        parameter.name = "Oscillator detune 4'";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        break;
+    case pIdWatchDetuneLower:
+        parameter.symbol = "_osc_detune_lower";
+        parameter.name = "Oscillator detune 8'";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        break;
+    case pIdWatchChorusPhase1:
+        parameter.symbol = "_cho_phase1";
+        parameter.name = "Chorus phase 1";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        break;
+    case pIdWatchChorusPhase2:
+        parameter.symbol = "_cho_phase2";
+        parameter.name = "Chorus phase 2";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        break;
+    case pIdWatchMasterLevel1:
+        parameter.symbol = "_master_level1";
+        parameter.name = "Master level 1";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        break;
+    case pIdWatchMasterLevel2:
+        parameter.symbol = "_master_level2";
+        parameter.name = "Master level 2";
+        parameter.hints = kParameterIsAutomable|kParameterIsOutput;
+        break;
+
     default:
         DISTRHO_SAFE_ASSERT(false);
         break;

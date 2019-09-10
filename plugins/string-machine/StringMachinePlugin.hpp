@@ -29,16 +29,6 @@ public:
     void run(const float **inputs, float **outputs, uint32_t frames,
              const MidiEvent *midiEvents, uint32_t midiEventCount) override;
 
-    //
-    float getLastDetuneUpper() const { return fSynth.getLastDetuneUpper(); }
-    float getLastDetuneLower() const { return fSynth.getLastDetuneLower(); }
-
-    float getChorusPhase1() const { return fSynth.getChorus().getPhase1(); }
-    float getChorusPhase2() const { return fSynth.getChorus().getPhase2(); }
-
-    double getLeftOutputLevel() const { return fOutputLevelFollower[0].last_output(); }
-    double getRightOutputLevel() const { return fOutputLevelFollower[1].last_output(); }
-
 private:
     StringSynth fSynth;
     AmpFollower fOutputLevelFollower[2];

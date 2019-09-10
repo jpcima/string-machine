@@ -116,6 +116,19 @@ float StringMachinePlugin::getParameterValue(uint32_t index) const
     case pIdMasterGain:
         return synth.getMasterGain();
 
+    case pIdWatchDetuneUpper:
+        return fSynth.getLastDetuneUpper();
+    case pIdWatchDetuneLower:
+        return fSynth.getLastDetuneLower();
+    case pIdWatchChorusPhase1:
+        return (2 * M_PI) * fSynth.getChorus().getPhase1();
+    case pIdWatchChorusPhase2:
+        return (2 * M_PI) * fSynth.getChorus().getPhase2();
+    case pIdWatchMasterLevel1:
+        return 20 * std::log10(fOutputLevelFollower[0].last_output());
+    case pIdWatchMasterLevel2:
+        return 20 * std::log10(fOutputLevelFollower[1].last_output());
+
     default:
         DISTRHO_SAFE_ASSERT(false);
         return 0.0;
@@ -203,6 +216,14 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
 
     case pIdMasterGain:
         synth.setMasterGain(value);
+        break;
+
+    case pIdWatchDetuneUpper:
+    case pIdWatchDetuneLower:
+    case pIdWatchChorusPhase1:
+    case pIdWatchChorusPhase2:
+    case pIdWatchMasterLevel1:
+    case pIdWatchMasterLevel2:
         break;
 
     default:
