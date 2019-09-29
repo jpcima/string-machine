@@ -3,7 +3,7 @@
 #include "StringFilters.h"
 #include "SolinaChorus.h"
 #include "dsp/AHDSREnvelope.h"
-#include "dsp/TriangleLFO.h"
+#include "dsp/NoiseLFO.hpp"
 #include <boost/intrusive/list.hpp>
 #include <memory>
 #include <cstdint>
@@ -61,7 +61,7 @@ private:
     boost::intrusive::list<Voice> fActiveVoices;
 
     float fDetuneAmount = 0;
-    TriangleLFO fDetuneLFO[2];
+    NoiseLFO fDetuneLFO[2];
 
     float fLastDetuneUpper = 0;
     float fLastDetuneLower = 0;

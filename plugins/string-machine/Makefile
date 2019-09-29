@@ -31,6 +31,7 @@ FILES_SHARED = \
 	gen/dsp/Delay3PhaseDigital.cpp \
 	gen/dsp/LFO3PhaseDual.cpp \
 	gen/dsp/StringFiltersHighshelf.cpp \
+	gen/dsp/NoiseLFO.cpp \
 	thirdparty/vco/OscillatorBlepRect.cpp
 
 FILES_DSP = \

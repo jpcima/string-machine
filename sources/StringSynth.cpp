@@ -17,9 +17,9 @@ StringSynth::~StringSynth()
 void StringSynth::init(double sampleRate)
 {
     fDetuneLFO[0].init(sampleRate);
-    fDetuneLFO[0].setFrequency(69.0);
+    fDetuneLFO[0].set_frequency(69.0);
     fDetuneLFO[1].init(sampleRate);
-    fDetuneLFO[1].setFrequency(60.0);
+    fDetuneLFO[1].set_frequency(60.0);
 
     fLastDetuneUpper = 0.0;
     fLastDetuneLower = 0.0;
@@ -129,17 +129,22 @@ void StringSynth::generate(float *outputs[2], unsigned count)
     float detuneLower[BufferLimit];
 
     if (!activeVoices.empty()) {
-        TriangleLFO &lfoUpper  = fDetuneLFO[0];
-        TriangleLFO &lfoLower  = fDetuneLFO[1];
+        NoiseLFO &lfoUpper = fDetuneLFO[0];
+        NoiseLFO &lfoLower = fDetuneLFO[1];
         float lastDetuneLower = fLastDetuneLower;
         float lastDetuneUpper = fLastDetuneUpper;
 
+        float lfoOutputUpper[BufferLimit];
+        float lfoOutputLower[BufferLimit];
+
+        lfoUpper.process(lfoOutputUpper, count);
         for (unsigned i = 0; i < count; ++i) {
-            lastDetuneUpper = detuneAmount * (lfoUpper.process() - 0.5f);
+            lastDetuneUpper = detuneAmount * 0.5f * lfoOutputUpper[i];
             detuneUpper[i] = std::exp2(lastDetuneUpper * (1.0f / 12.0f));
         }
+        lfoLower.process(lfoOutputLower, count);
         for (unsigned i = 0; i < count; ++i) {
-            lastDetuneLower = detuneAmount * (lfoLower.process() - 0.5f);
+            lastDetuneLower = detuneAmount * 0.5f * lfoOutputLower[i];
             detuneLower[i] = std::exp2(lastDetuneLower * (1.0f / 12.0f));
         }
 
