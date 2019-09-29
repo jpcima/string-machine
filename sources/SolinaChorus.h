@@ -1,5 +1,5 @@
 #pragma once
-#include "dsp/LFO3PhaseDual.h"
+#include "dsp/LFO3PhaseDual.hpp"
 #include "dsp/Delay3Phase.h"
 
 class SolinaChorus {
@@ -14,8 +14,8 @@ public:
     const LFO3PhaseDual &getLfo() const { return fLfo; }
     LFO3PhaseDual &getLfo() { return fLfo; }
 
-    float getPhase1() const { return fLfo.getPhase1(); }
-    float getPhase2() const { return fLfo.getPhase2(); }
+    float getPhase1() const { return fLfo.get_phase1(); }
+    float getPhase2() const { return fLfo.get_phase2(); }
 
     bool getAnalogMode() const { return fDelay.getAnalogMode(); }
     void setAnalogMode(bool analog) { fDelay.setAnalogMode(analog); }

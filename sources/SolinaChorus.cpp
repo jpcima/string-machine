@@ -18,7 +18,7 @@ void SolinaChorus::process(const float *input, float *const outputs[3], unsigned
     float lfoOut240[BufferLimit];
     float *lfoOuts[] = {lfoOut0, lfoOut120, lfoOut240};
 
-    fLfo.process(lfoOuts, count);
+    fLfo.process(lfoOut0, lfoOut120, lfoOut240, count);
 
     if (fEnabled)
         fDelay.process(input, lfoOuts, outputs, count);

@@ -101,15 +101,15 @@ float StringMachinePlugin::getParameterValue(uint32_t index) const
     case pIdChoEnabled:
         return synth.getChorus().getEnabled();
     case pIdChoDepth:
-        return synth.getChorus().getLfo().getDepth();
+        return synth.getChorus().getLfo().get_globaldepth();
     case pIdChoRate1:
-        return synth.getChorus().getLfo().getRate1();
+        return synth.getChorus().getLfo().get_rate1();
     case pIdChoDepth1:
-        return synth.getChorus().getLfo().getDepth1();
+        return synth.getChorus().getLfo().get_depth1();
     case pIdChoRate2:
-        return synth.getChorus().getLfo().getRate2();
+        return synth.getChorus().getLfo().get_rate2();
     case pIdChoDepth2:
-        return synth.getChorus().getLfo().getDepth2();
+        return synth.getChorus().getLfo().get_depth2();
     case pIdChoModel:
         return synth.getChorus().getAnalogMode();
 
@@ -183,19 +183,19 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
         synth.getChorus().setEnabled(value > 0.5f);
         break;
     case pIdChoDepth:
-        synth.getChorus().getLfo().setDepth(value);
+        synth.getChorus().getLfo().set_globaldepth(value);
         break;
     case pIdChoRate1:
-        synth.getChorus().getLfo().setRate1(value);
+        synth.getChorus().getLfo().set_rate1(value);
         break;
     case pIdChoDepth1:
-        synth.getChorus().getLfo().setDepth1(value);
+        synth.getChorus().getLfo().set_depth1(value);
         break;
     case pIdChoRate2:
-        synth.getChorus().getLfo().setRate2(value);
+        synth.getChorus().getLfo().set_rate2(value);
         break;
     case pIdChoDepth2:
-        synth.getChorus().getLfo().setDepth2(value);
+        synth.getChorus().getLfo().set_depth2(value);
         break;
     case pIdChoModel:
         synth.getChorus().setAnalogMode((int)value);

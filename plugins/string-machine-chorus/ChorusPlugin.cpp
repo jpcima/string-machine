@@ -68,15 +68,15 @@ float ChorusPlugin::getParameterValue(uint32_t index) const
         return fBypass;
 
     case pIdChoDepth:
-        return chorus.getLfo().getDepth();
+        return chorus.getLfo().get_globaldepth();
     case pIdChoRate1:
-        return chorus.getLfo().getRate1();
+        return chorus.getLfo().get_rate1();
     case pIdChoDepth1:
-        return chorus.getLfo().getDepth1();
+        return chorus.getLfo().get_depth1();
     case pIdChoRate2:
-        return chorus.getLfo().getRate2();
+        return chorus.getLfo().get_rate2();
     case pIdChoDepth2:
-        return chorus.getLfo().getDepth2();
+        return chorus.getLfo().get_depth2();
     case pIdChoModel:
         return chorus.getAnalogMode();
 
@@ -100,23 +100,23 @@ void ChorusPlugin::setParameterValue(uint32_t index, float value)
 
     case pIdChoDepth:
         for (SolinaChorus &chorus : fChorus)
-            chorus.getLfo().setDepth(value);
+            chorus.getLfo().set_globaldepth(value);
         break;
     case pIdChoRate1:
         for (SolinaChorus &chorus : fChorus)
-            chorus.getLfo().setRate1(value);
+            chorus.getLfo().set_rate1(value);
         break;
     case pIdChoDepth1:
         for (SolinaChorus &chorus : fChorus)
-            chorus.getLfo().setDepth1(value);
+            chorus.getLfo().set_depth1(value);
         break;
     case pIdChoRate2:
         for (SolinaChorus &chorus : fChorus)
-            chorus.getLfo().setRate2(value);
+            chorus.getLfo().set_rate2(value);
         break;
     case pIdChoDepth2:
         for (SolinaChorus &chorus : fChorus)
-            chorus.getLfo().setDepth2(value);
+            chorus.getLfo().set_depth2(value);
         break;
     case pIdChoModel:
         for (SolinaChorus &chorus : fChorus)

@@ -26,10 +26,10 @@ FILES_SHARED = \
 	sources/bbd/bbd_line.cpp \
 	sources/bbd/bbd_filter.cpp \
 	sources/dsp/AHDSREnvelope.cpp \
-	sources/dsp/LFO3PhaseDual.cpp \
 	sources/dsp/Delay3Phase.cpp \
 	sources/dsp/OnePoleFilter.cpp \
 	gen/dsp/Delay3PhaseDigital.cpp \
+	gen/dsp/LFO3PhaseDual.cpp \
 	gen/dsp/StringFiltersHighshelf.cpp \
 	thirdparty/vco/OscillatorBlepRect.cpp
 
