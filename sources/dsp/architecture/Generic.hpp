@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
 //
@@ -8,17 +8,13 @@
 // Copyright: {{copyright}}
 // License: {{license}}
 // Version: {{version}}
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 #pragma once
 #ifndef {{Identifier}}_Faust_pp_Gen_HPP_
 #define {{Identifier}}_Faust_pp_Gen_HPP_
 
-#if __cplusplus < 201103L
-#   define noexcept
-#endif
-
-class {{class_name}};
+#include <memory>
 
 class {{Identifier}} {
 public:
@@ -33,15 +29,17 @@ public:
         {% for i in range(outputs) %}float *out{{i}},{% endfor %}
         unsigned count) noexcept;
 
-    enum { inputs = {{inputs}} };
-    enum { outputs = {{outputs}} };
-    enum { parameters = {{length(active)}} };
+    enum { NumInputs = {{inputs}} };
+    enum { NumOutputs = {{outputs}} };
+    enum { NumParameters = {{length(active)}} };
+    enum { NumPassives = {{length(passive)}} };
 
     enum Parameter {
         {% for w in active %}p_{{cid(default(w.meta.symbol,w.label))}},
         {% endfor %}
+        {% for w in passive %}p_{{cid(default(w.meta.symbol,w.label))}},
+        {% endfor %}
     };
-
 
     struct ParameterRange {
         float init;
@@ -50,6 +48,7 @@ public:
     };
 
     static const char *parameter_label(unsigned index) noexcept;
+    static const char *parameter_short_label(unsigned index) noexcept;
     static const char *parameter_symbol(unsigned index) noexcept;
     static const char *parameter_unit(unsigned index) noexcept;
     static const ParameterRange *parameter_range(unsigned index) noexcept;
@@ -66,18 +65,18 @@ public:
     void set_{{cid(default(w.meta.symbol,w.label))}}(float value) noexcept;
     {% endfor %}
 
-private:
-    {{class_name}} *fDsp;
+    float get_passive(unsigned index) const noexcept;
 
-private:
-    {{Identifier}}(const {{Identifier}} &other);
-    {{Identifier}} &operator=(const {{Identifier}} &other);
+    {% for w in passive %}
+    float get_{{cid(default(w.meta.symbol,w.label))}}() const noexcept;
+    void set_{{cid(default(w.meta.symbol,w.label))}}(float value) noexcept;
+    {% endfor %}
 
-#if __cplusplus >= 201103L
 public:
-    {{Identifier}}({{Identifier}} &&other) noexcept;
-    {{Identifier}} &operator=({{Identifier}} &&other) noexcept;
-#endif
+    class BasicDsp;
+
+private:
+    std::unique_ptr<BasicDsp> fDsp;
 };
 
 #endif // {{Identifier}}_Faust_pp_Gen_HPP_
