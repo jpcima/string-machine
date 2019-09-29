@@ -132,12 +132,12 @@ void StringSynth::generate(float *outputs[2], unsigned count)
     float lastDetuneUpper = fLastDetuneUpper;
 
     for (unsigned i = 0; i < count; ++i) {
-        float detuneMod = detuneAmount * lfoUpper.process();
+        float detuneMod = detuneAmount * (lfoUpper.process() - 0.5f);
         lastDetuneUpper = gate ? detuneMod : lastDetuneUpper;
         detuneUpper[i] = std::exp2(lastDetuneUpper * (1.0f / 12.0f));
     }
     for (unsigned i = 0; i < count; ++i) {
-        float detuneMod = detuneAmount * lfoLower.process();
+        float detuneMod = detuneAmount * (lfoLower.process() - 0.5f);
         lastDetuneLower = gate ? detuneMod : lastDetuneLower;
         detuneLower[i] = std::exp2(lastDetuneLower * (1.0f / 12.0f));
     }

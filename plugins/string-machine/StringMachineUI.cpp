@@ -321,8 +321,8 @@ void StringMachineUI::uiIdle()
     fLfoIndicator[0]->setValue(plugin->getChorusPhase1() > 0.5f);
     fLfoIndicator[1]->setValue(plugin->getChorusPhase2() > 0.5f);
 
-    fOscDetuneDisplay[0]->setText(formatDisplayValue(plugin->getLastDetuneUpper()));
-    fOscDetuneDisplay[1]->setText(formatDisplayValue(plugin->getLastDetuneLower()));
+    fOscDetuneDisplay[0]->setText(formatDisplayValue(std::fabs(plugin->getLastDetuneUpper())));
+    fOscDetuneDisplay[1]->setText(formatDisplayValue(std::fabs(plugin->getLastDetuneLower())));
 
     double leftLevel = plugin->getLeftOutputLevel();
     double rightLevel = plugin->getRightOutputLevel();
