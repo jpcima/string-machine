@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
 //
@@ -8,17 +8,13 @@
 // Copyright: 
 // License: 
 // Version: 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 #pragma once
 #ifndef StringFiltersHighshelf_Faust_pp_Gen_HPP_
 #define StringFiltersHighshelf_Faust_pp_Gen_HPP_
 
-#if __cplusplus < 201103L
-#   define noexcept
-#endif
-
-class StringFiltersHighshelfDsp;
+#include <memory>
 
 class StringFiltersHighshelf {
 public:
@@ -33,16 +29,17 @@ public:
         float *out0,
         unsigned count) noexcept;
 
-    enum { inputs = 1 };
-    enum { outputs = 1 };
-    enum { parameters = 2 };
+    enum { NumInputs = 1 };
+    enum { NumOutputs = 1 };
+    enum { NumParameters = 2 };
+    enum { NumPassives = 0 };
 
     enum Parameter {
         p_cutoff,
         p_gain,
         
+        
     };
-
 
     struct ParameterRange {
         float init;
@@ -51,6 +48,7 @@ public:
     };
 
     static const char *parameter_label(unsigned index) noexcept;
+    static const char *parameter_short_label(unsigned index) noexcept;
     static const char *parameter_symbol(unsigned index) noexcept;
     static const char *parameter_unit(unsigned index) noexcept;
     static const ParameterRange *parameter_range(unsigned index) noexcept;
@@ -70,18 +68,15 @@ public:
     void set_gain(float value) noexcept;
     
 
-private:
-    StringFiltersHighshelfDsp *fDsp;
+    float get_passive(unsigned index) const noexcept;
 
-private:
-    StringFiltersHighshelf(const StringFiltersHighshelf &other);
-    StringFiltersHighshelf &operator=(const StringFiltersHighshelf &other);
+    
 
-#if __cplusplus >= 201103L
 public:
-    StringFiltersHighshelf(StringFiltersHighshelf &&other) noexcept;
-    StringFiltersHighshelf &operator=(StringFiltersHighshelf &&other) noexcept;
-#endif
+    class BasicDsp;
+
+private:
+    std::unique_ptr<BasicDsp> fDsp;
 };
 
 #endif // StringFiltersHighshelf_Faust_pp_Gen_HPP_

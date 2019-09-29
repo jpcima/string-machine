@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
 //
@@ -8,26 +8,33 @@
 // Copyright: 
 // License: 
 // Version: 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 #include "Delay3PhaseDigital.hpp"
 #include <cmath>
 
+class Delay3PhaseDigital::BasicDsp {
+public:
+    virtual ~BasicDsp() {}
+};
+
 //------------------------------------------------------------------------------
 // Begin the Faust code section
+
+namespace {
 
 template <class T> inline T min(T a, T b) { return (a < b) ? a : b; }
 template <class T> inline T max(T a, T b) { return (a > b) ? a : b; }
 
-// dummy
 class Meta {
 public:
+    // dummy
     void declare(...) {}
 };
 
-// dummy
 class UI {
 public:
+    // dummy
     void openHorizontalBox(...) {}
     void openVerticalBox(...) {}
     void closeBox(...) {}
@@ -39,15 +46,17 @@ public:
     void addVerticalBargraph(...) {}
 };
 
-// dummy
-class dsp {
-public:
-};
+typedef Delay3PhaseDigital::BasicDsp dsp;
+
+} // namespace
 
 #define FAUSTPP_VIRTUAL // do not declare any methods virtual
 #define FAUSTPP_PRIVATE public // do not hide any members
 #define FAUSTPP_PROTECTED public // do not hide any members
 
+// define the DSP in the anonymous namespace
+#define FAUSTPP_BEGIN_NAMESPACE namespace {
+#define FAUSTPP_END_NAMESPACE }
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
@@ -64,13 +73,24 @@ public:
 #   define FAUSTPP_VIRTUAL virtual
 #endif
 
+#ifndef FAUSTPP_BEGIN_NAMESPACE
+#   define FAUSTPP_BEGIN_NAMESPACE
+#endif
+#ifndef FAUSTPP_END_NAMESPACE
+#   define FAUSTPP_END_NAMESPACE
+#endif
+
+FAUSTPP_BEGIN_NAMESPACE
+
 #ifndef FAUSTFLOAT
 #define FAUSTFLOAT float
 #endif 
 
+FAUSTPP_END_NAMESPACE
 #include <algorithm>
 #include <cmath>
 #include <math.h>
+FAUSTPP_BEGIN_NAMESPACE
 
 
 #ifndef FAUSTCLASS 
@@ -318,6 +338,8 @@ class Delay3PhaseDigitalDsp : public dsp {
 	}
 
 };
+FAUSTPP_END_NAMESPACE
+
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic pop
@@ -330,17 +352,17 @@ class Delay3PhaseDigitalDsp : public dsp {
 Delay3PhaseDigital::Delay3PhaseDigital()
     : fDsp(new Delay3PhaseDigitalDsp)
 {
-    fDsp->instanceResetUserInterface();
+    Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
+    dsp.instanceResetUserInterface();
 }
 
 Delay3PhaseDigital::~Delay3PhaseDigital()
 {
-    delete fDsp;
 }
 
 void Delay3PhaseDigital::init(float sample_rate)
 {
-    Delay3PhaseDigitalDsp &dsp = *fDsp;
+    Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
     dsp.classInit(sample_rate);
     dsp.instanceConstants(sample_rate);
     dsp.instanceClear();
@@ -348,7 +370,8 @@ void Delay3PhaseDigital::init(float sample_rate)
 
 void Delay3PhaseDigital::clear() noexcept
 {
-    fDsp->instanceClear();
+    Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
+    dsp.instanceClear();
 }
 
 void Delay3PhaseDigital::process(
@@ -356,16 +379,26 @@ void Delay3PhaseDigital::process(
     float *out0,float *out1,float *out2,
     unsigned count) noexcept
 {
+    Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
     float *inputs[] = {
         const_cast<float *>(in0),const_cast<float *>(in1),const_cast<float *>(in2),const_cast<float *>(in3),
     };
     float *outputs[] = {
         out0,out1,out2,
     };
-    fDsp->compute(count, inputs, outputs);
+    dsp.compute(count, inputs, outputs);
 }
 
 const char *Delay3PhaseDigital::parameter_label(unsigned index) noexcept
+{
+    switch (index) {
+    
+    default:
+        return 0;
+    }
+}
+
+const char *Delay3PhaseDigital::parameter_short_label(unsigned index) noexcept
 {
     switch (index) {
     
@@ -439,18 +472,22 @@ bool Delay3PhaseDigital::parameter_is_logarithmic(unsigned index) noexcept
 
 float Delay3PhaseDigital::get_parameter(unsigned index) const noexcept
 {
+    Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
     switch (index) {
     
     default:
+        (void)dsp;
         return 0;
     }
 }
 
 void Delay3PhaseDigital::set_parameter(unsigned index, float value) noexcept
 {
+    Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
     switch (index) {
     
     default:
+        (void)dsp;
         (void)value;
         break;
     }
@@ -458,20 +495,15 @@ void Delay3PhaseDigital::set_parameter(unsigned index, float value) noexcept
 
 
 
-#if __cplusplus >= 201103L
-Delay3PhaseDigital::Delay3PhaseDigital(Delay3PhaseDigital &&other) noexcept
-    : fDsp(other.fDsp)
+float Delay3PhaseDigital::get_passive(unsigned index) const noexcept
 {
-    other.fDsp = 0;
+    Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
+    switch (index) {
+    
+    default:
+        (void)dsp;
+        return 0;
+    }
 }
 
-Delay3PhaseDigital &Delay3PhaseDigital::operator=(Delay3PhaseDigital &&other) noexcept
-{
-    if (this != &other) {
-        delete fDsp;
-        fDsp = other.fDsp;
-        other.fDsp = 0;
-    }
-    return *this;
-}
-#endif
+

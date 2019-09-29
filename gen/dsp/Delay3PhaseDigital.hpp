@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
 //
@@ -8,17 +8,13 @@
 // Copyright: 
 // License: 
 // Version: 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 #pragma once
 #ifndef Delay3PhaseDigital_Faust_pp_Gen_HPP_
 #define Delay3PhaseDigital_Faust_pp_Gen_HPP_
 
-#if __cplusplus < 201103L
-#   define noexcept
-#endif
-
-class Delay3PhaseDigitalDsp;
+#include <memory>
 
 class Delay3PhaseDigital {
 public:
@@ -33,14 +29,15 @@ public:
         float *out0,float *out1,float *out2,
         unsigned count) noexcept;
 
-    enum { inputs = 4 };
-    enum { outputs = 3 };
-    enum { parameters = 0 };
+    enum { NumInputs = 4 };
+    enum { NumOutputs = 3 };
+    enum { NumParameters = 0 };
+    enum { NumPassives = 0 };
 
     enum Parameter {
         
+        
     };
-
 
     struct ParameterRange {
         float init;
@@ -49,6 +46,7 @@ public:
     };
 
     static const char *parameter_label(unsigned index) noexcept;
+    static const char *parameter_short_label(unsigned index) noexcept;
     static const char *parameter_symbol(unsigned index) noexcept;
     static const char *parameter_unit(unsigned index) noexcept;
     static const ParameterRange *parameter_range(unsigned index) noexcept;
@@ -62,18 +60,15 @@ public:
 
     
 
-private:
-    Delay3PhaseDigitalDsp *fDsp;
+    float get_passive(unsigned index) const noexcept;
 
-private:
-    Delay3PhaseDigital(const Delay3PhaseDigital &other);
-    Delay3PhaseDigital &operator=(const Delay3PhaseDigital &other);
+    
 
-#if __cplusplus >= 201103L
 public:
-    Delay3PhaseDigital(Delay3PhaseDigital &&other) noexcept;
-    Delay3PhaseDigital &operator=(Delay3PhaseDigital &&other) noexcept;
-#endif
+    class BasicDsp;
+
+private:
+    std::unique_ptr<BasicDsp> fDsp;
 };
 
 #endif // Delay3PhaseDigital_Faust_pp_Gen_HPP_
