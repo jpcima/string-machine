@@ -113,11 +113,13 @@ void StringSynth::generate(float *outputs[2], unsigned count)
     auto &activeVoices = fActiveVoices;
     float detuneAmount = fDetuneAmount;
 
+#if 0
     bool gate = false;
     for (auto it = activeVoices.begin(), end = activeVoices.end(); it != end && !gate; ++it) {
         if (it->env.isTriggered())
             gate = true;
     }
+#endif
 
     float *outL = outputs[0];
     float *outR = outputs[1];
@@ -125,32 +127,31 @@ void StringSynth::generate(float *outputs[2], unsigned count)
 
     float detuneUpper[BufferLimit];
     float detuneLower[BufferLimit];
-    TriangleLFO &lfoUpper  = fDetuneLFO[0];
-    TriangleLFO &lfoLower  = fDetuneLFO[1];
 
-    float lastDetuneLower = fLastDetuneLower;
-    float lastDetuneUpper = fLastDetuneUpper;
+    if (!activeVoices.empty()) {
+        TriangleLFO &lfoUpper  = fDetuneLFO[0];
+        TriangleLFO &lfoLower  = fDetuneLFO[1];
+        float lastDetuneLower = fLastDetuneLower;
+        float lastDetuneUpper = fLastDetuneUpper;
 
-    for (unsigned i = 0; i < count; ++i) {
-        float detuneMod = detuneAmount * (lfoUpper.process() - 0.5f);
-        lastDetuneUpper = gate ? detuneMod : lastDetuneUpper;
-        detuneUpper[i] = std::exp2(lastDetuneUpper * (1.0f / 12.0f));
+        for (unsigned i = 0; i < count; ++i) {
+            lastDetuneUpper = detuneAmount * (lfoUpper.process() - 0.5f);
+            detuneUpper[i] = std::exp2(lastDetuneUpper * (1.0f / 12.0f));
+        }
+        for (unsigned i = 0; i < count; ++i) {
+            lastDetuneLower = detuneAmount * (lfoLower.process() - 0.5f);
+            detuneLower[i] = std::exp2(lastDetuneLower * (1.0f / 12.0f));
+        }
+
+        fLastDetuneLower = lastDetuneLower;
+        fLastDetuneUpper = lastDetuneUpper;
     }
-    for (unsigned i = 0; i < count; ++i) {
-        float detuneMod = detuneAmount * (lfoLower.process() - 0.5f);
-        lastDetuneLower = gate ? detuneMod : lastDetuneLower;
-        detuneLower[i] = std::exp2(lastDetuneLower * (1.0f / 12.0f));
-    }
-
-    fLastDetuneLower = lastDetuneLower;
-    fLastDetuneUpper = lastDetuneUpper;
-
-    float *detune[2] = {detuneUpper, detuneLower};
 
     float bend = std::exp2(fCtlPitchBend * fCtlPitchBendSensitivity * (1.0f / 12.0f));
 
     for (auto it = activeVoices.begin(), end = activeVoices.end(); it != end;) {
         Voice &voice = *it;
+        float *detune[2] = {detuneUpper, detuneLower};
         bool finished = generateVoiceAdding(voice, outL, detune, bend, count);
         if (finished) activeVoices.erase(it++); else ++it;
     }
