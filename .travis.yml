@@ -1,0 +1,108 @@
+language: c++
+
+branches:
+  except:
+    - automatic
+
+cache:
+  directories:
+    - download
+
+matrix:
+  include:
+    - os: linux
+      sudo: required
+      dist: bionic
+      env:
+        - _BUILD=win32
+        - _MINGW=mingw32
+        - _HOST=i686-w64-mingw32
+      before_install:
+        - docker pull jpcima/arch-mingw
+      install:
+        - container=$(docker run -d -i -t -v /home:/home jpcima/arch-mingw /bin/bash)
+        - |
+          cross() {
+            docker exec -w "$(pwd)" -e "_BUILD=$_BUILD" -e "_MINGW=$_MINGW" -e "_HOST=$_HOST" -i -t "$container" "$@"
+          }
+      script:
+        - cross bash .travis/script-mingw.sh
+        - cp -drfv bin string-machine-"$_BUILD"
+        - rm -f string-machine-"$_BUILD"/README
+        - install -d release
+        - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
+    - os: linux
+      sudo: required
+      dist: bionic
+      env:
+        - _BUILD=win64
+        - _MINGW=mingw64
+        - _HOST=x86_64-w64-mingw32
+      before_install:
+        - docker pull jpcima/arch-mingw
+      install:
+        - container=$(docker run -d -i -t -v /home:/home jpcima/arch-mingw /bin/bash)
+        - |
+          cross() {
+            docker exec -w "$(pwd)" -e "_BUILD=$_BUILD" -e "_MINGW=$_MINGW" -e "_HOST=$_HOST" -i -t "$container" "$@"
+          }
+      script:
+        - cross bash .travis/script-mingw.sh
+        - cp -drfv bin string-machine-"$_BUILD"
+        - rm -f string-machine-"$_BUILD"/README
+        - install -d release
+        - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
+    # - os: osx
+    #   sudo: required
+    #   env:
+    #     - _BUILD=macos
+    #   script:
+    #     - bash .travis/script-macos.sh
+    #     - cp -av bin string-machine-"$_BUILD"
+    #     - rm -f string-machine-"$_BUILD"/README
+    #     - install -d release
+    #     - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
+    - os: linux
+      sudo: required
+      dist: trusty
+      env:
+        - _BITS=64
+        - _BUILD=linux64
+      before_install:
+        - sudo apt-get update -qq
+      install:
+        - sudo apt-get install checkinstall libcairo2-dev libboost-dev
+      script:
+        - bash .travis/script-linux.sh
+        - cp -drfv bin string-machine-"$_BUILD"
+        - rm -f string-machine-"$_BUILD"/README
+        - install -d release
+        - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
+        - echo "Digital model of electronic string ensemble instrument" > description-pak
+        - sudo checkinstall --type=debian --install=no --default --pkgname=string-machine --pkgversion="`git describe --abbrev=0 | sed 's/^v//'``git log -n 1 --pretty=format:"+%cd~git%h" --date=short master | sed 's/-//g'`" --pkgarch=amd64 --pkgrelease=0jpc1 --pkglicense=BSL-1.0 --pkggroup=sound --maintainer="jp-dev@inbox.ru" --nodoc
+        - sudo mv -f *.deb release/string-machine-"$_BUILD".deb
+
+before_script:
+  - sed -i~ 's%/usr/local%/usr%g' plugins/*/Makefile
+
+before_deploy:
+  - |
+    if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+      export TRAVIS_TAG=automatic
+      git tag -f "$TRAVIS_TAG"
+    fi
+
+deploy:
+  provider: releases
+  api_key: "$GITHUB_TOKEN"
+  file: release/*
+  file_glob: true
+  skip_cleanup: true
+  prerelease: true
+  overwrite: true
+  on:
+    branch: master
+
+env:
+  global:
+    secure: BzrfWX+zI9Ww+T1Dj1k04tomPVoMucUYwIOeaG3NkwL3CDEo98/s3GDSGRa6CQMRz9R2oT/ljXecNShb0jaueToTPA+MpbRg93WjhbeETyc0tLmttIswHjwsAZ8gDx1gfhFJ5cdxxpmoWGmT+mO5f72HxH5PT1icTdnmPFbxAq6abSR9VMV5+hVNwS9OdMTVxow4JLbVwx9w//JmWDpWP752SiNayPAoMZp5pELszqPsUawZH+AMY3X/1m69T6MU+wsWX5pdChHOlSl6jWBobetd3tojOrCamV8XNQsyeu8WMhd9hjIJU786AzwcY2S2XXpR1Qjrngo8L0mCSbDs0szwJtPgec/R2myxdJV/u2+howqNbhBuKzbJwsEL4kqhCEKvasuL9I2rG2tGc3p7Z/2YFNiisZW4TcEC23Eu02aAR3Emv/2JooIhzJfm9X4nMCz/tTpvOKrPltgiI9dQiH+JQ/53QCpGYFhlBYkmnngICrdpum9U1yjyHL4tL/a++UYXkBaezC0eU8TjtNtVR2l25Tjc5IQsiGHFiwK5IYe0yDeTEKd+EGgxfubtWpAdL4oKjRBDzaaaMaTAH5w+/8lT1+E6E3USVOWDA+RHKnAUTx0uLUuGWCojHcJ+PilrMKelaY4YDuGmFd7zfiTuqMM7cK6KYIrgLGz7cExEgTc=
