@@ -6,7 +6,7 @@ void InitParameter(uint32_t index, Parameter &parameter)
 
     switch (index) {
     case pIdBypass:
-        parameter.designation = kParameterDesignationBypass;
+        parameter.initDesignation(kParameterDesignationBypass);
         break;
 
     case pIdChoDepth:
