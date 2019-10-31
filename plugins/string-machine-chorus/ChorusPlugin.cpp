@@ -159,13 +159,15 @@ void ChorusPlugin::run(const float **inputs, float **outputs, uint32_t totalFram
     fWasBypassed = bypass;
 
     if (bypass) {
+        auto checked_memcpy = [](void *dst, const void *src, size_t count)
+                                  { if (dst != src) memcpy(dst, src, count); };
         if (DISTRHO_PLUGIN_NUM_INPUTS == 1) {
-            memcpy(outputs[0], inputs[0], totalFrames * sizeof(float));
-            memcpy(outputs[1], inputs[0], totalFrames * sizeof(float));
+            checked_memcpy(outputs[0], inputs[0], totalFrames * sizeof(float));
+            checked_memcpy(outputs[1], inputs[0], totalFrames * sizeof(float));
         }
         else if (DISTRHO_PLUGIN_NUM_INPUTS == 2) {
-            memcpy(outputs[0], inputs[0], totalFrames * sizeof(float));
-            memcpy(outputs[1], inputs[1], totalFrames * sizeof(float));
+            checked_memcpy(outputs[0], inputs[0], totalFrames * sizeof(float));
+            checked_memcpy(outputs[1], inputs[1], totalFrames * sizeof(float));
         }
         return;
     }
