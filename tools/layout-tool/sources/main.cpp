@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     layout = flatten_layout(layout);
 
     for (const LayoutItem &item : layout.items) {
-        if (item.type == "Function")
+        if (item.classname == "Function")
             continue;
 
         if (!item.id.empty())

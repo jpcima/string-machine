@@ -25,6 +25,18 @@ static std::string consume_next_token(TokenList::iterator &tok_it, TokenList::it
     return *tok_it++;
 }
 
+static bool try_consume_next_token(const char *text, TokenList::iterator &tok_it, TokenList::iterator tok_end)
+{
+    if (tok_it == tok_end)
+        return false;
+
+    if (*tok_it != text)
+        return false;
+
+    ++tok_it;
+    return true;
+}
+
 static void ensure_next_token(const char *text, TokenList::iterator &tok_it, TokenList::iterator tok_end)
 {
     std::string tok = consume_next_token(tok_it, tok_end);
@@ -35,13 +47,19 @@ static void ensure_next_token(const char *text, TokenList::iterator &tok_it, Tok
 static std::string consume_enclosed_string(TokenList::iterator &tok_it, TokenList::iterator tok_end)
 {
     ensure_next_token("{", tok_it, tok_end);
+    unsigned depth = 1;
 
-    std::string text = consume_next_token(tok_it, tok_end);
-    if (text == "}")
-        return std::string();
-
-    for (std::string part; (part = consume_next_token(tok_it, tok_end)) != "}";) {
-        text.push_back(' ');
+    std::string text;
+    for (;;) {
+        std::string part = consume_next_token(tok_it, tok_end);
+        if (part == "}") {
+            if (--depth == 0)
+                return text;
+        }
+        else if (part == "{")
+            ++depth;
+        if (!text.empty())
+            text.push_back(' ');
         text.append(part);
     }
 
@@ -62,15 +80,84 @@ static int consume_int_token(TokenList::iterator &tok_it, TokenList::iterator to
     return std::stoi(text);
 }
 
-static void consume_properties(LayoutItem &item, TokenList::iterator &tok_it, TokenList::iterator tok_end)
+static int consume_real_token(TokenList::iterator &tok_it, TokenList::iterator tok_end)
+{
+    std::string text = consume_next_token(tok_it, tok_end);
+    return std::stod(text);
+}
+
+static void consume_image_properties(LayoutImage &image, TokenList::iterator &tok_it, TokenList::iterator tok_end)
+{
+    for (bool have = true; have;) {
+        if (try_consume_next_token("xywh", tok_it, tok_end)) {
+            ensure_next_token("{", tok_it, tok_end);
+            image.x = consume_int_token(tok_it, tok_end);
+            image.y = consume_int_token(tok_it, tok_end);
+            image.w = consume_int_token(tok_it, tok_end);
+            image.h = consume_int_token(tok_it, tok_end);
+            ensure_next_token("}", tok_it, tok_end);
+        }
+        else
+            have = false;
+    }
+}
+
+// static void consume_layout_item_properties(LayoutItem &item, TokenList::iterator &tok_it, TokenList::iterator tok_end)
+// {
+//     ensure_next_token("{", tok_it, tok_end);
+//     for (std::string text; (text = consume_next_token(tok_it, tok_end)) != "}";) {
+//         if (text == "open" || text == "selected")
+//             ; // skip
+//         else if (text == "label")
+//             item.label = consume_any_string(tok_it, tok_end);
+//         else if (text == "xywh") {
+//             ensure_next_token("{", tok_it, tok_end);
+//             item.x = consume_int_token(tok_it, tok_end);
+//             item.y = consume_int_token(tok_it, tok_end);
+//             item.w = consume_int_token(tok_it, tok_end);
+//             item.h = consume_int_token(tok_it, tok_end);
+//             ensure_next_token("}", tok_it, tok_end);
+//         }
+//         else if (text == "box")
+//             item.box = consume_next_token(tok_it, tok_end);
+//         else if (text == "labelfont")
+//             item.labelfont = consume_int_token(tok_it, tok_end);
+//         else if (text == "labelsize")
+//             item.labelsize = consume_int_token(tok_it, tok_end);
+//         else if (text == "labeltype")
+//             item.labeltype = consume_any_string(tok_it, tok_end);
+//         else if (text == "align")
+//             item.align = consume_int_token(tok_it, tok_end);
+//         else if (text == "type")
+//             item.type = consume_any_string(tok_it, tok_end);
+//         else if (text == "callback")
+//             item.callback = consume_any_string(tok_it, tok_end);
+//         else if (text == "class")
+//             item.classname = consume_any_string(tok_it, tok_end);
+//         else if (text == "minimum")
+//             item.minimum = consume_real_token(tok_it, tok_end);
+//         else if (text == "maximum")
+//             item.maximum = consume_real_token(tok_it, tok_end);
+//         else if (text == "step")
+//             item.step = consume_real_token(tok_it, tok_end);
+//         else if (text == "image") {
+//             item.image.filepath = consume_any_string(tok_it, tok_end);
+//             consume_image_properties(item.image, tok_it, tok_end);
+//         }
+//     }
+// }
+
+static void consume_layout_item_properties(LayoutItem &item, TokenList::iterator &tok_it, TokenList::iterator tok_end)
 {
     ensure_next_token("{", tok_it, tok_end);
-    for (std::string text; (text = consume_next_token(tok_it, tok_end)) != "}";) {
-        if (text == "open" || text == "selected")
+    for (bool have = true; have;) {
+        if (try_consume_next_token("open", tok_it, tok_end))
             ; // skip
-        else if (text == "label")
+        else if (try_consume_next_token("selected", tok_it, tok_end))
+            ; // skip
+        else if (try_consume_next_token("label", tok_it, tok_end))
             item.label = consume_any_string(tok_it, tok_end);
-        else if (text == "xywh") {
+        else if (try_consume_next_token("xywh", tok_it, tok_end)) {
             ensure_next_token("{", tok_it, tok_end);
             item.x = consume_int_token(tok_it, tok_end);
             item.y = consume_int_token(tok_it, tok_end);
@@ -78,27 +165,64 @@ static void consume_properties(LayoutItem &item, TokenList::iterator &tok_it, To
             item.h = consume_int_token(tok_it, tok_end);
             ensure_next_token("}", tok_it, tok_end);
         }
-        else if (text == "box")
+        else if (try_consume_next_token("box", tok_it, tok_end))
             item.box = consume_next_token(tok_it, tok_end);
-        else if (text == "labelfont")
+        else if (try_consume_next_token("down_box", tok_it, tok_end))
+            item.down_box = consume_next_token(tok_it, tok_end);
+        else if (try_consume_next_token("labelfont", tok_it, tok_end))
             item.labelfont = consume_int_token(tok_it, tok_end);
-        else if (text == "labelsize")
+        else if (try_consume_next_token("labelsize", tok_it, tok_end))
             item.labelsize = consume_int_token(tok_it, tok_end);
-        else if (text == "align")
+        else if (try_consume_next_token("labeltype", tok_it, tok_end))
+            item.labeltype = consume_any_string(tok_it, tok_end);
+        else if (try_consume_next_token("align", tok_it, tok_end))
             item.align = consume_int_token(tok_it, tok_end);
+        else if (try_consume_next_token("type", tok_it, tok_end))
+            item.type = consume_any_string(tok_it, tok_end);
+        else if (try_consume_next_token("callback", tok_it, tok_end))
+            item.callback = consume_any_string(tok_it, tok_end);
+        else if (try_consume_next_token("class", tok_it, tok_end))
+            item.classname = consume_any_string(tok_it, tok_end);
+        else if (try_consume_next_token("minimum", tok_it, tok_end))
+            item.minimum = consume_real_token(tok_it, tok_end);
+        else if (try_consume_next_token("maximum", tok_it, tok_end))
+            item.maximum = consume_real_token(tok_it, tok_end);
+        else if (try_consume_next_token("step", tok_it, tok_end))
+            item.step = consume_real_token(tok_it, tok_end);
+        else if (try_consume_next_token("image", tok_it, tok_end)) {
+            item.image.filepath = consume_any_string(tok_it, tok_end);
+            consume_image_properties(item.image, tok_it, tok_end);
+        }
+        else if (try_consume_next_token("visible", tok_it, tok_end))
+            /* skip */;
+        else
+            have = false;
     }
+    ensure_next_token("}", tok_it, tok_end);
 }
 
-static LayoutItem consume_layout_item(const std::string &type, TokenList::iterator &tok_it, TokenList::iterator tok_end)
+static LayoutItem consume_layout_item(const std::string &classname, TokenList::iterator &tok_it, TokenList::iterator tok_end, bool anonymous = false)
 {
     LayoutItem item;
-    item.type = type;
-    item.id = consume_any_string(tok_it, tok_end);
-    consume_properties(item, tok_it, tok_end);
+    item.classname = classname;
+    if (!anonymous)
+        item.id = consume_any_string(tok_it, tok_end);
+    consume_layout_item_properties(item, tok_it, tok_end);
     if (tok_it != tok_end && *tok_it == "{") {
         consume_next_token(tok_it, tok_end);
-        for (std::string text; (text = consume_next_token(tok_it, tok_end)) != "}";)
-            item.items.push_back(consume_layout_item(text, tok_it, tok_end));
+        for (std::string text; (text = consume_next_token(tok_it, tok_end)) != "}";) {
+            if (text == "decl") {
+                consume_any_string(tok_it, tok_end);
+                consume_any_string(tok_it, tok_end);
+            }
+            else if (text == "Function") {
+                consume_any_string(tok_it, tok_end);
+                consume_any_string(tok_it, tok_end);
+                consume_any_string(tok_it, tok_end);
+            }
+            else
+                item.items.push_back(consume_layout_item(text, tok_it, tok_end));
+        }
     }
     return item;
 }
@@ -126,9 +250,16 @@ static Layout read_tokens_layout(TokenList::iterator &tok_it, TokenList::iterato
             code_name = consume_next_token(tok_it, tok_end);
             ensure_next_token("}", tok_it, tok_end);
         }
-        else {
-            layout.items.push_back(consume_layout_item(key, tok_it, tok_end));
+        else if (key == "decl") {
+            consume_any_string(tok_it, tok_end);
+            consume_any_string(tok_it, tok_end);
         }
+        else if (key == "widget_class") {
+            key = consume_next_token(tok_it, tok_end);
+            layout.items.push_back(consume_layout_item(key, tok_it, tok_end, true));
+        }
+        else
+            layout.items.push_back(consume_layout_item(key, tok_it, tok_end));
     }
 
     return layout;
