@@ -52,16 +52,34 @@ matrix:
         - rm -f string-machine-"$_BUILD"/README
         - install -d release
         - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
-    # - os: osx
-    #   sudo: required
-    #   env:
-    #     - _BUILD=macos
-    #   script:
-    #     - bash .travis/script-macos.sh
-    #     - cp -av bin string-machine-"$_BUILD"
-    #     - rm -f string-machine-"$_BUILD"/README
-    #     - install -d release
-    #     - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
+    - os: osx
+      osx_image: xcode9.2
+      sudo: required
+      env:
+        - _BUILD=macos
+      addons:
+        homebrew:
+          packages:
+            - cairo
+          update: true
+      cache:
+        directories:
+          - $HOME/Library/Caches/Homebrew
+          - /usr/local/Homebrew
+      before_cache:
+        - brew cleanup
+        # Credit https://discourse.brew.sh/t/best-practice-for-homebrew-on-travis-brew-update-is-5min-to-build-time/5215/9
+        # Cache only .git files under "/usr/local/Homebrew" so "brew update" does not take 5min every build
+        - find /usr/local/Homebrew \! -regex ".+\.git.+" -delete
+      install:
+        # static link only :^)
+        - sudo rm -f /usr/local/lib/*.dylib
+      script:
+        - bash .travis/script-macos.sh
+        - cp -av bin string-machine-"$_BUILD"
+        - rm -f string-machine-"$_BUILD"/README
+        - install -d release
+        - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
     - os: linux
       sudo: required
       dist: trusty
@@ -79,8 +97,11 @@ matrix:
         - install -d release
         - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
         - echo "Digital model of electronic string ensemble instrument" > description-pak
-        - sudo checkinstall --type=debian --install=no --default --pkgname=string-machine --pkgversion="`git describe --abbrev=0 | sed 's/^v//'``git log -n 1 --pretty=format:"+%cd~git%h" --date=short master | sed 's/-//g'`" --pkgarch=amd64 --pkgrelease=0jpc1 --pkglicense=BSL-1.0 --pkggroup=sound --maintainer="jp-dev@inbox.ru" --nodoc
-        - sudo mv -f *.deb release/string-machine-"$_BUILD".deb
+        - |
+          if test "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false"; then
+            sudo checkinstall --type=debian --install=no --default --pkgname=string-machine --pkgversion="`git describe --abbrev=0 | sed 's/^v//'``git log -n 1 --pretty=format:"+%cd~git%h" --date=short master | sed 's/-//g'`" --pkgarch=amd64 --pkgrelease=0jpc1 --pkglicense=BSL-1.0 --pkggroup=sound --maintainer="jp-dev@inbox.ru" --nodoc
+            sudo mv -f *.deb release/string-machine-"$_BUILD".deb
+          fi
 
 before_script:
   - sed -i~ 's%/usr/local%/usr%g' plugins/*/Makefile
