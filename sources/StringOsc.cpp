@@ -48,7 +48,11 @@ void StringOsc::process(float *const outputs[2], const float *const detune[2], f
             freqs[i] = baseFrequency * detuneRatio[i];
 
         float *output = outputs[osc];
-        fOscillator[osc].process(output, freqs, count);
+
+        PwmOscillator &oscillator = fOscillator[osc];
+        oscillator.set_mod_depth(settings.pwmDepth);
+        oscillator.set_mod_frequency(settings.pwmFrequency);
+        oscillator.process(freqs, output, count);
 
         OnePoleHPF &filter = fFilter[osc];
         float cutoffRatio = std::exp2(hpCutoff[osc] * (1.0f / 12.0f));

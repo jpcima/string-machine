@@ -58,6 +58,7 @@ dsp:
 	$(call faustgen,-X-vec,sources/dsp/LFO3PhaseDual.dsp,gen/dsp/LFO3PhaseDual)
 	$(call faustgen,-X-vec,sources/dsp/StringFiltersHighshelf.dsp,gen/dsp/StringFiltersHighshelf)
 	$(call faustgen,-X-vec,sources/dsp/NoiseLFO.dsp,gen/dsp/NoiseLFO)
+	$(call faustgen,-X-vec,sources/dsp/PwmOscillator.dsp,gen/dsp/PwmOscillator)
 
 # --------------------------------------------------------------
 

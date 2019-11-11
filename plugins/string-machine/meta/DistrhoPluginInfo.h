@@ -25,6 +25,8 @@ enum {
     pIdOscDetune,
     pIdOscHpCutoffUpper,
     pIdOscHpCutoffLower,
+    pIdOscPwmDepth,
+    pIdOscPwmFrequency,
 
     pIdFltLpCutoffUpper,
     pIdFltHpCutoffUpper,

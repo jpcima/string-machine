@@ -5,49 +5,49 @@ code_name {.cxx}
 Function {make_window()} {open
 } {
   Fl_Window window_TopLevel {open selected
-    xywh {448 50 975 245} type Double visible
+    xywh {448 50 975 255} type Double visible
   } {
     Fl_Group group_StringOsc {
       label {String Osc} open
-      xywh {5 30 185 170} box DOWN_BOX labelfont 1 labelsize 10 align 17
+      xywh {5 5 185 170} box DOWN_BOX labelfont 1 labelsize 10 align 17
     } {
       Fl_Group subgroup_AutoDetune {
         label {Auto Detune} open
-        xywh {10 50 85 145} box UP_BOX labelfont 1 labelsize 10 align 17
+        xywh {10 25 85 145} box UP_BOX labelfont 1 labelsize 10 align 17
       } {
         Fl_Dial knob_OscDetune {
           label Detune
-          xywh {40 145 30 30} labelsize 10 align 1
+          xywh {40 120 30 30} labelsize 10 align 1
         }
         Fl_Box val_OscDetune {
-          xywh {35 178 40 12} box THIN_UP_BOX labelsize 10
+          xywh {35 153 40 12} box THIN_UP_BOX labelsize 10
         }
         Fl_Box val_OscDetune1 {
           label {4'}
-          xywh {35 83 40 12} box THIN_UP_BOX labelsize 10 align 4
+          xywh {35 58 40 12} box THIN_UP_BOX labelsize 10 align 4
         }
         Fl_Box val_OscDetune2 {
           label {8'}
-          xywh {35 103 40 12} box THIN_UP_BOX labelsize 10 align 4
+          xywh {35 78 40 12} box THIN_UP_BOX labelsize 10 align 4
         }
       }
       Fl_Group subgroup_StringOsc {
         label Shape open
-        xywh {105 50 80 145} box UP_BOX labelfont 1 labelsize 10 align 17
+        xywh {105 25 80 145} box UP_BOX labelfont 1 labelsize 10 align 17
       } {
         Fl_Dial knob_OscHpCutoffUpper {
           label {4' HP}
-          xywh {130 80 30 30} labelsize 10 align 1
+          xywh {130 55 30 30} labelsize 10 align 1
         }
         Fl_Dial knob_OscHpCutoffLower {
           label {8' HP}
-          xywh {130 145 30 30} labelsize 10 align 1
+          xywh {130 120 30 30} labelsize 10 align 1
         }
         Fl_Box val_OscHpCutoffUpper {
-          xywh {125 113 40 12} box THIN_UP_BOX labelsize 10
+          xywh {125 88 40 12} box THIN_UP_BOX labelsize 10
         }
         Fl_Box val_OscHpCutoffLower {
-          xywh {125 178 40 12} box THIN_UP_BOX labelsize 10
+          xywh {125 153 40 12} box THIN_UP_BOX labelsize 10
         }
       }
     }
@@ -235,6 +235,25 @@ Function {make_window()} {open
       }
       Fl_Box val_EnvDecay {
         xywh {725 193 40 12} box THIN_UP_BOX labelsize 10
+      }
+    }
+    Fl_Group group_StringPwm {
+      label {String PWM} open
+      xywh {5 185 185 65} box DOWN_BOX labelfont 1 labelsize 10 align 17
+    } {
+      Fl_Dial knob_OscPwmDepth {
+        label Depth
+        xywh {15 215 30 30} labelsize 10 align 1
+      }
+      Fl_Box val_OscPwmDepth {
+        xywh {50 233 40 12} box THIN_UP_BOX labelsize 10
+      }
+      Fl_Dial knob_OscPwmFrequency {
+        label Frequency
+        xywh {105 215 30 30} labelsize 10 align 1
+      }
+      Fl_Box val_OscPwmFrequency {
+        xywh {140 233 40 12} box THIN_UP_BOX labelsize 10
       }
     }
   }

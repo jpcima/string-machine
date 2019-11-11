@@ -24,6 +24,20 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.hints = kParameterIsAutomable;
         parameter.ranges = ParameterRanges(8.0, -20.0, 60.0);
         break;
+    case pIdOscPwmDepth:
+        parameter.symbol = "osc_pwm_depth";
+        parameter.name = "Oscillator PWM Depth";
+        parameter.hints = kParameterIsAutomable;
+        parameter.unit = "%";
+        parameter.ranges = ParameterRanges(0.0, 0.0, 100.0);
+        break;
+    case pIdOscPwmFrequency:
+        parameter.symbol = "osc_pwm_frequency";
+        parameter.name = "Oscillator PWM Frequency";
+        parameter.hints = kParameterIsAutomable|kParameterIsLogarithmic;
+        parameter.unit = "Hz";
+        parameter.ranges = ParameterRanges(0.25, 0.1, 5.0);
+        break;
 
     case pIdFltLpCutoffUpper:
         parameter.symbol = "flt_lp_cutoff_upper";

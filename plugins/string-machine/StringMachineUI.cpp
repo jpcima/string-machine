@@ -53,6 +53,8 @@ StringMachineUI::StringMachineUI()
     KNOB(OscDetune);
     KNOB(OscHpCutoffUpper);
     KNOB(OscHpCutoffLower);
+    KNOB(OscPwmDepth);
+    KNOB(OscPwmFrequency);
     KNOB(FltLpCutoffUpper);
     KNOB(FltHpCutoffUpper);
     KNOB(FltLpCutoffLower);
@@ -77,6 +79,8 @@ StringMachineUI::StringMachineUI()
     VALUE_DISPLAY(OscDetune);
     VALUE_DISPLAY(OscHpCutoffUpper);
     VALUE_DISPLAY(OscHpCutoffLower);
+    VALUE_DISPLAY(OscPwmDepth);
+    VALUE_DISPLAY(OscPwmFrequency);
     VALUE_DISPLAY(FltLpCutoffUpper);
     VALUE_DISPLAY(FltLpCutoffLower);
     VALUE_DISPLAY(FltHpCutoffUpper);
@@ -161,6 +165,7 @@ void StringMachineUI::onDisplay()
 
     const Label *group_labels[] = {
         &MainLayout::group_StringOsc_label,
+        &MainLayout::group_StringPwm_label,
         &MainLayout::group_StringFilters_label,
         &MainLayout::group_Mixer_label,
         &MainLayout::group_SolinaChorus_label,
@@ -177,6 +182,8 @@ void StringMachineUI::onDisplay()
         &MainLayout::knob_OscDetune_label,
         &MainLayout::knob_OscHpCutoffUpper_label,
         &MainLayout::knob_OscHpCutoffLower_label,
+        &MainLayout::knob_OscPwmDepth_label,
+        &MainLayout::knob_OscPwmFrequency_label,
         &MainLayout::knob_FltLpCutoffUpper_label,
         &MainLayout::knob_FltLpCutoffLower_label,
         &MainLayout::knob_FltHpCutoffUpper_label,

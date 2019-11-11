@@ -393,7 +393,7 @@ class LFO3PhaseDualDsp : public dsp {
 			float fTemp7 = (128.0f * fTemp6);
 			int iTemp8 = int(fTemp7);
 			float fTemp9 = float(iTemp8);
-			output0[i] = FAUSTFLOAT(((fRec2[0] * (((fTemp4 + (1.0f - fTemp2)) * ftbl0LFO3PhaseDualDspSIG0[iTemp3]) + (ftbl0LFO3PhaseDualDspSIG0[((iTemp3 + 1) % 128)] * (fTemp2 - fTemp4)))) + (fRec6[0] * ((ftbl0LFO3PhaseDualDspSIG0[iTemp8] * (fTemp9 + (1.0f - fTemp7))) + ((fTemp7 - fTemp9) * ftbl0LFO3PhaseDualDspSIG0[((iTemp8 + 1) % 128)])))));
+			output0[i] = FAUSTFLOAT(((fRec2[0] * ((ftbl0LFO3PhaseDualDspSIG0[iTemp3] * (fTemp4 + (1.0f - fTemp2))) + ((fTemp2 - fTemp4) * ftbl0LFO3PhaseDualDspSIG0[((iTemp3 + 1) % 128)]))) + (fRec6[0] * ((ftbl0LFO3PhaseDualDspSIG0[iTemp8] * (fTemp9 + (1.0f - fTemp7))) + (ftbl0LFO3PhaseDualDspSIG0[((iTemp8 + 1) % 128)] * (fTemp7 - fTemp9))))));
 			float fTemp10 = (128.0f * (fRec0[0] + (0.333333343f - float(int((fRec0[0] + 0.333333343f))))));
 			int iTemp11 = int(fTemp10);
 			float fTemp12 = float(iTemp11);

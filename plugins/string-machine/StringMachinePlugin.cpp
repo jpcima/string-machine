@@ -68,6 +68,10 @@ float StringMachinePlugin::getParameterValue(uint32_t index) const
         return synth.getOscSettings().highpassUpperCutoff;
     case pIdOscHpCutoffLower:
         return synth.getOscSettings().highpassLowerCutoff;
+    case pIdOscPwmDepth:
+        return synth.getOscSettings().pwmDepth;
+    case pIdOscPwmFrequency:
+        return synth.getOscSettings().pwmFrequency;
 
     case pIdFltLpCutoffUpper:
         return synth.getFltSettings().lowpassUpperCutoff;
@@ -150,6 +154,12 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
         break;
     case pIdOscHpCutoffLower:
         synth.getOscSettings().highpassLowerCutoff = value;
+        break;
+    case pIdOscPwmDepth:
+        synth.getOscSettings().pwmDepth = value;
+        break;
+    case pIdOscPwmFrequency:
+        synth.getOscSettings().pwmFrequency = value;
         break;
 
     case pIdFltLpCutoffUpper:

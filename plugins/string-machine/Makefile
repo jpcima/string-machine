@@ -32,6 +32,7 @@ FILES_SHARED = \
 	gen/dsp/LFO3PhaseDual.cpp \
 	gen/dsp/StringFiltersHighshelf.cpp \
 	gen/dsp/NoiseLFO.cpp \
+	gen/dsp/PwmOscillator.cpp \
 	thirdparty/vco/OscillatorBlepRect.cpp
 
 FILES_DSP = \
