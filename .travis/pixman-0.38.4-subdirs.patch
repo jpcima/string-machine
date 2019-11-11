@@ -1,0 +1,23 @@
+diff --git a/Makefile.am b/Makefile.am
+index e33b2b9..7e27aa3 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,4 +1,4 @@
+-SUBDIRS = pixman demos test
++SUBDIRS = pixman
+ 
+ pkgconfigdir=$(libdir)/pkgconfig
+ pkgconfig_DATA=pixman-1.pc
+diff --git a/Makefile.in b/Makefile.in
+index ab55851..930579a 100644
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -381,7 +381,7 @@ target_alias = @target_alias@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+-SUBDIRS = pixman demos test
++SUBDIRS = pixman
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = pixman-1.pc
+ GPGKEY = 3892336E
