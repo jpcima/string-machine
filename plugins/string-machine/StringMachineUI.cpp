@@ -273,7 +273,7 @@ void StringMachineUI::onDisplay()
     }
 
     if (fDeveloperMode) {
-        RectF rect(5.5, 7.5, 100.0, 15.0);
+        RectF rect(770.5, 7.5, 100.0, 15.0);
 
         cairo_rounded_rectangle(cr, rect, 5.0);
         cairo_set_source_rgba8(cr, ColorRGBA8{0xff, 0x7e, 0x00, 0xff});
@@ -554,7 +554,7 @@ void StringMachineUI::enableDeveloperMode()
 
     SkinTriggerButton *randButton = new SkinTriggerButton(fSkinTriggerButton, this);
     fRandomizeButton.reset(randButton);
-    randButton->setAbsolutePos(165, 6);
+    randButton->setAbsolutePos(930, 6);
     randButton->TriggerCallback = [this]() { randomizeParameters(); };
 
     repaint();
