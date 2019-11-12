@@ -63,6 +63,13 @@ void Delay3Phase::AnalogDelay::process(const float *input, const float *const mo
 
     float lineOutputs[3][BufferLimit];
 
+    ///
+    float avgDelay = 5e-3f;
+    float varDelay = 1e-3f;
+    float delayClockLo = BBD_Line::hz_rate_for_delay(avgDelay - varDelay, NumAnalogBBDStages) * sampleTime;
+    float delayClockHi = BBD_Line::hz_rate_for_delay(avgDelay + varDelay, NumAnalogBBDStages) * sampleTime;
+
+    ///
     for (unsigned l = 0; l < 3; ++l) {
         BBD_Line &line = fDelayLine[l];
         float *lineOutput = lineOutputs[l];
@@ -70,7 +77,7 @@ void Delay3Phase::AnalogDelay::process(const float *input, const float *const mo
 
         float clock[BufferLimit];
         for (unsigned i = 0; i < count; ++i)
-            clock[i] = BBD_Line::hz_rate_for_delay(5e-3f + (1e-3f * mod[i]), NumAnalogBBDStages) * sampleTime;
+            clock[i] = delayClockLo + (delayClockHi - delayClockLo) * 0.5f * (1.0f + mod[i]);
 
         line.process(count, input, lineOutput, clock);
     }
