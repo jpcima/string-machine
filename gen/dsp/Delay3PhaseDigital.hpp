@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
@@ -9,6 +10,11 @@
 // License: 
 // Version: 
 //------------------------------------------------------------------------------
+
+
+
+
+
 
 #pragma once
 #ifndef Delay3PhaseDigital_Faust_pp_Gen_HPP_
@@ -31,11 +37,11 @@ public:
 
     enum { NumInputs = 4 };
     enum { NumOutputs = 3 };
-    enum { NumParameters = 0 };
+    enum { NumActives = 0 };
     enum { NumPassives = 0 };
+    enum { NumParameters = 0 };
 
     enum Parameter {
-        
         
     };
 
@@ -59,9 +65,6 @@ public:
     void set_parameter(unsigned index, float value) noexcept;
 
     
-
-    float get_passive(unsigned index) const noexcept;
-
     
 
 public:
@@ -69,6 +72,12 @@ public:
 
 private:
     std::unique_ptr<BasicDsp> fDsp;
+
+
+
 };
+
+
+
 
 #endif // Delay3PhaseDigital_Faust_pp_Gen_HPP_

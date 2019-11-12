@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
@@ -10,7 +11,17 @@
 // Version: 
 //------------------------------------------------------------------------------
 
+
+
+
+
+
+
 #include "NoiseLFO.hpp"
+
+
+
+#include <utility>
 #include <cmath>
 
 class NoiseLFO::BasicDsp {
@@ -57,6 +68,7 @@ typedef NoiseLFO::BasicDsp dsp;
 // define the DSP in the anonymous namespace
 #define FAUSTPP_BEGIN_NAMESPACE namespace {
 #define FAUSTPP_END_NAMESPACE }
+
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
@@ -315,14 +327,20 @@ FAUSTPP_END_NAMESPACE
 #endif
 
 
+
 //------------------------------------------------------------------------------
 // End the Faust code section
 
+
+
+
 NoiseLFO::NoiseLFO()
-    : fDsp(new NoiseLFODsp)
 {
-    NoiseLFODsp &dsp = static_cast<NoiseLFODsp &>(*fDsp);
-    dsp.instanceResetUserInterface();
+
+    NoiseLFODsp *dsp = new NoiseLFODsp;
+    fDsp.reset(dsp);
+    dsp->instanceResetUserInterface();
+
 }
 
 NoiseLFO::~NoiseLFO()
@@ -331,16 +349,20 @@ NoiseLFO::~NoiseLFO()
 
 void NoiseLFO::init(float sample_rate)
 {
+
     NoiseLFODsp &dsp = static_cast<NoiseLFODsp &>(*fDsp);
     dsp.classInit(sample_rate);
     dsp.instanceConstants(sample_rate);
-    dsp.instanceClear();
+    clear();
+
 }
 
 void NoiseLFO::clear() noexcept
 {
+
     NoiseLFODsp &dsp = static_cast<NoiseLFODsp &>(*fDsp);
     dsp.instanceClear();
+
 }
 
 void NoiseLFO::process(
@@ -348,6 +370,7 @@ void NoiseLFO::process(
     float *out0,
     unsigned count) noexcept
 {
+
     NoiseLFODsp &dsp = static_cast<NoiseLFODsp &>(*fDsp);
     float *inputs[] = {
         
@@ -356,6 +379,7 @@ void NoiseLFO::process(
         out0,
     };
     dsp.compute(count, inputs, outputs);
+
 }
 
 const char *NoiseLFO::parameter_label(unsigned index) noexcept
@@ -411,7 +435,7 @@ const NoiseLFO::ParameterRange *NoiseLFO::parameter_range(unsigned index) noexce
     switch (index) {
     
     case 0: {
-        static const ParameterRange range = { 1.0, 0.0, 100.0 };
+        static const ParameterRange range = { 1, 0, 100 };
         return &range;
     }
     
@@ -493,6 +517,7 @@ float NoiseLFO::get_frequency() const noexcept
     return dsp.fHslider0;
 }
 
+
 void NoiseLFO::set_frequency(float value) noexcept
 {
     NoiseLFODsp &dsp = static_cast<NoiseLFODsp &>(*fDsp);
@@ -500,15 +525,5 @@ void NoiseLFO::set_frequency(float value) noexcept
 }
 
 
-float NoiseLFO::get_passive(unsigned index) const noexcept
-{
-    NoiseLFODsp &dsp = static_cast<NoiseLFODsp &>(*fDsp);
-    switch (index) {
-    
-    default:
-        (void)dsp;
-        return 0;
-    }
-}
 
 

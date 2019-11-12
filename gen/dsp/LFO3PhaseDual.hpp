@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
@@ -9,6 +10,11 @@
 // License: 
 // Version: 
 //------------------------------------------------------------------------------
+
+
+
+
+
 
 #pragma once
 #ifndef LFO3PhaseDual_Faust_pp_Gen_HPP_
@@ -31,8 +37,9 @@ public:
 
     enum { NumInputs = 0 };
     enum { NumOutputs = 3 };
-    enum { NumParameters = 5 };
+    enum { NumActives = 5 };
     enum { NumPassives = 2 };
+    enum { NumParameters = 7 };
 
     enum Parameter {
         p_rate1,
@@ -40,7 +47,6 @@ public:
         p_rate2,
         p_depth2,
         p_globaldepth,
-        
         p_phase1,
         p_phase2,
         
@@ -67,29 +73,29 @@ public:
 
     
     float get_rate1() const noexcept;
-    void set_rate1(float value) noexcept;
     
     float get_depth1() const noexcept;
-    void set_depth1(float value) noexcept;
     
     float get_rate2() const noexcept;
-    void set_rate2(float value) noexcept;
     
     float get_depth2() const noexcept;
-    void set_depth2(float value) noexcept;
     
     float get_globaldepth() const noexcept;
-    void set_globaldepth(float value) noexcept;
-    
-
-    float get_passive(unsigned index) const noexcept;
-
     
     float get_phase1() const noexcept;
-    void set_phase1(float value) noexcept;
     
     float get_phase2() const noexcept;
-    void set_phase2(float value) noexcept;
+    
+    
+    void set_rate1(float value) noexcept;
+    
+    void set_depth1(float value) noexcept;
+    
+    void set_rate2(float value) noexcept;
+    
+    void set_depth2(float value) noexcept;
+    
+    void set_globaldepth(float value) noexcept;
     
 
 public:
@@ -97,6 +103,12 @@ public:
 
 private:
     std::unique_ptr<BasicDsp> fDsp;
+
+
+
 };
+
+
+
 
 #endif // LFO3PhaseDual_Faust_pp_Gen_HPP_

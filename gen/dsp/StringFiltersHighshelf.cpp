@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
@@ -10,7 +11,17 @@
 // Version: 
 //------------------------------------------------------------------------------
 
+
+
+
+
+
+
 #include "StringFiltersHighshelf.hpp"
+
+
+
+#include <utility>
 #include <cmath>
 
 class StringFiltersHighshelf::BasicDsp {
@@ -57,6 +68,7 @@ typedef StringFiltersHighshelf::BasicDsp dsp;
 // define the DSP in the anonymous namespace
 #define FAUSTPP_BEGIN_NAMESPACE namespace {
 #define FAUSTPP_END_NAMESPACE }
+
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
@@ -263,14 +275,20 @@ FAUSTPP_END_NAMESPACE
 #endif
 
 
+
 //------------------------------------------------------------------------------
 // End the Faust code section
 
+
+
+
 StringFiltersHighshelf::StringFiltersHighshelf()
-    : fDsp(new StringFiltersHighshelfDsp)
 {
-    StringFiltersHighshelfDsp &dsp = static_cast<StringFiltersHighshelfDsp &>(*fDsp);
-    dsp.instanceResetUserInterface();
+
+    StringFiltersHighshelfDsp *dsp = new StringFiltersHighshelfDsp;
+    fDsp.reset(dsp);
+    dsp->instanceResetUserInterface();
+
 }
 
 StringFiltersHighshelf::~StringFiltersHighshelf()
@@ -279,16 +297,20 @@ StringFiltersHighshelf::~StringFiltersHighshelf()
 
 void StringFiltersHighshelf::init(float sample_rate)
 {
+
     StringFiltersHighshelfDsp &dsp = static_cast<StringFiltersHighshelfDsp &>(*fDsp);
     dsp.classInit(sample_rate);
     dsp.instanceConstants(sample_rate);
-    dsp.instanceClear();
+    clear();
+
 }
 
 void StringFiltersHighshelf::clear() noexcept
 {
+
     StringFiltersHighshelfDsp &dsp = static_cast<StringFiltersHighshelfDsp &>(*fDsp);
     dsp.instanceClear();
+
 }
 
 void StringFiltersHighshelf::process(
@@ -296,6 +318,7 @@ void StringFiltersHighshelf::process(
     float *out0,
     unsigned count) noexcept
 {
+
     StringFiltersHighshelfDsp &dsp = static_cast<StringFiltersHighshelfDsp &>(*fDsp);
     float *inputs[] = {
         const_cast<float *>(in0),
@@ -304,6 +327,7 @@ void StringFiltersHighshelf::process(
         out0,
     };
     dsp.compute(count, inputs, outputs);
+
 }
 
 const char *StringFiltersHighshelf::parameter_label(unsigned index) noexcept
@@ -371,12 +395,12 @@ const StringFiltersHighshelf::ParameterRange *StringFiltersHighshelf::parameter_
     switch (index) {
     
     case 0: {
-        static const ParameterRange range = { 1000.0, 10.0, 10000.0 };
+        static const ParameterRange range = { 1000, 10, 10000 };
         return &range;
     }
     
     case 1: {
-        static const ParameterRange range = { 3.0, 1.0, 10.0 };
+        static const ParameterRange range = { 3, 1, 10 };
         return &range;
     }
     
@@ -468,16 +492,17 @@ float StringFiltersHighshelf::get_cutoff() const noexcept
     return dsp.fHslider1;
 }
 
-void StringFiltersHighshelf::set_cutoff(float value) noexcept
-{
-    StringFiltersHighshelfDsp &dsp = static_cast<StringFiltersHighshelfDsp &>(*fDsp);
-    dsp.fHslider1 = value;
-}
-
 float StringFiltersHighshelf::get_gain() const noexcept
 {
     StringFiltersHighshelfDsp &dsp = static_cast<StringFiltersHighshelfDsp &>(*fDsp);
     return dsp.fHslider0;
+}
+
+
+void StringFiltersHighshelf::set_cutoff(float value) noexcept
+{
+    StringFiltersHighshelfDsp &dsp = static_cast<StringFiltersHighshelfDsp &>(*fDsp);
+    dsp.fHslider1 = value;
 }
 
 void StringFiltersHighshelf::set_gain(float value) noexcept
@@ -487,15 +512,5 @@ void StringFiltersHighshelf::set_gain(float value) noexcept
 }
 
 
-float StringFiltersHighshelf::get_passive(unsigned index) const noexcept
-{
-    StringFiltersHighshelfDsp &dsp = static_cast<StringFiltersHighshelfDsp &>(*fDsp);
-    switch (index) {
-    
-    default:
-        (void)dsp;
-        return 0;
-    }
-}
 
 

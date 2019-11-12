@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
@@ -9,6 +10,11 @@
 // License: 
 // Version: 
 //------------------------------------------------------------------------------
+
+
+
+
+
 
 #pragma once
 #ifndef NoiseLFO_Faust_pp_Gen_HPP_
@@ -31,12 +37,12 @@ public:
 
     enum { NumInputs = 0 };
     enum { NumOutputs = 1 };
-    enum { NumParameters = 1 };
+    enum { NumActives = 1 };
     enum { NumPassives = 0 };
+    enum { NumParameters = 1 };
 
     enum Parameter {
         p_frequency,
-        
         
     };
 
@@ -61,11 +67,9 @@ public:
 
     
     float get_frequency() const noexcept;
-    void set_frequency(float value) noexcept;
     
-
-    float get_passive(unsigned index) const noexcept;
-
+    
+    void set_frequency(float value) noexcept;
     
 
 public:
@@ -73,6 +77,12 @@ public:
 
 private:
     std::unique_ptr<BasicDsp> fDsp;
+
+
+
 };
+
+
+
 
 #endif // NoiseLFO_Faust_pp_Gen_HPP_

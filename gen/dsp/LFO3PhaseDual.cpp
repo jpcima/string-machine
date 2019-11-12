@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
@@ -10,7 +11,17 @@
 // Version: 
 //------------------------------------------------------------------------------
 
+
+
+
+
+
+
 #include "LFO3PhaseDual.hpp"
+
+
+
+#include <utility>
 #include <cmath>
 
 class LFO3PhaseDual::BasicDsp {
@@ -57,6 +68,7 @@ typedef LFO3PhaseDual::BasicDsp dsp;
 // define the DSP in the anonymous namespace
 #define FAUSTPP_BEGIN_NAMESPACE namespace {
 #define FAUSTPP_END_NAMESPACE }
+
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
@@ -393,7 +405,7 @@ class LFO3PhaseDualDsp : public dsp {
 			float fTemp7 = (128.0f * fTemp6);
 			int iTemp8 = int(fTemp7);
 			float fTemp9 = float(iTemp8);
-			output0[i] = FAUSTFLOAT(((fRec2[0] * ((ftbl0LFO3PhaseDualDspSIG0[iTemp3] * (fTemp4 + (1.0f - fTemp2))) + ((fTemp2 - fTemp4) * ftbl0LFO3PhaseDualDspSIG0[((iTemp3 + 1) % 128)]))) + (fRec6[0] * ((ftbl0LFO3PhaseDualDspSIG0[iTemp8] * (fTemp9 + (1.0f - fTemp7))) + (ftbl0LFO3PhaseDualDspSIG0[((iTemp8 + 1) % 128)] * (fTemp7 - fTemp9))))));
+			output0[i] = FAUSTFLOAT(((fRec2[0] * ((ftbl0LFO3PhaseDualDspSIG0[iTemp3] * (fTemp4 + (1.0f - fTemp2))) + ((fTemp2 - fTemp4) * ftbl0LFO3PhaseDualDspSIG0[((iTemp3 + 1) % 128)]))) + (fRec6[0] * (((fTemp7 - fTemp9) * ftbl0LFO3PhaseDualDspSIG0[((iTemp8 + 1) % 128)]) + (ftbl0LFO3PhaseDualDspSIG0[iTemp8] * (fTemp9 + (1.0f - fTemp7)))))));
 			float fTemp10 = (128.0f * (fRec0[0] + (0.333333343f - float(int((fRec0[0] + 0.333333343f))))));
 			int iTemp11 = int(fTemp10);
 			float fTemp12 = float(iTemp11);
@@ -428,14 +440,20 @@ FAUSTPP_END_NAMESPACE
 #endif
 
 
+
 //------------------------------------------------------------------------------
 // End the Faust code section
 
+
+
+
 LFO3PhaseDual::LFO3PhaseDual()
-    : fDsp(new LFO3PhaseDualDsp)
 {
-    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
-    dsp.instanceResetUserInterface();
+
+    LFO3PhaseDualDsp *dsp = new LFO3PhaseDualDsp;
+    fDsp.reset(dsp);
+    dsp->instanceResetUserInterface();
+
 }
 
 LFO3PhaseDual::~LFO3PhaseDual()
@@ -444,16 +462,20 @@ LFO3PhaseDual::~LFO3PhaseDual()
 
 void LFO3PhaseDual::init(float sample_rate)
 {
+
     LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
     dsp.classInit(sample_rate);
     dsp.instanceConstants(sample_rate);
-    dsp.instanceClear();
+    clear();
+
 }
 
 void LFO3PhaseDual::clear() noexcept
 {
+
     LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
     dsp.instanceClear();
+
 }
 
 void LFO3PhaseDual::process(
@@ -461,6 +483,7 @@ void LFO3PhaseDual::process(
     float *out0,float *out1,float *out2,
     unsigned count) noexcept
 {
+
     LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
     float *inputs[] = {
         
@@ -469,6 +492,7 @@ void LFO3PhaseDual::process(
         out0,out1,out2,
     };
     dsp.compute(count, inputs, outputs);
+
 }
 
 const char *LFO3PhaseDual::parameter_label(unsigned index) noexcept
@@ -489,6 +513,12 @@ const char *LFO3PhaseDual::parameter_label(unsigned index) noexcept
     
     case 4:
         return "Global Depth";
+    
+    case 5:
+        return "Phase 1";
+    
+    case 6:
+        return "Phase 2";
     
     default:
         return 0;
@@ -512,6 +542,12 @@ const char *LFO3PhaseDual::parameter_short_label(unsigned index) noexcept
         return "";
     
     case 4:
+        return "";
+    
+    case 5:
+        return "";
+    
+    case 6:
         return "";
     
     default:
@@ -538,6 +574,12 @@ const char *LFO3PhaseDual::parameter_symbol(unsigned index) noexcept
     case 4:
         return "globaldepth";
     
+    case 5:
+        return "phase1";
+    
+    case 6:
+        return "phase2";
+    
     default:
         return 0;
     }
@@ -562,6 +604,12 @@ const char *LFO3PhaseDual::parameter_unit(unsigned index) noexcept
     case 4:
         return "%";
     
+    case 5:
+        return "";
+    
+    case 6:
+        return "";
+    
     default:
         return 0;
     }
@@ -572,27 +620,37 @@ const LFO3PhaseDual::ParameterRange *LFO3PhaseDual::parameter_range(unsigned ind
     switch (index) {
     
     case 0: {
-        static const ParameterRange range = { 6.0, 3.0, 9.0 };
+        static const ParameterRange range = { 6, 3, 9 };
         return &range;
     }
     
     case 1: {
-        static const ParameterRange range = { 50.0, 0.0, 100.0 };
+        static const ParameterRange range = { 50, 0, 100 };
         return &range;
     }
     
     case 2: {
-        static const ParameterRange range = { 0.6000000238418579, 0.30000001192092896, 0.8999999761581421 };
+        static const ParameterRange range = { 0.60000002, 0.30000001, 0.89999998 };
         return &range;
     }
     
     case 3: {
-        static const ParameterRange range = { 50.0, 0.0, 100.0 };
+        static const ParameterRange range = { 50, 0, 100 };
         return &range;
     }
     
     case 4: {
-        static const ParameterRange range = { 100.0, 0.0, 100.0 };
+        static const ParameterRange range = { 100, 0, 100 };
+        return &range;
+    }
+    
+    case 5: {
+        static const ParameterRange range = { 0, 0, 1 };
+        return &range;
+    }
+    
+    case 6: {
+        static const ParameterRange range = { 0, 0, 1 };
         return &range;
     }
     
@@ -657,6 +715,12 @@ float LFO3PhaseDual::get_parameter(unsigned index) const noexcept
     case 4:
         return dsp.fHslider1;
     
+    case 5:
+        return dsp.fVbargraph0;
+    
+    case 6:
+        return dsp.fVbargraph1;
+    
     default:
         (void)dsp;
         return 0;
@@ -702,22 +766,10 @@ float LFO3PhaseDual::get_rate1() const noexcept
     return dsp.fHslider0;
 }
 
-void LFO3PhaseDual::set_rate1(float value) noexcept
-{
-    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
-    dsp.fHslider0 = value;
-}
-
 float LFO3PhaseDual::get_depth1() const noexcept
 {
     LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
     return dsp.fHslider2;
-}
-
-void LFO3PhaseDual::set_depth1(float value) noexcept
-{
-    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
-    dsp.fHslider2 = value;
 }
 
 float LFO3PhaseDual::get_rate2() const noexcept
@@ -726,28 +778,53 @@ float LFO3PhaseDual::get_rate2() const noexcept
     return dsp.fHslider3;
 }
 
-void LFO3PhaseDual::set_rate2(float value) noexcept
-{
-    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
-    dsp.fHslider3 = value;
-}
-
 float LFO3PhaseDual::get_depth2() const noexcept
 {
     LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
     return dsp.fHslider4;
 }
 
-void LFO3PhaseDual::set_depth2(float value) noexcept
-{
-    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
-    dsp.fHslider4 = value;
-}
-
 float LFO3PhaseDual::get_globaldepth() const noexcept
 {
     LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
     return dsp.fHslider1;
+}
+
+float LFO3PhaseDual::get_phase1() const noexcept
+{
+    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
+    return dsp.fVbargraph0;
+}
+
+float LFO3PhaseDual::get_phase2() const noexcept
+{
+    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
+    return dsp.fVbargraph1;
+}
+
+
+void LFO3PhaseDual::set_rate1(float value) noexcept
+{
+    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
+    dsp.fHslider0 = value;
+}
+
+void LFO3PhaseDual::set_depth1(float value) noexcept
+{
+    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
+    dsp.fHslider2 = value;
+}
+
+void LFO3PhaseDual::set_rate2(float value) noexcept
+{
+    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
+    dsp.fHslider3 = value;
+}
+
+void LFO3PhaseDual::set_depth2(float value) noexcept
+{
+    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
+    dsp.fHslider4 = value;
 }
 
 void LFO3PhaseDual::set_globaldepth(float value) noexcept
@@ -757,45 +834,5 @@ void LFO3PhaseDual::set_globaldepth(float value) noexcept
 }
 
 
-float LFO3PhaseDual::get_passive(unsigned index) const noexcept
-{
-    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
-    switch (index) {
-    
-    case NumParameters + 0:
-        return dsp.fVbargraph0;
-    
-    case NumParameters + 1:
-        return dsp.fVbargraph1;
-    
-    default:
-        (void)dsp;
-        return 0;
-    }
-}
 
-
-float LFO3PhaseDual::get_phase1() const noexcept
-{
-    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
-    return dsp.fVbargraph0;
-}
-
-void LFO3PhaseDual::set_phase1(float value) noexcept
-{
-    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
-    dsp.fVbargraph0 = value;
-}
-
-float LFO3PhaseDual::get_phase2() const noexcept
-{
-    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
-    return dsp.fVbargraph1;
-}
-
-void LFO3PhaseDual::set_phase2(float value) noexcept
-{
-    LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
-    dsp.fVbargraph1 = value;
-}
 

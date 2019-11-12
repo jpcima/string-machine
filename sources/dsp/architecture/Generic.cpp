@@ -1,3 +1,4 @@
+{% block ImplementationDescription %}
 //------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
@@ -9,8 +10,21 @@
 // License: {{license}}
 // Version: {{version}}
 //------------------------------------------------------------------------------
+{% endblock %}
 
+{% block ImplementationPrologue %}
+{% if not (Identifier is defined and
+           Identifier == cid(Identifier)) %}
+{{fail("`Identifier` is undefined or invalid.")}}
+{% endif %}
+{% endblock %}
+
+{% block ImplementationIncludeHeader %}
 #include "{{Identifier}}.hpp"
+{% endblock %}
+{% block ImplementationIncludeExtra %}
+{% endblock %}
+#include <utility>
 #include <cmath>
 
 class {{Identifier}}::BasicDsp {
@@ -58,16 +72,23 @@ typedef {{Identifier}}::BasicDsp dsp;
 #define FAUSTPP_BEGIN_NAMESPACE namespace {
 #define FAUSTPP_END_NAMESPACE }
 
+{% block ImplementationFaustCode %}
 {{class_code}}
+{% endblock %}
 
 //------------------------------------------------------------------------------
 // End the Faust code section
 
+{% block ImplementationBeforeClassDefs %}
+{% endblock %}
+
 {{Identifier}}::{{Identifier}}()
-    : fDsp(new {{class_name}})
 {
-    {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
-    dsp.instanceResetUserInterface();
+{% block ImplementationSetupDsp %}
+    {{class_name}} *dsp = new {{class_name}};
+    fDsp.reset(dsp);
+    dsp->instanceResetUserInterface();
+{% endblock %}
 }
 
 {{Identifier}}::~{{Identifier}}()
@@ -76,16 +97,20 @@ typedef {{Identifier}}::BasicDsp dsp;
 
 void {{Identifier}}::init(float sample_rate)
 {
+{% block ImplementationInitDsp %}
     {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
     dsp.classInit(sample_rate);
     dsp.instanceConstants(sample_rate);
-    dsp.instanceClear();
+    clear();
+{% endblock %}
 }
 
 void {{Identifier}}::clear() noexcept
 {
+{% block ImplementationClearDsp %}
     {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
     dsp.instanceClear();
+{% endblock %}
 }
 
 void {{Identifier}}::process(
@@ -93,6 +118,7 @@ void {{Identifier}}::process(
     {% for i in range(outputs) %}float *out{{i}},{% endfor %}
     unsigned count) noexcept
 {
+{% block ImplementationProcessDsp %}
     {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
     float *inputs[] = {
         {% for i in range(inputs) %}const_cast<float *>(in{{i}}),{% endfor %}
@@ -101,13 +127,14 @@ void {{Identifier}}::process(
         {% for i in range(outputs) %}out{{i}},{% endfor %}
     };
     dsp.compute(count, inputs, outputs);
+{% endblock %}
 }
 
 const char *{{Identifier}}::parameter_label(unsigned index) noexcept
 {
     switch (index) {
-    {% for w in active %}
-    case {{loop.index}}:
+    {% for w in active + passive %}
+    case {{loop.index0}}:
         return {{cstr(w.label)}};
     {% endfor %}
     default:
@@ -118,9 +145,9 @@ const char *{{Identifier}}::parameter_label(unsigned index) noexcept
 const char *{{Identifier}}::parameter_short_label(unsigned index) noexcept
 {
     switch (index) {
-    {% for w in active %}
-    case {{loop.index}}:
-        return {{cstr(default(w.meta.abbrev,""))}};
+    {% for w in active + passive %}
+    case {{loop.index0}}:
+        return {{cstr(w.meta.abbrev|default(""))}};
     {% endfor %}
     default:
         return 0;
@@ -130,9 +157,9 @@ const char *{{Identifier}}::parameter_short_label(unsigned index) noexcept
 const char *{{Identifier}}::parameter_symbol(unsigned index) noexcept
 {
     switch (index) {
-    {% for w in active %}
-    case {{loop.index}}:
-        return {{cstr(cid(default(w.meta.symbol,w.label)))}};
+    {% for w in active + passive %}
+    case {{loop.index0}}:
+        return {{cstr(cid(w.meta.symbol|default(w.label)))}};
     {% endfor %}
     default:
         return 0;
@@ -142,8 +169,8 @@ const char *{{Identifier}}::parameter_symbol(unsigned index) noexcept
 const char *{{Identifier}}::parameter_unit(unsigned index) noexcept
 {
     switch (index) {
-    {% for w in active %}
-    case {{loop.index}}:
+    {% for w in active + passive %}
+    case {{loop.index0}}:
         return {{cstr(w.unit)}};
     {% endfor %}
     default:
@@ -154,8 +181,8 @@ const char *{{Identifier}}::parameter_unit(unsigned index) noexcept
 const {{Identifier}}::ParameterRange *{{Identifier}}::parameter_range(unsigned index) noexcept
 {
     switch (index) {
-    {% for w in active %}
-    case {{loop.index}}: {
+    {% for w in active + passive %}
+    case {{loop.index0}}: {
         static const ParameterRange range = { {{w.init}}, {{w.min}}, {{w.max}} };
         return &range;
     }
@@ -168,8 +195,9 @@ const {{Identifier}}::ParameterRange *{{Identifier}}::parameter_range(unsigned i
 bool {{Identifier}}::parameter_is_trigger(unsigned index) noexcept
 {
     switch (index) {
-    {% for w in active %}{% if (w.type == "button" or existsIn(w.meta, "trigger")) %}
-    case {{loop.index}}:
+    {% for w in active + passive %}{% if w.type in ["button"] or
+                                         w.meta.trigger is defined %}
+    case {{loop.index0}}:
         return true;
     {% endif %}{% endfor %}
     default:
@@ -180,8 +208,9 @@ bool {{Identifier}}::parameter_is_trigger(unsigned index) noexcept
 bool {{Identifier}}::parameter_is_boolean(unsigned index) noexcept
 {
     switch (index) {
-    {% for w in active %}{% if (w.type == "button" or w.type == "checkbox") or existsIn(w.meta, "boolean") %}
-    case {{loop.index}}:
+    {% for w in active + passive %}{% if w.type in ["button", "checkbox"] or
+                                         w.meta.boolean is defined %}
+    case {{loop.index0}}:
         return true;
     {% endif %}{% endfor %}
     default:
@@ -192,8 +221,10 @@ bool {{Identifier}}::parameter_is_boolean(unsigned index) noexcept
 bool {{Identifier}}::parameter_is_integer(unsigned index) noexcept
 {
     switch (index) {
-    {% for w in active %}{% if (w.type == "button" or w.type == "checkbox") or (existsIn(w.meta, "integer") or existsIn(w.meta, "boolean")) %}
-    case {{loop.index}}:
+    {% for w in active + passive %}{% if w.type in ["button", "checkbox"] or
+                                         w.meta.integer is defined or
+                                         w.meta.boolean is defined %}
+    case {{loop.index0}}:
         return true;
     {% endif %}{% endfor %}
     default:
@@ -204,8 +235,8 @@ bool {{Identifier}}::parameter_is_integer(unsigned index) noexcept
 bool {{Identifier}}::parameter_is_logarithmic(unsigned index) noexcept
 {
     switch (index) {
-    {% for w in active %}{% if w.scale == "log" %}
-    case {{loop.index}}:
+    {% for w in active + passive %}{% if w.scale == "log" %}
+    case {{loop.index0}}:
         return true;
     {% endif %}{% endfor %}
     default:
@@ -217,8 +248,8 @@ float {{Identifier}}::get_parameter(unsigned index) const noexcept
 {
     {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
     switch (index) {
-    {% for w in active %}
-    case {{loop.index}}:
+    {% for w in active + passive %}
+    case {{loop.index0}}:
         return dsp.{{w.var}};
     {% endfor %}
     default:
@@ -232,7 +263,7 @@ void {{Identifier}}::set_parameter(unsigned index, float value) noexcept
     {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
     switch (index) {
     {% for w in active %}
-    case {{loop.index}}:
+    case {{loop.index0}}:
         dsp.{{w.var}} = value;
         break;
     {% endfor %}
@@ -243,44 +274,20 @@ void {{Identifier}}::set_parameter(unsigned index, float value) noexcept
     }
 }
 
+{% for w in active + passive %}
+float {{Identifier}}::get_{{cid(w.meta.symbol|default(w.label))}}() const noexcept
+{
+    {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
+    return dsp.{{w.var}};
+}
+{% endfor %}
 {% for w in active %}
-float {{Identifier}}::get_{{cid(default(w.meta.symbol,w.label))}}() const noexcept
-{
-    {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
-    return dsp.{{w.var}};
-}
-
-void {{Identifier}}::set_{{cid(default(w.meta.symbol,w.label))}}(float value) noexcept
+void {{Identifier}}::set_{{cid(w.meta.symbol|default(w.label))}}(float value) noexcept
 {
     {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
     dsp.{{w.var}} = value;
 }
 {% endfor %}
 
-float {{Identifier}}::get_passive(unsigned index) const noexcept
-{
-    {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
-    switch (index) {
-    {% for w in passive %}
-    case NumParameters + {{loop.index}}:
-        return dsp.{{w.var}};
-    {% endfor %}
-    default:
-        (void)dsp;
-        return 0;
-    }
-}
-
-{% for w in passive %}
-float {{Identifier}}::get_{{cid(default(w.meta.symbol,w.label))}}() const noexcept
-{
-    {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
-    return dsp.{{w.var}};
-}
-
-void {{Identifier}}::set_{{cid(default(w.meta.symbol,w.label))}}(float value) noexcept
-{
-    {{class_name}} &dsp = static_cast<{{class_name}} &>(*fDsp);
-    dsp.{{w.var}} = value;
-}
-{% endfor %}
+{% block ImplementationEpilogue %}
+{% endblock %}

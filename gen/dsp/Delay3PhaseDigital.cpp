@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
@@ -10,7 +11,17 @@
 // Version: 
 //------------------------------------------------------------------------------
 
+
+
+
+
+
+
 #include "Delay3PhaseDigital.hpp"
+
+
+
+#include <utility>
 #include <cmath>
 
 class Delay3PhaseDigital::BasicDsp {
@@ -57,6 +68,7 @@ typedef Delay3PhaseDigital::BasicDsp dsp;
 // define the DSP in the anonymous namespace
 #define FAUSTPP_BEGIN_NAMESPACE namespace {
 #define FAUSTPP_END_NAMESPACE }
+
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
@@ -346,14 +358,20 @@ FAUSTPP_END_NAMESPACE
 #endif
 
 
+
 //------------------------------------------------------------------------------
 // End the Faust code section
 
+
+
+
 Delay3PhaseDigital::Delay3PhaseDigital()
-    : fDsp(new Delay3PhaseDigitalDsp)
 {
-    Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
-    dsp.instanceResetUserInterface();
+
+    Delay3PhaseDigitalDsp *dsp = new Delay3PhaseDigitalDsp;
+    fDsp.reset(dsp);
+    dsp->instanceResetUserInterface();
+
 }
 
 Delay3PhaseDigital::~Delay3PhaseDigital()
@@ -362,16 +380,20 @@ Delay3PhaseDigital::~Delay3PhaseDigital()
 
 void Delay3PhaseDigital::init(float sample_rate)
 {
+
     Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
     dsp.classInit(sample_rate);
     dsp.instanceConstants(sample_rate);
-    dsp.instanceClear();
+    clear();
+
 }
 
 void Delay3PhaseDigital::clear() noexcept
 {
+
     Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
     dsp.instanceClear();
+
 }
 
 void Delay3PhaseDigital::process(
@@ -379,6 +401,7 @@ void Delay3PhaseDigital::process(
     float *out0,float *out1,float *out2,
     unsigned count) noexcept
 {
+
     Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
     float *inputs[] = {
         const_cast<float *>(in0),const_cast<float *>(in1),const_cast<float *>(in2),const_cast<float *>(in3),
@@ -387,6 +410,7 @@ void Delay3PhaseDigital::process(
         out0,out1,out2,
     };
     dsp.compute(count, inputs, outputs);
+
 }
 
 const char *Delay3PhaseDigital::parameter_label(unsigned index) noexcept
@@ -495,15 +519,6 @@ void Delay3PhaseDigital::set_parameter(unsigned index, float value) noexcept
 
 
 
-float Delay3PhaseDigital::get_passive(unsigned index) const noexcept
-{
-    Delay3PhaseDigitalDsp &dsp = static_cast<Delay3PhaseDigitalDsp &>(*fDsp);
-    switch (index) {
-    
-    default:
-        (void)dsp;
-        return 0;
-    }
-}
+
 
 

@@ -1,3 +1,4 @@
+
 //------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
@@ -10,7 +11,17 @@
 // Version: 
 //------------------------------------------------------------------------------
 
+
+
+
+
+
+
 #include "PwmOscillator.hpp"
+
+
+
+#include <utility>
 #include <cmath>
 
 class PwmOscillator::BasicDsp {
@@ -57,6 +68,7 @@ typedef PwmOscillator::BasicDsp dsp;
 // define the DSP in the anonymous namespace
 #define FAUSTPP_BEGIN_NAMESPACE namespace {
 #define FAUSTPP_END_NAMESPACE }
+
 
 #if defined(__GNUC__)
 #   pragma GCC diagnostic push
@@ -307,14 +319,20 @@ FAUSTPP_END_NAMESPACE
 #endif
 
 
+
 //------------------------------------------------------------------------------
 // End the Faust code section
 
+
+
+
 PwmOscillator::PwmOscillator()
-    : fDsp(new PwmOscillatorDsp)
 {
-    PwmOscillatorDsp &dsp = static_cast<PwmOscillatorDsp &>(*fDsp);
-    dsp.instanceResetUserInterface();
+
+    PwmOscillatorDsp *dsp = new PwmOscillatorDsp;
+    fDsp.reset(dsp);
+    dsp->instanceResetUserInterface();
+
 }
 
 PwmOscillator::~PwmOscillator()
@@ -323,16 +341,20 @@ PwmOscillator::~PwmOscillator()
 
 void PwmOscillator::init(float sample_rate)
 {
+
     PwmOscillatorDsp &dsp = static_cast<PwmOscillatorDsp &>(*fDsp);
     dsp.classInit(sample_rate);
     dsp.instanceConstants(sample_rate);
-    dsp.instanceClear();
+    clear();
+
 }
 
 void PwmOscillator::clear() noexcept
 {
+
     PwmOscillatorDsp &dsp = static_cast<PwmOscillatorDsp &>(*fDsp);
     dsp.instanceClear();
+
 }
 
 void PwmOscillator::process(
@@ -340,6 +362,7 @@ void PwmOscillator::process(
     float *out0,
     unsigned count) noexcept
 {
+
     PwmOscillatorDsp &dsp = static_cast<PwmOscillatorDsp &>(*fDsp);
     float *inputs[] = {
         const_cast<float *>(in0),
@@ -348,6 +371,7 @@ void PwmOscillator::process(
         out0,
     };
     dsp.compute(count, inputs, outputs);
+
 }
 
 const char *PwmOscillator::parameter_label(unsigned index) noexcept
@@ -415,12 +439,12 @@ const PwmOscillator::ParameterRange *PwmOscillator::parameter_range(unsigned ind
     switch (index) {
     
     case 0: {
-        static const ParameterRange range = { 75.0, 0.0, 100.0 };
+        static const ParameterRange range = { 75, 0, 100 };
         return &range;
     }
     
     case 1: {
-        static const ParameterRange range = { 0.25, 0.10000000149011612, 5.0 };
+        static const ParameterRange range = { 0.25, 0.1, 5 };
         return &range;
     }
     
@@ -512,16 +536,17 @@ float PwmOscillator::get_mod_depth() const noexcept
     return dsp.fHslider0;
 }
 
-void PwmOscillator::set_mod_depth(float value) noexcept
-{
-    PwmOscillatorDsp &dsp = static_cast<PwmOscillatorDsp &>(*fDsp);
-    dsp.fHslider0 = value;
-}
-
 float PwmOscillator::get_mod_frequency() const noexcept
 {
     PwmOscillatorDsp &dsp = static_cast<PwmOscillatorDsp &>(*fDsp);
     return dsp.fHslider1;
+}
+
+
+void PwmOscillator::set_mod_depth(float value) noexcept
+{
+    PwmOscillatorDsp &dsp = static_cast<PwmOscillatorDsp &>(*fDsp);
+    dsp.fHslider0 = value;
 }
 
 void PwmOscillator::set_mod_frequency(float value) noexcept
@@ -531,15 +556,5 @@ void PwmOscillator::set_mod_frequency(float value) noexcept
 }
 
 
-float PwmOscillator::get_passive(unsigned index) const noexcept
-{
-    PwmOscillatorDsp &dsp = static_cast<PwmOscillatorDsp &>(*fDsp);
-    switch (index) {
-    
-    default:
-        (void)dsp;
-        return 0;
-    }
-}
 
 

@@ -1,3 +1,4 @@
+{% block HeaderDescription %}
 //------------------------------------------------------------------------------
 // This file was generated using the Faust compiler (https://faust.grame.fr),
 // and the Faust post-processor (https://github.com/jpcima/faustpp).
@@ -9,6 +10,14 @@
 // License: {{license}}
 // Version: {{version}}
 //------------------------------------------------------------------------------
+{% endblock %}
+
+{% block HeaderPrologue %}
+{% if not (Identifier is defined and
+           Identifier == cid(Identifier)) %}
+{{fail("`Identifier` is undefined or invalid.")}}
+{% endif %}
+{% endblock %}
 
 #pragma once
 #ifndef {{Identifier}}_Faust_pp_Gen_HPP_
@@ -31,13 +40,12 @@ public:
 
     enum { NumInputs = {{inputs}} };
     enum { NumOutputs = {{outputs}} };
-    enum { NumParameters = {{length(active)}} };
-    enum { NumPassives = {{length(passive)}} };
+    enum { NumActives = {{active|length}} };
+    enum { NumPassives = {{passive|length}} };
+    enum { NumParameters = {{active|length + passive|length}} };
 
     enum Parameter {
-        {% for w in active %}p_{{cid(default(w.meta.symbol,w.label))}},
-        {% endfor %}
-        {% for w in passive %}p_{{cid(default(w.meta.symbol,w.label))}},
+        {% for w in active + passive %}p_{{cid(w.meta.symbol|default(w.label))}},
         {% endfor %}
     };
 
@@ -60,16 +68,11 @@ public:
     float get_parameter(unsigned index) const noexcept;
     void set_parameter(unsigned index, float value) noexcept;
 
-    {% for w in active %}
-    float get_{{cid(default(w.meta.symbol,w.label))}}() const noexcept;
-    void set_{{cid(default(w.meta.symbol,w.label))}}(float value) noexcept;
+    {% for w in active + passive %}
+    float get_{{cid(w.meta.symbol|default(w.label))}}() const noexcept;
     {% endfor %}
-
-    float get_passive(unsigned index) const noexcept;
-
-    {% for w in passive %}
-    float get_{{cid(default(w.meta.symbol,w.label))}}() const noexcept;
-    void set_{{cid(default(w.meta.symbol,w.label))}}(float value) noexcept;
+    {% for w in active %}
+    void set_{{cid(w.meta.symbol|default(w.label))}}(float value) noexcept;
     {% endfor %}
 
 public:
@@ -77,6 +80,12 @@ public:
 
 private:
     std::unique_ptr<BasicDsp> fDsp;
+
+{% block ClassExtraDecls %}
+{% endblock %}
 };
+
+{% block HeaderEpilogue %}
+{% endblock %}
 
 #endif // {{Identifier}}_Faust_pp_Gen_HPP_
