@@ -5,6 +5,14 @@ This is a virtual-analog string ensemble synthesizer.
 This implementation is based on a digital model designed by Peter Whiting.
 The improvement of the model adds various abilities, in particular a virtual-analog emulation of the bucket brigade delay circuit.
 
+## Contributors
+
+Thanks to many persons who contribute to improve this project.
+
+- S. M. "sm7x7" for providing presets
+- Nicolas Faure "sub26nico" and Erwan Lerale "r1" for testing and feedback
+- Olivier Humbert "trebmuh" for creating packages and redistributing
+
 ## Download
 
 Get from [Open Build Service](https://software.opensuse.org/download.html?project=home%3Ajpcima&package=string-machine).
