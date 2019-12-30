@@ -6,6 +6,9 @@
 StringMachinePlugin::StringMachinePlugin()
     : Plugin(Parameter_Count, NumPrograms, State_Count)
 {
+    double sampleRate = getSampleRate();
+    fSynth.init(sampleRate);
+
     for (unsigned p = 0; p < Parameter_Count; ++p) {
         Parameter param;
         InitParameter(p, param);
@@ -248,7 +251,7 @@ void StringMachinePlugin::initProgramName(uint32_t index, String &programName)
 {
     DISTRHO_SAFE_ASSERT_RETURN(index < NumPrograms, );
 
-    programName = "Program " + String(index + 1);
+    programName = Programs[index].name;
 }
 
 void StringMachinePlugin::loadProgram(uint32_t index)
@@ -256,7 +259,7 @@ void StringMachinePlugin::loadProgram(uint32_t index)
     DISTRHO_SAFE_ASSERT_RETURN(index < NumPrograms, );
 
     for (unsigned p = 0; p < Parameter_Count; ++p)
-        setParameterValue(p, Programs[index][p]);
+        setParameterValue(p, Programs[index].values[p]);
 }
 
 void StringMachinePlugin::activate()
