@@ -15,7 +15,7 @@ struct Program {
     float values[Parameter_Count];
 };
 
-DECL_IGNORABLE static const Program Programs[Parameter_Count] = {
+DECL_IGNORABLE static const Program Programs[] = {
 
 /*
   Melodic contributed by sm7x7, from the Zynthian forums
