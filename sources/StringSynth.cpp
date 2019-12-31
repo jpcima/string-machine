@@ -198,7 +198,12 @@ void StringSynth::setPolyphony(int value)
 {
     value = (value < 1) ? 1 : value;
     value = (value > PolyphonyLimit) ? PolyphonyLimit : value;
+
+    if (fPolyphony == (unsigned)value)
+        return;
+
     fPolyphony = value;
+    allSoundOff();
 }
 
 void StringSynth::noteOn(unsigned note, unsigned vel)
