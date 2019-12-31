@@ -108,6 +108,7 @@ FAUSTPP_BEGIN_NAMESPACE
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS StringFiltersHighshelfDsp
 #endif
+
 #ifdef __APPLE__ 
 #define exp10f __exp10f
 #define exp10 __exp10
@@ -118,7 +119,7 @@ class StringFiltersHighshelfDsp : public dsp {
  FAUSTPP_PRIVATE:
 	
 	FAUSTFLOAT fHslider0;
-	int fSamplingFreq;
+	int fSampleRate;
 	float fConst0;
 	FAUSTFLOAT fHslider1;
 	float fRec0[3];
@@ -126,7 +127,7 @@ class StringFiltersHighshelfDsp : public dsp {
  public:
 	
 	void metadata(Meta* m) { 
-		m->declare("filename", "StringFiltersHighshelf");
+		m->declare("filename", "StringFiltersHighshelf.dsp");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
@@ -142,15 +143,13 @@ class StringFiltersHighshelfDsp : public dsp {
 
 	FAUSTPP_VIRTUAL int getNumInputs() {
 		return 1;
-		
 	}
 	FAUSTPP_VIRTUAL int getNumOutputs() {
 		return 1;
-		
 	}
 	FAUSTPP_VIRTUAL int getInputRate(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			case 0: {
 				rate = 1;
 				break;
@@ -159,14 +158,12 @@ class StringFiltersHighshelfDsp : public dsp {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	FAUSTPP_VIRTUAL int getOutputRate(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			case 0: {
 				rate = 1;
 				break;
@@ -175,43 +172,35 @@ class StringFiltersHighshelfDsp : public dsp {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	
-	static void classInit(int samplingFreq) {
-		
+	static void classInit(int sample_rate) {
 	}
 	
-	FAUSTPP_VIRTUAL void instanceConstants(int samplingFreq) {
-		fSamplingFreq = samplingFreq;
-		fConst0 = (6.28318548f / std::min<float>(192000.0f, std::max<float>(1.0f, float(fSamplingFreq))));
-		
+	FAUSTPP_VIRTUAL void instanceConstants(int sample_rate) {
+		fSampleRate = sample_rate;
+		fConst0 = (6.28318548f / std::min<float>(192000.0f, std::max<float>(1.0f, float(fSampleRate))));
 	}
 	
 	FAUSTPP_VIRTUAL void instanceResetUserInterface() {
 		fHslider0 = FAUSTFLOAT(3.0f);
 		fHslider1 = FAUSTFLOAT(1000.0f);
-		
 	}
 	
 	FAUSTPP_VIRTUAL void instanceClear() {
 		for (int l0 = 0; (l0 < 3); l0 = (l0 + 1)) {
 			fRec0[l0] = 0.0f;
-			
 		}
-		
 	}
 	
-	FAUSTPP_VIRTUAL void init(int samplingFreq) {
-		classInit(samplingFreq);
-		instanceInit(samplingFreq);
+	FAUSTPP_VIRTUAL void init(int sample_rate) {
+		classInit(sample_rate);
+		instanceInit(sample_rate);
 	}
-	
-	FAUSTPP_VIRTUAL void instanceInit(int samplingFreq) {
-		instanceConstants(samplingFreq);
+	FAUSTPP_VIRTUAL void instanceInit(int sample_rate) {
+		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
@@ -221,8 +210,7 @@ class StringFiltersHighshelfDsp : public dsp {
 	}
 	
 	FAUSTPP_VIRTUAL int getSampleRate() {
-		return fSamplingFreq;
-		
+		return fSampleRate;
 	}
 	
 	FAUSTPP_VIRTUAL void buildUserInterface(UI* ui_interface) {
@@ -237,7 +225,6 @@ class StringFiltersHighshelfDsp : public dsp {
 		ui_interface->declare(&fHslider0, "unit", "dB");
 		ui_interface->addHorizontalSlider("Gain", &fHslider0, 3.0f, 1.0f, 10.0f, 0.100000001f);
 		ui_interface->closeBox();
-		
 	}
 	
 	FAUSTPP_VIRTUAL void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
@@ -247,23 +234,21 @@ class StringFiltersHighshelfDsp : public dsp {
 		float fSlow1 = (fConst0 * std::max<float>(0.0f, float(fHslider1)));
 		float fSlow2 = (1.41421354f * (std::sqrt(fSlow0) * std::sin(fSlow1)));
 		float fSlow3 = std::cos(fSlow1);
-		float fSlow4 = ((fSlow0 + -1.0f) * fSlow3);
+		float fSlow4 = (fSlow3 * (fSlow0 + -1.0f));
 		float fSlow5 = (1.0f / ((fSlow0 + fSlow2) + (1.0f - fSlow4)));
-		float fSlow6 = (fSlow4 + fSlow0);
-		float fSlow7 = (((fSlow6 + fSlow2) + 1.0f) * fSlow0);
-		float fSlow8 = (fSlow0 + (1.0f - (fSlow4 + fSlow2)));
-		float fSlow9 = ((fSlow0 + 1.0f) * fSlow3);
+		float fSlow6 = (fSlow0 + fSlow4);
+		float fSlow7 = (fSlow0 * ((fSlow2 + fSlow6) + 1.0f));
+		float fSlow8 = (fSlow0 + (1.0f - (fSlow2 + fSlow4)));
+		float fSlow9 = (fSlow3 * (fSlow0 + 1.0f));
 		float fSlow10 = (2.0f * (fSlow0 + (-1.0f - fSlow9)));
-		float fSlow11 = ((0.0f - (2.0f * fSlow0)) * ((fSlow9 + fSlow0) + -1.0f));
-		float fSlow12 = ((fSlow6 + (1.0f - fSlow2)) * fSlow0);
+		float fSlow11 = ((0.0f - (2.0f * fSlow0)) * ((fSlow0 + fSlow9) + -1.0f));
+		float fSlow12 = (fSlow0 * (fSlow6 + (1.0f - fSlow2)));
 		for (int i = 0; (i < count); i = (i + 1)) {
 			fRec0[0] = (float(input0[i]) - (fSlow5 * ((fSlow8 * fRec0[2]) + (fSlow10 * fRec0[1]))));
 			output0[i] = FAUSTFLOAT((fSlow5 * (((fSlow7 * fRec0[0]) + (fSlow11 * fRec0[1])) + (fSlow12 * fRec0[2]))));
 			fRec0[2] = fRec0[1];
 			fRec0[1] = fRec0[0];
-			
 		}
-		
 	}
 
 };

@@ -104,7 +104,6 @@ FAUSTPP_END_NAMESPACE
 #include <math.h>
 FAUSTPP_BEGIN_NAMESPACE
 
-
 class LFO3PhaseDualDspSIG0 {
 	
   FAUSTPP_PRIVATE:
@@ -115,27 +114,23 @@ class LFO3PhaseDualDspSIG0 {
 	
 	int getNumInputsLFO3PhaseDualDspSIG0() {
 		return 0;
-		
 	}
 	int getNumOutputsLFO3PhaseDualDspSIG0() {
 		return 1;
-		
 	}
 	int getInputRateLFO3PhaseDualDspSIG0(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			default: {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	int getOutputRateLFO3PhaseDualDspSIG0(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			case 0: {
 				rate = 0;
 				break;
@@ -144,40 +139,35 @@ class LFO3PhaseDualDspSIG0 {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	
-	void instanceInitLFO3PhaseDualDspSIG0(int samplingFreq) {
+	void instanceInitLFO3PhaseDualDspSIG0(int sample_rate) {
 		for (int l3 = 0; (l3 < 2); l3 = (l3 + 1)) {
 			iRec3[l3] = 0;
-			
 		}
-		
 	}
 	
-	void fillLFO3PhaseDualDspSIG0(int count, float* output) {
+	void fillLFO3PhaseDualDspSIG0(int count, float* table) {
 		for (int i = 0; (i < count); i = (i + 1)) {
 			iRec3[0] = (iRec3[1] + 1);
-			output[i] = std::sin((0.0490873866f * float((iRec3[0] + -1))));
+			table[i] = std::sin((0.0490873866f * float((iRec3[0] + -1))));
 			iRec3[1] = iRec3[0];
-			
 		}
-		
 	}
 
 };
 
-LFO3PhaseDualDspSIG0* newLFO3PhaseDualDspSIG0() { return (LFO3PhaseDualDspSIG0*)new LFO3PhaseDualDspSIG0(); }
-void deleteLFO3PhaseDualDspSIG0(LFO3PhaseDualDspSIG0* dsp) { delete dsp; }
+static LFO3PhaseDualDspSIG0* newLFO3PhaseDualDspSIG0() { return (LFO3PhaseDualDspSIG0*)new LFO3PhaseDualDspSIG0(); }
+static void deleteLFO3PhaseDualDspSIG0(LFO3PhaseDualDspSIG0* dsp) { delete dsp; }
 
 static float ftbl0LFO3PhaseDualDspSIG0[128];
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS LFO3PhaseDualDsp
 #endif
+
 #ifdef __APPLE__ 
 #define exp10f __exp10f
 #define exp10 __exp10
@@ -187,7 +177,7 @@ class LFO3PhaseDualDsp : public dsp {
 	
  FAUSTPP_PRIVATE:
 	
-	int fSamplingFreq;
+	int fSampleRate;
 	float fConst0;
 	float fConst1;
 	float fConst2;
@@ -211,8 +201,8 @@ class LFO3PhaseDualDsp : public dsp {
 	
 	void metadata(Meta* m) { 
 		m->declare("basics.lib/name", "Faust Basic Element Library");
-		m->declare("basics.lib/version", "0.0");
-		m->declare("filename", "LFO3PhaseDual");
+		m->declare("basics.lib/version", "0.1");
+		m->declare("filename", "LFO3PhaseDual.dsp");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
@@ -227,27 +217,23 @@ class LFO3PhaseDualDsp : public dsp {
 
 	FAUSTPP_VIRTUAL int getNumInputs() {
 		return 0;
-		
 	}
 	FAUSTPP_VIRTUAL int getNumOutputs() {
 		return 3;
-		
 	}
 	FAUSTPP_VIRTUAL int getInputRate(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			default: {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	FAUSTPP_VIRTUAL int getOutputRate(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			case 0: {
 				rate = 1;
 				break;
@@ -264,28 +250,24 @@ class LFO3PhaseDualDsp : public dsp {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	
-	static void classInit(int samplingFreq) {
+	static void classInit(int sample_rate) {
 		LFO3PhaseDualDspSIG0* sig0 = newLFO3PhaseDualDspSIG0();
-		sig0->instanceInitLFO3PhaseDualDspSIG0(samplingFreq);
+		sig0->instanceInitLFO3PhaseDualDspSIG0(sample_rate);
 		sig0->fillLFO3PhaseDualDspSIG0(128, ftbl0LFO3PhaseDualDspSIG0);
 		deleteLFO3PhaseDualDspSIG0(sig0);
-		
 	}
 	
-	FAUSTPP_VIRTUAL void instanceConstants(int samplingFreq) {
-		fSamplingFreq = samplingFreq;
-		fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSamplingFreq)));
+	FAUSTPP_VIRTUAL void instanceConstants(int sample_rate) {
+		fSampleRate = sample_rate;
+		fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSampleRate)));
 		fConst1 = (1.0f / fConst0);
 		fConst2 = std::exp((0.0f - (10.0f / fConst0)));
 		fConst3 = (1.0f - fConst2);
 		fConst4 = (9.99999975e-05f * fConst3);
-		
 	}
 	
 	FAUSTPP_VIRTUAL void instanceResetUserInterface() {
@@ -294,44 +276,35 @@ class LFO3PhaseDualDsp : public dsp {
 		fHslider2 = FAUSTFLOAT(50.0f);
 		fHslider3 = FAUSTFLOAT(0.59999999999999998f);
 		fHslider4 = FAUSTFLOAT(50.0f);
-		
 	}
 	
 	FAUSTPP_VIRTUAL void instanceClear() {
 		for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) {
 			fRec1[l0] = 0.0f;
-			
 		}
 		for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) {
 			fRec0[l1] = 0.0f;
-			
 		}
 		for (int l2 = 0; (l2 < 2); l2 = (l2 + 1)) {
 			fRec2[l2] = 0.0f;
-			
 		}
 		for (int l4 = 0; (l4 < 2); l4 = (l4 + 1)) {
 			fRec5[l4] = 0.0f;
-			
 		}
 		for (int l5 = 0; (l5 < 2); l5 = (l5 + 1)) {
 			fRec4[l5] = 0.0f;
-			
 		}
 		for (int l6 = 0; (l6 < 2); l6 = (l6 + 1)) {
 			fRec6[l6] = 0.0f;
-			
 		}
-		
 	}
 	
-	FAUSTPP_VIRTUAL void init(int samplingFreq) {
-		classInit(samplingFreq);
-		instanceInit(samplingFreq);
+	FAUSTPP_VIRTUAL void init(int sample_rate) {
+		classInit(sample_rate);
+		instanceInit(sample_rate);
 	}
-	
-	FAUSTPP_VIRTUAL void instanceInit(int samplingFreq) {
-		instanceConstants(samplingFreq);
+	FAUSTPP_VIRTUAL void instanceInit(int sample_rate) {
+		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
@@ -341,8 +314,7 @@ class LFO3PhaseDualDsp : public dsp {
 	}
 	
 	FAUSTPP_VIRTUAL int getSampleRate() {
-		return fSamplingFreq;
-		
+		return fSampleRate;
 	}
 	
 	FAUSTPP_VIRTUAL void buildUserInterface(UI* ui_interface) {
@@ -374,7 +346,6 @@ class LFO3PhaseDualDsp : public dsp {
 		ui_interface->declare(&fVbargraph1, "symbol", "phase2");
 		ui_interface->addVerticalBargraph("Phase 2", &fVbargraph1, 0.0f, 1.0f);
 		ui_interface->closeBox();
-		
 	}
 	
 	FAUSTPP_VIRTUAL void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
@@ -405,7 +376,7 @@ class LFO3PhaseDualDsp : public dsp {
 			float fTemp7 = (128.0f * fTemp6);
 			int iTemp8 = int(fTemp7);
 			float fTemp9 = float(iTemp8);
-			output0[i] = FAUSTFLOAT(((fRec2[0] * ((ftbl0LFO3PhaseDualDspSIG0[iTemp3] * (fTemp4 + (1.0f - fTemp2))) + ((fTemp2 - fTemp4) * ftbl0LFO3PhaseDualDspSIG0[((iTemp3 + 1) % 128)]))) + (fRec6[0] * (((fTemp7 - fTemp9) * ftbl0LFO3PhaseDualDspSIG0[((iTemp8 + 1) % 128)]) + (ftbl0LFO3PhaseDualDspSIG0[iTemp8] * (fTemp9 + (1.0f - fTemp7)))))));
+			output0[i] = FAUSTFLOAT(((fRec2[0] * ((ftbl0LFO3PhaseDualDspSIG0[iTemp3] * (fTemp4 + (1.0f - fTemp2))) + ((fTemp2 - fTemp4) * ftbl0LFO3PhaseDualDspSIG0[((iTemp3 + 1) % 128)]))) + (fRec6[0] * ((ftbl0LFO3PhaseDualDspSIG0[iTemp8] * (fTemp9 + (1.0f - fTemp7))) + ((fTemp7 - fTemp9) * ftbl0LFO3PhaseDualDspSIG0[((iTemp8 + 1) % 128)])))));
 			float fTemp10 = (128.0f * (fRec0[0] + (0.333333343f - float(int((fRec0[0] + 0.333333343f))))));
 			int iTemp11 = int(fTemp10);
 			float fTemp12 = float(iTemp11);
@@ -426,9 +397,7 @@ class LFO3PhaseDualDsp : public dsp {
 			fRec5[1] = fRec5[0];
 			fRec4[1] = fRec4[0];
 			fRec6[1] = fRec6[0];
-			
 		}
-		
 	}
 
 };

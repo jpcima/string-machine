@@ -108,6 +108,7 @@ FAUSTPP_BEGIN_NAMESPACE
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS NoiseLFODsp
 #endif
+
 #ifdef __APPLE__ 
 #define exp10f __exp10f
 #define exp10 __exp10
@@ -117,7 +118,7 @@ class NoiseLFODsp : public dsp {
 	
  FAUSTPP_PRIVATE:
 	
-	int fSamplingFreq;
+	int fSampleRate;
 	float fConst0;
 	float fConst1;
 	FAUSTFLOAT fHslider0;
@@ -137,10 +138,23 @@ class NoiseLFODsp : public dsp {
 	
 	void metadata(Meta* m) { 
 		m->declare("basics.lib/name", "Faust Basic Element Library");
-		m->declare("basics.lib/version", "0.0");
-		m->declare("filename", "NoiseLFO");
+		m->declare("basics.lib/version", "0.1");
+		m->declare("filename", "NoiseLFO.dsp");
+		m->declare("filters.lib/lowpass0_highpass1", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/lowpass0_highpass1:author", "Julius O. Smith III");
+		m->declare("filters.lib/lowpass:author", "Julius O. Smith III");
+		m->declare("filters.lib/lowpass:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/lowpass:license", "MIT-style STK-4.3 license");
 		m->declare("filters.lib/name", "Faust Filters Library");
-		m->declare("filters.lib/version", "0.0");
+		m->declare("filters.lib/nlf2:author", "Julius O. Smith III");
+		m->declare("filters.lib/nlf2:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/nlf2:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf1:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf1:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf1:license", "MIT-style STK-4.3 license");
+		m->declare("filters.lib/tf1s:author", "Julius O. Smith III");
+		m->declare("filters.lib/tf1s:copyright", "Copyright (C) 2003-2019 by Julius O. Smith III <jos@ccrma.stanford.edu>");
+		m->declare("filters.lib/tf1s:license", "MIT-style STK-4.3 license");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
@@ -155,27 +169,23 @@ class NoiseLFODsp : public dsp {
 
 	FAUSTPP_VIRTUAL int getNumInputs() {
 		return 0;
-		
 	}
 	FAUSTPP_VIRTUAL int getNumOutputs() {
 		return 1;
-		
 	}
 	FAUSTPP_VIRTUAL int getInputRate(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			default: {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	FAUSTPP_VIRTUAL int getOutputRate(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			case 0: {
 				rate = 1;
 				break;
@@ -184,80 +194,63 @@ class NoiseLFODsp : public dsp {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	
-	static void classInit(int samplingFreq) {
-		
+	static void classInit(int sample_rate) {
 	}
 	
-	FAUSTPP_VIRTUAL void instanceConstants(int samplingFreq) {
-		fSamplingFreq = samplingFreq;
-		fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSamplingFreq)));
+	FAUSTPP_VIRTUAL void instanceConstants(int sample_rate) {
+		fSampleRate = sample_rate;
+		fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSampleRate)));
 		fConst1 = (3.14159274f / fConst0);
 		fConst2 = (6.28318548f / fConst0);
-		
 	}
 	
 	FAUSTPP_VIRTUAL void instanceResetUserInterface() {
 		fHslider0 = FAUSTFLOAT(1.0f);
-		
 	}
 	
 	FAUSTPP_VIRTUAL void instanceClear() {
 		for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) {
 			iVec0[l0] = 0;
-			
 		}
 		for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) {
 			fRec6[l1] = 0.0f;
-			
 		}
 		for (int l2 = 0; (l2 < 2); l2 = (l2 + 1)) {
 			fRec7[l2] = 0.0f;
-			
 		}
 		for (int l3 = 0; (l3 < 2); l3 = (l3 + 1)) {
 			iRec8[l3] = 0;
-			
 		}
 		for (int l4 = 0; (l4 < 2); l4 = (l4 + 1)) {
 			fRec5[l4] = 0.0f;
-			
 		}
 		for (int l5 = 0; (l5 < 2); l5 = (l5 + 1)) {
 			fRec4[l5] = 0.0f;
-			
 		}
 		for (int l6 = 0; (l6 < 2); l6 = (l6 + 1)) {
 			fRec3[l6] = 0.0f;
-			
 		}
 		for (int l7 = 0; (l7 < 2); l7 = (l7 + 1)) {
 			fRec2[l7] = 0.0f;
-			
 		}
 		for (int l8 = 0; (l8 < 2); l8 = (l8 + 1)) {
 			fRec1[l8] = 0.0f;
-			
 		}
 		for (int l9 = 0; (l9 < 2); l9 = (l9 + 1)) {
 			fRec0[l9] = 0.0f;
-			
 		}
-		
 	}
 	
-	FAUSTPP_VIRTUAL void init(int samplingFreq) {
-		classInit(samplingFreq);
-		instanceInit(samplingFreq);
+	FAUSTPP_VIRTUAL void init(int sample_rate) {
+		classInit(sample_rate);
+		instanceInit(sample_rate);
 	}
-	
-	FAUSTPP_VIRTUAL void instanceInit(int samplingFreq) {
-		instanceConstants(samplingFreq);
+	FAUSTPP_VIRTUAL void instanceInit(int sample_rate) {
+		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
@@ -267,8 +260,7 @@ class NoiseLFODsp : public dsp {
 	}
 	
 	FAUSTPP_VIRTUAL int getSampleRate() {
-		return fSamplingFreq;
-		
+		return fSampleRate;
 	}
 	
 	FAUSTPP_VIRTUAL void buildUserInterface(UI* ui_interface) {
@@ -278,7 +270,6 @@ class NoiseLFODsp : public dsp {
 		ui_interface->declare(&fHslider0, "unit", "Hz");
 		ui_interface->addHorizontalSlider("Frequency", &fHslider0, 1.0f, 0.0f, 100.0f, 1.0f);
 		ui_interface->closeBox();
-		
 	}
 	
 	FAUSTPP_VIRTUAL void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
@@ -313,9 +304,7 @@ class NoiseLFODsp : public dsp {
 			fRec2[1] = fRec2[0];
 			fRec1[1] = fRec1[0];
 			fRec0[1] = fRec0[0];
-			
 		}
-		
 	}
 
 };

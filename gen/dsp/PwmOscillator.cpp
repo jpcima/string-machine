@@ -106,12 +106,12 @@ FAUSTPP_BEGIN_NAMESPACE
 
 static float PwmOscillatorDsp_faustpower2_f(float value) {
 	return (value * value);
-	
 }
 
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS PwmOscillatorDsp
 #endif
+
 #ifdef __APPLE__ 
 #define exp10f __exp10f
 #define exp10 __exp10
@@ -121,7 +121,7 @@ class PwmOscillatorDsp : public dsp {
 	
  FAUSTPP_PRIVATE:
 	
-	int fSamplingFreq;
+	int fSampleRate;
 	float fConst0;
 	float fConst1;
 	int iVec0[2];
@@ -139,7 +139,7 @@ class PwmOscillatorDsp : public dsp {
  public:
 	
 	void metadata(Meta* m) { 
-		m->declare("filename", "PwmOscillator");
+		m->declare("filename", "PwmOscillator.dsp");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
@@ -152,15 +152,13 @@ class PwmOscillatorDsp : public dsp {
 
 	FAUSTPP_VIRTUAL int getNumInputs() {
 		return 1;
-		
 	}
 	FAUSTPP_VIRTUAL int getNumOutputs() {
 		return 1;
-		
 	}
 	FAUSTPP_VIRTUAL int getInputRate(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			case 0: {
 				rate = 1;
 				break;
@@ -169,14 +167,12 @@ class PwmOscillatorDsp : public dsp {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	FAUSTPP_VIRTUAL int getOutputRate(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			case 0: {
 				rate = 1;
 				break;
@@ -185,70 +181,56 @@ class PwmOscillatorDsp : public dsp {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	
-	static void classInit(int samplingFreq) {
-		
+	static void classInit(int sample_rate) {
 	}
 	
-	FAUSTPP_VIRTUAL void instanceConstants(int samplingFreq) {
-		fSamplingFreq = samplingFreq;
-		fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSamplingFreq)));
+	FAUSTPP_VIRTUAL void instanceConstants(int sample_rate) {
+		fSampleRate = sample_rate;
+		fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSampleRate)));
 		fConst1 = (0.25f * fConst0);
 		fConst2 = (1.0f / fConst0);
-		
 	}
 	
 	FAUSTPP_VIRTUAL void instanceResetUserInterface() {
 		fHslider0 = FAUSTFLOAT(75.0f);
 		fHslider1 = FAUSTFLOAT(0.25f);
-		
 	}
 	
 	FAUSTPP_VIRTUAL void instanceClear() {
 		for (int l0 = 0; (l0 < 2); l0 = (l0 + 1)) {
 			iVec0[l0] = 0;
-			
 		}
 		for (int l1 = 0; (l1 < 2); l1 = (l1 + 1)) {
 			fVec1[l1] = 0.0f;
-			
 		}
 		for (int l2 = 0; (l2 < 2); l2 = (l2 + 1)) {
 			fRec0[l2] = 0.0f;
-			
 		}
 		for (int l3 = 0; (l3 < 2); l3 = (l3 + 1)) {
 			fVec2[l3] = 0.0f;
-			
 		}
 		IOTA = 0;
 		for (int l4 = 0; (l4 < 4096); l4 = (l4 + 1)) {
 			fVec3[l4] = 0.0f;
-			
 		}
 		for (int l5 = 0; (l5 < 2); l5 = (l5 + 1)) {
 			fVec4[l5] = 0.0f;
-			
 		}
 		for (int l6 = 0; (l6 < 2); l6 = (l6 + 1)) {
 			fRec1[l6] = 0.0f;
-			
 		}
-		
 	}
 	
-	FAUSTPP_VIRTUAL void init(int samplingFreq) {
-		classInit(samplingFreq);
-		instanceInit(samplingFreq);
+	FAUSTPP_VIRTUAL void init(int sample_rate) {
+		classInit(sample_rate);
+		instanceInit(sample_rate);
 	}
-	
-	FAUSTPP_VIRTUAL void instanceInit(int samplingFreq) {
-		instanceConstants(samplingFreq);
+	FAUSTPP_VIRTUAL void instanceInit(int sample_rate) {
+		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
@@ -258,8 +240,7 @@ class PwmOscillatorDsp : public dsp {
 	}
 	
 	FAUSTPP_VIRTUAL int getSampleRate() {
-		return fSamplingFreq;
-		
+		return fSampleRate;
 	}
 	
 	FAUSTPP_VIRTUAL void buildUserInterface(UI* ui_interface) {
@@ -272,7 +253,6 @@ class PwmOscillatorDsp : public dsp {
 		ui_interface->declare(&fHslider1, "unit", "Hz");
 		ui_interface->addHorizontalSlider("Mod frequency", &fHslider1, 0.25f, 0.100000001f, 5.0f, 0.00999999978f);
 		ui_interface->closeBox();
-		
 	}
 	
 	FAUSTPP_VIRTUAL void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
@@ -292,7 +272,7 @@ class PwmOscillatorDsp : public dsp {
 			float fTemp4 = ((float(iVec0[1]) * (fTemp3 - fVec2[1])) / fTemp1);
 			fVec3[(IOTA & 4095)] = fTemp4;
 			fVec4[0] = fSlow1;
-			float fTemp5 = (fRec1[1] + (fConst2 * fVec4[1]));
+			float fTemp5 = ((fConst2 * fVec4[1]) + fRec1[1]);
 			fRec1[0] = (fTemp5 - std::floor(fTemp5));
 			float fTemp6 = std::max<float>(0.0f, std::min<float>(2047.0f, (fConst0 * (((fSlow0 * (1.0f - std::fabs(((2.0f * fRec1[0]) + -1.0f)))) + 0.100000001f) / fTemp0))));
 			int iTemp7 = int(fTemp6);
@@ -305,9 +285,7 @@ class PwmOscillatorDsp : public dsp {
 			IOTA = (IOTA + 1);
 			fVec4[1] = fVec4[0];
 			fRec1[1] = fRec1[0];
-			
 		}
-		
 	}
 
 };

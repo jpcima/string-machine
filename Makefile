@@ -54,11 +54,11 @@ define faustgen
 endef
 
 dsp:
-	$(call faustgen,-X-vec,sources/dsp/Delay3PhaseDigital.dsp,gen/dsp/Delay3PhaseDigital)
-	$(call faustgen,-X-vec,sources/dsp/LFO3PhaseDual.dsp,gen/dsp/LFO3PhaseDual)
-	$(call faustgen,-X-vec,sources/dsp/StringFiltersHighshelf.dsp,gen/dsp/StringFiltersHighshelf)
-	$(call faustgen,-X-vec,sources/dsp/NoiseLFO.dsp,gen/dsp/NoiseLFO)
-	$(call faustgen,-X-vec,sources/dsp/PwmOscillator.dsp,gen/dsp/PwmOscillator)
+	$(call faustgen,,sources/dsp/Delay3PhaseDigital.dsp,gen/dsp/Delay3PhaseDigital)
+	$(call faustgen,,sources/dsp/LFO3PhaseDual.dsp,gen/dsp/LFO3PhaseDual)
+	$(call faustgen,,sources/dsp/StringFiltersHighshelf.dsp,gen/dsp/StringFiltersHighshelf)
+	$(call faustgen,,sources/dsp/NoiseLFO.dsp,gen/dsp/NoiseLFO)
+	$(call faustgen,,sources/dsp/PwmOscillator.dsp,gen/dsp/PwmOscillator)
 
 # --------------------------------------------------------------
 

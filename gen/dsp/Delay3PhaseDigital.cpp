@@ -108,6 +108,7 @@ FAUSTPP_BEGIN_NAMESPACE
 #ifndef FAUSTCLASS 
 #define FAUSTCLASS Delay3PhaseDigitalDsp
 #endif
+
 #ifdef __APPLE__ 
 #define exp10f __exp10f
 #define exp10 __exp10
@@ -117,7 +118,7 @@ class Delay3PhaseDigitalDsp : public dsp {
 	
  FAUSTPP_PRIVATE:
 	
-	int fSamplingFreq;
+	int fSampleRate;
 	float fConst0;
 	float fConst1;
 	float fConst2;
@@ -147,10 +148,10 @@ class Delay3PhaseDigitalDsp : public dsp {
 	
 	void metadata(Meta* m) { 
 		m->declare("basics.lib/name", "Faust Basic Element Library");
-		m->declare("basics.lib/version", "0.0");
+		m->declare("basics.lib/version", "0.1");
 		m->declare("delays.lib/name", "Faust Delay Library");
 		m->declare("delays.lib/version", "0.1");
-		m->declare("filename", "Delay3PhaseDigital");
+		m->declare("filename", "Delay3PhaseDigital.dsp");
 		m->declare("maths.lib/author", "GRAME");
 		m->declare("maths.lib/copyright", "GRAME");
 		m->declare("maths.lib/license", "LGPL with exception");
@@ -166,15 +167,13 @@ class Delay3PhaseDigitalDsp : public dsp {
 
 	FAUSTPP_VIRTUAL int getNumInputs() {
 		return 4;
-		
 	}
 	FAUSTPP_VIRTUAL int getNumOutputs() {
 		return 3;
-		
 	}
 	FAUSTPP_VIRTUAL int getInputRate(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			case 0: {
 				rate = 1;
 				break;
@@ -195,14 +194,12 @@ class Delay3PhaseDigitalDsp : public dsp {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	FAUSTPP_VIRTUAL int getOutputRate(int channel) {
 		int rate;
-		switch (channel) {
+		switch ((channel)) {
 			case 0: {
 				rate = 1;
 				break;
@@ -219,19 +216,16 @@ class Delay3PhaseDigitalDsp : public dsp {
 				rate = -1;
 				break;
 			}
-			
 		}
 		return rate;
-		
 	}
 	
-	static void classInit(int samplingFreq) {
-		
+	static void classInit(int sample_rate) {
 	}
 	
-	FAUSTPP_VIRTUAL void instanceConstants(int samplingFreq) {
-		fSamplingFreq = samplingFreq;
-		fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSamplingFreq)));
+	FAUSTPP_VIRTUAL void instanceConstants(int sample_rate) {
+		fSampleRate = sample_rate;
+		fConst0 = std::min<float>(192000.0f, std::max<float>(1.0f, float(fSampleRate)));
 		fConst1 = (36137.0f / fConst0);
 		fConst2 = std::cos(fConst1);
 		fConst3 = (0.460000008f * std::sin(fConst1));
@@ -250,41 +244,33 @@ class Delay3PhaseDigitalDsp : public dsp {
 		fConst16 = (0.0f - (2.0f * fConst2));
 		fConst17 = (1.0f - fConst3);
 		iConst18 = int(std::ceil((0.0500000007f * fConst0)));
-		
 	}
 	
 	FAUSTPP_VIRTUAL void instanceResetUserInterface() {
-		
 	}
 	
 	FAUSTPP_VIRTUAL void instanceClear() {
 		for (int l0 = 0; (l0 < 3); l0 = (l0 + 1)) {
 			fRec2[l0] = 0.0f;
-			
 		}
 		for (int l1 = 0; (l1 < 3); l1 = (l1 + 1)) {
 			fRec1[l1] = 0.0f;
-			
 		}
 		for (int l2 = 0; (l2 < 3); l2 = (l2 + 1)) {
 			fRec0[l2] = 0.0f;
-			
 		}
 		IOTA = 0;
 		for (int l3 = 0; (l3 < 16384); l3 = (l3 + 1)) {
 			fVec0[l3] = 0.0f;
-			
 		}
-		
 	}
 	
-	FAUSTPP_VIRTUAL void init(int samplingFreq) {
-		classInit(samplingFreq);
-		instanceInit(samplingFreq);
+	FAUSTPP_VIRTUAL void init(int sample_rate) {
+		classInit(sample_rate);
+		instanceInit(sample_rate);
 	}
-	
-	FAUSTPP_VIRTUAL void instanceInit(int samplingFreq) {
-		instanceConstants(samplingFreq);
+	FAUSTPP_VIRTUAL void instanceInit(int sample_rate) {
+		instanceConstants(sample_rate);
 		instanceResetUserInterface();
 		instanceClear();
 	}
@@ -294,14 +280,12 @@ class Delay3PhaseDigitalDsp : public dsp {
 	}
 	
 	FAUSTPP_VIRTUAL int getSampleRate() {
-		return fSamplingFreq;
-		
+		return fSampleRate;
 	}
 	
 	FAUSTPP_VIRTUAL void buildUserInterface(UI* ui_interface) {
 		ui_interface->openVerticalBox("Delay3PhaseDigital");
 		ui_interface->closeBox();
-		
 	}
 	
 	FAUSTPP_VIRTUAL void compute(int count, FAUSTFLOAT** inputs, FAUSTFLOAT** outputs) {
@@ -344,9 +328,7 @@ class Delay3PhaseDigitalDsp : public dsp {
 			fRec0[2] = fRec0[1];
 			fRec0[1] = fRec0[0];
 			IOTA = (IOTA + 1);
-			
 		}
-		
 	}
 
 };
