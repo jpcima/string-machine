@@ -194,6 +194,13 @@ void StringSynth::generate(float *outputs[2], unsigned count)
     }
 }
 
+void StringSynth::setPolyphony(int value)
+{
+    value = (value < 1) ? 1 : value;
+    value = (value > PolyphonyLimit) ? PolyphonyLimit : value;
+    fPolyphony = value;
+}
+
 void StringSynth::noteOn(unsigned note, unsigned vel)
 {
     // TODO the key-on velocity
@@ -246,7 +253,7 @@ auto StringSynth::allocNewVoice() -> Voice &
 
     Voice *voice;
 
-    if (!voicesFree.empty()) {
+    if (voicesUsed.size() < fPolyphony) {
         voice = voicesFree.front().value;
         voicesFree.pop_front();
         voicesUsed.push_back(voice); // new voices at the back

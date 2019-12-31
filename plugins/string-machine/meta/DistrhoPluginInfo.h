@@ -54,6 +54,8 @@ enum {
 
     pIdMasterGain,
 
+    pIdPolyphony,
+
     ///
     pIdOutDetuneUpper,
     pIdOutDetuneLower,

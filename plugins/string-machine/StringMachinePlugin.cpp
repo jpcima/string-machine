@@ -123,6 +123,9 @@ float StringMachinePlugin::getParameterValue(uint32_t index) const
     case pIdMasterGain:
         return synth.getMasterGain();
 
+    case pIdPolyphony:
+        return synth.getPolyphony();
+
     case pIdOutDetuneUpper:
         return fSynth.getLastDetuneUpper();
     case pIdOutDetuneLower:
@@ -231,6 +234,10 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
 
     case pIdMasterGain:
         synth.setMasterGain(value);
+        break;
+
+    case pIdPolyphony:
+        synth.setPolyphony((int)std::lrint(value));
         break;
 
     case pIdOutDetuneUpper:

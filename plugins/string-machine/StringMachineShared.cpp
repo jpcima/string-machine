@@ -1,4 +1,5 @@
 #include "StringMachineShared.hpp"
+#include "StringSynthDefs.h"
 #include <cmath>
 
 void InitParameter(uint32_t index, Parameter &parameter)
@@ -184,6 +185,13 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.hints = kParameterIsAutomable;
         parameter.unit = "dB";
         parameter.ranges = ParameterRanges(3.0, -60.0, +20.0);
+        break;
+
+    case pIdPolyphony:
+        parameter.symbol = "polyphony";
+        parameter.name = "Polyphony";
+        parameter.hints = kParameterIsAutomable|kParameterIsInteger;
+        parameter.ranges = ParameterRanges(16.0, 1.0, StringSynthDefs::PolyphonyLimit);
         break;
 
     case pIdOutDetuneUpper:

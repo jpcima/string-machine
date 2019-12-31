@@ -42,6 +42,9 @@ public:
     float getMasterGain() const { return fMasterGain; }
     void setMasterGain(float value) { fMasterGain = value; }
 
+    unsigned getPolyphony() const { return fPolyphony; }
+    void setPolyphony(int value);
+
     float getLastDetuneUpper() const { return fLastDetuneUpper; }
     float getLastDetuneLower() const { return fLastDetuneLower; }
 
@@ -78,6 +81,8 @@ private:
     SolinaChorus fChorus;
 
     float fMasterGain = 0;
+
+    unsigned fPolyphony = 16;
 
     float fCtlPitchBend = 0;
     float fCtlPitchBendSensitivity = 0;
