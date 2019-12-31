@@ -49,6 +49,8 @@ private:
     struct Voice {
         unsigned note;
         float bend;
+        unsigned release; // accumulated time in release phase, the greater the
+                          // more electible as a voice allocation target
         AHDSREnvelope env;
         StringOsc osc;
         StringFilters flt;

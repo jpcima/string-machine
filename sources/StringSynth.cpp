@@ -203,6 +203,7 @@ void StringSynth::noteOn(unsigned note, unsigned vel)
     voice.note = note;
     voice.osc.setFrequency(MidiPitch[note]);
     voice.env.trigger();
+    voice.release = 0;
 }
 
 void StringSynth::noteOff(unsigned note, unsigned vel)
@@ -251,8 +252,15 @@ auto StringSynth::allocNewVoice() -> Voice &
         voicesUsed.push_back(voice); // new voices at the back
     }
     else {
-        #warning TODO prefer to pick a voice which is releasing
         voice = voicesUsed.front().value; // old voices at the front
+
+        // search for the voice which has been released for the longest time
+        // TODO optimize this O(n)?
+        for (pl_cell<Voice *> &cell : voicesUsed) {
+            Voice *current = cell.value;
+            if (current->release > voice->release)
+                voice = current;
+        }
     }
 
     return *voice;
@@ -298,6 +306,10 @@ bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *
     for (unsigned i = 0; i < count; ++i)
         output[i] += env[i] * (mixGainUpper * fltOutputUpper[i] +
                                mixGainLower * fltOutputLower[i]);
+
+    // accumulate release time
+    if (voiceHasReleased(voice))
+        voice.release += count;
 
     // clean finished notes
     bool finished = false;
