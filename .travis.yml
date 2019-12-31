@@ -72,7 +72,7 @@ matrix:
       before_install:
         - sudo apt-get update -qq
       install:
-        - sudo apt-get install checkinstall libcairo2-dev libboost-dev
+        - sudo apt-get install checkinstall libcairo2-dev
       script:
         - bash .travis/script-linux.sh
         - cp -drfv bin string-machine-"$_BUILD"

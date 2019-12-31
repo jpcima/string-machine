@@ -4,9 +4,22 @@
 #include <cstring>
 
 using StringSynthDefs::BufferLimit;
+using StringSynthDefs::PolyphonyLimit;
 
+///
+static const auto MidiPitch = []() -> std::array<float, 128>
+{
+    std::array<float, 128> pitch;
+    for (unsigned i = 0; i < 128; ++i)
+        pitch[i] = 440.0 * std::pow(2.0, (i - 69.0) * (1.0 / 12.0));
+    return pitch;
+}();
+
+///
 StringSynth::StringSynth()
-    : fVoices(new Voice[128])
+    : fVoicesReserved{new Voice[PolyphonyLimit]{}},
+      fVoicesUsed{PolyphonyLimit},
+      fVoicesFree{PolyphonyLimit}
 {
 }
 
@@ -24,21 +37,24 @@ void StringSynth::init(double sampleRate)
     fLastDetuneUpper = 0.0;
     fLastDetuneLower = 0.0;
 
-    Voice *voices = fVoices.get();
+    Voice *voicesReserved = fVoicesReserved.get();
+    auto &voicesFree = fVoicesFree;
+    auto &voicesUsed = fVoicesUsed;
 
-    for (unsigned i = 0; i < 128; ++i) {
-        Voice &voice = voices[i];
-        voice.active = false;
-        voice.note = i;
-        voice.pitch = 440.0 * std::pow(2.0, (i - 69.0) * (1.0 / 12.0));
-        voice.bend = 1.0;
+    voicesFree.clear();
+    voicesUsed.clear();
+
+    for (unsigned i = 0; i < PolyphonyLimit; ++i) {
+        Voice &voice = voicesReserved[i];
+
+        voice.note = 0;
+        voice.bend = 0;
 
         voice.env.init(&fEnvSettings, sampleRate);
-
         voice.osc.init(&fOscSettings, sampleRate);
-        voice.osc.setFrequency(voice.pitch);
-
         voice.flt.init(&fFltSettings, sampleRate);
+
+        voicesFree.push_back(&voice);
     }
 
     fChorus.init(sampleRate);
@@ -110,12 +126,13 @@ void StringSynth::resetAllControllers()
 
 void StringSynth::generate(float *outputs[2], unsigned count)
 {
-    auto &activeVoices = fActiveVoices;
+    auto &voicesUsed = fVoicesUsed;
+    auto &voicesFree = fVoicesFree;
     float detuneAmount = fDetuneAmount;
 
 #if 0
     bool gate = false;
-    for (auto it = activeVoices.begin(), end = activeVoices.end(); it != end && !gate; ++it) {
+    for (auto it = voicesUsed.begin(), end = voicesUsed.end(); it != end && !gate; ++it) {
         if (it->env.isTriggered())
             gate = true;
     }
@@ -128,7 +145,7 @@ void StringSynth::generate(float *outputs[2], unsigned count)
     float detuneUpper[BufferLimit];
     float detuneLower[BufferLimit];
 
-    if (!activeVoices.empty()) {
+    if (!voicesUsed.empty()) {
         NoiseLFO &lfoUpper = fDetuneLFO[0];
         NoiseLFO &lfoLower = fDetuneLFO[1];
         float lastDetuneLower = fLastDetuneLower;
@@ -154,11 +171,16 @@ void StringSynth::generate(float *outputs[2], unsigned count)
 
     float bend = std::exp2(fCtlPitchBend * fCtlPitchBendSensitivity * (1.0f / 12.0f));
 
-    for (auto it = activeVoices.begin(), end = activeVoices.end(); it != end;) {
-        Voice &voice = *it;
+    for (auto it = voicesUsed.begin(), end = voicesUsed.end(); it != end;) {
+        Voice &voice = *it->value;
         float *detune[2] = {detuneUpper, detuneLower};
         bool finished = generateVoiceAdding(voice, outL, detune, bend, count);
-        if (finished) activeVoices.erase(it++); else ++it;
+        if (!finished)
+            ++it;
+        else {
+            voicesUsed.erase(it++);
+            voicesFree.push_back(&voice);
+        }
     }
 
     float outMono[BufferLimit];
@@ -177,12 +199,9 @@ void StringSynth::noteOn(unsigned note, unsigned vel)
     // TODO the key-on velocity
     (void)vel;
 
-    Voice &voice = fVoices[note];
-
-    if (!voice.active) {
-        voice.active = true;
-        fActiveVoices.push_front(voice);
-    }
+    Voice &voice = allocNewVoice();
+    voice.note = note;
+    voice.osc.setFrequency(MidiPitch[note]);
     voice.env.trigger();
 }
 
@@ -190,27 +209,66 @@ void StringSynth::noteOff(unsigned note, unsigned vel)
 {
     (void)vel;
 
-    Voice &voice = fVoices[note];
+    Voice *voice = findVoiceKeyedOn(note);
+    if (!voice)
+        return;
 
-    if (voice.active)
-        voice.env.release();
+    voice->env.release();
 }
 
 void StringSynth::allNotesOff()
 {
-    for (Voice &voice : fActiveVoices)
+    for (pl_cell<Voice *> &cell : fVoicesUsed) {
+        Voice &voice = *cell.value;
         noteOff(voice.note, 0);
+    }
 }
 
 void StringSynth::allSoundOff()
 {
-    auto &activeVoices = fActiveVoices;
+    auto &voicesUsed = fVoicesUsed;
+    auto &voicesFree = fVoicesFree;
 
-    while (!activeVoices.empty()) {
-        Voice &voice = activeVoices.front();
+    while (!voicesUsed.empty()) {
+        pl_cell<Voice *> &cell = voicesUsed.front();
+        Voice &voice = *cell.value;
         clearFinishedVoice(voice);
-        activeVoices.pop_front();
+        voicesUsed.pop_front();
+        voicesFree.push_back(&voice);
     }
+}
+
+auto StringSynth::allocNewVoice() -> Voice &
+{
+    auto &voicesUsed = fVoicesUsed;
+    auto &voicesFree = fVoicesFree;
+
+    Voice *voice;
+
+    if (!voicesFree.empty()) {
+        voice = voicesFree.front().value;
+        voicesFree.pop_front();
+        voicesUsed.push_back(voice); // new voices at the back
+    }
+    else {
+        #warning TODO prefer to pick a voice which is releasing
+        voice = voicesUsed.front().value; // old voices at the front
+    }
+
+    return *voice;
+}
+
+auto StringSynth::findVoiceKeyedOn(unsigned note) -> Voice *
+{
+    // TODO worth optimizing this O(n)? bounded by the maximum polyphony
+    //      also I now support multiple voices per midi note (if I ever add MPE)
+
+    for (pl_cell<Voice *> &cell : fVoicesUsed) {
+        Voice &voice = *cell.value;
+        if (voice.note == note && !voiceHasReleased(voice))
+            return &voice;
+    }
+    return nullptr;
 }
 
 bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, unsigned count)
@@ -230,7 +288,7 @@ bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *
     float fltOutputLower[BufferLimit];
     float fltOutputBrass[BufferLimit];
     float *fltOutputs[] = {fltOutputUpper, fltOutputLower, fltOutputBrass};
-    voice.flt.process(oscOutputs, fltOutputs, voice.pitch * bend, count);
+    voice.flt.process(oscOutputs, fltOutputs, MidiPitch[voice.note] * bend, count);
 
     float env[BufferLimit];
     voice.env.process(env, count);
@@ -253,7 +311,6 @@ bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *
 
 void StringSynth::clearFinishedVoice(Voice &voice)
 {
-    voice.active = false;
     voice.env.release();
     voice.env.clear();
     voice.osc.clear();

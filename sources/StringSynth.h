@@ -4,7 +4,7 @@
 #include "SolinaChorus.h"
 #include "dsp/AHDSREnvelope.h"
 #include "dsp/NoiseLFO.hpp"
-#include <boost/intrusive/list.hpp>
+#include <pl_list.hpp>
 #include <memory>
 #include <cstdint>
 
@@ -46,19 +46,19 @@ public:
     float getLastDetuneLower() const { return fLastDetuneLower; }
 
 private:
-    struct Voice : boost::intrusive::list_base_hook<> {
+    struct Voice {
         unsigned note;
-        float pitch;
         float bend;
-        bool active;
         AHDSREnvelope env;
         StringOsc osc;
         StringFilters flt;
     };
 
 private:
-    std::unique_ptr<Voice[]> fVoices;
-    boost::intrusive::list<Voice> fActiveVoices;
+    std::unique_ptr<Voice[]> fVoicesReserved;
+
+    pl_list<Voice *> fVoicesUsed;
+    pl_list<Voice *> fVoicesFree;
 
     float fDetuneAmount = 0;
     NoiseLFO fDetuneLFO[2];
@@ -92,6 +92,8 @@ private:
     void noteOff(unsigned note, unsigned vel);
     void allNotesOff();
     void allSoundOff();
+    Voice &allocNewVoice();
+    Voice *findVoiceKeyedOn(unsigned note);
     bool generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, unsigned count);
     static void clearFinishedVoice(Voice &voice);
     static bool voiceHasReleased(const Voice &voice);

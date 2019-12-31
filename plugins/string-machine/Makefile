@@ -61,7 +61,7 @@ include ../../dpf/Makefile.plugins.mk
 
 BUILD_CXX_FLAGS += \
 	-Isources -Igen -Imeta -Ithirdparty/blink -Ithirdparty/vco \
-	-Ithirdparty/fontstash -Ithirdparty/stb
+	-Ithirdparty/fontstash -Ithirdparty/stb -Ithirdparty/pl_list
 
 # --------------------------------------------------------------
 # Enable all possible plugin types
