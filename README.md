@@ -10,7 +10,7 @@ The improvement of the model adds various abilities, in particular a virtual-ana
 Thanks to many persons who contribute to improve this project.
 
 - S. M. "sm7x7" for providing presets
-- Nicolas Faure "sub26nico" and Erwan Lerale "r1" for testing and feedback
+- Nicolas Faure "sub26nico", Erwan Lerale "r1" and Éric Forgeot "farvardin" for testing and feedback
 - Olivier Humbert "trebmuh" for creating packages and redistributing
 
 ## Download
