@@ -264,15 +264,21 @@ auto StringSynth::allocNewVoice() -> Voice &
         voicesUsed.push_back(voice); // new voices at the back
     }
     else {
-        voice = voicesUsed.front().value; // old voices at the front
+        // elect a voice that will be replaced
+        pl_cell<Voice *> *elected = &voicesUsed.front(); // old voices at the front
 
         // search for the voice which has been released for the longest time
         // TODO optimize this O(n)?
         for (pl_cell<Voice *> &cell : voicesUsed) {
-            Voice *current = cell.value;
-            if (current->release > voice->release)
-                voice = current;
+            if (cell.value->release > elected->value->release)
+                elected = &cell;
         }
+
+        voice = elected->value;
+
+        // push it to the back
+        voicesUsed.erase(pl_iterator<pl_cell<Voice *>>{elected});
+        voicesUsed.push_back(voice);
     }
 
     return *voice;
