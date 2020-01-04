@@ -33,6 +33,7 @@ FILES_SHARED = \
 	gen/dsp/StringFiltersHighshelf.cpp \
 	gen/dsp/NoiseLFO.cpp \
 	gen/dsp/PwmOscillator.cpp \
+	gen/dsp/AsymWaveshaper.cpp \
 	thirdparty/vco/OscillatorBlepRect.cpp
 
 FILES_DSP = \

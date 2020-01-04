@@ -14,6 +14,8 @@ void StringOsc::init(const Settings *settings, double sampleRate)
 
     fFilter[0].init(sampleRate);
     fFilter[1].init(sampleRate);
+
+    fShaper.init(sampleRate);
 }
 
 void StringOsc::setFrequency(float frequency)
@@ -62,12 +64,16 @@ void StringOsc::process(float *const outputs[2], const float *const detune[2], f
             output[i] = filter.process(output[i]);
         }
 
-        #pragma message("TODO: hard clipper not band-limited")
-        for (unsigned i = 0; i < count; ++i) {
-            float x = output[i];
-            x = (x < 0.0f) ? 0.0f : x;
-            x -= 0.5f;
-            output[i] = x;
+        if (1)
+            fShaper.process(output, output, count);
+        else {
+            // old hard clipper, not band-limited
+            for (unsigned i = 0; i < count; ++i) {
+                float x = output[i];
+                x = (x < 0.0f) ? 0.0f : x;
+                x -= 0.5f;
+                output[i] = x;
+            }
         }
     }
 }

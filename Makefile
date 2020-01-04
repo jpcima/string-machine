@@ -59,6 +59,7 @@ dsp:
 	$(call faustgen,,sources/dsp/StringFiltersHighshelf.dsp,gen/dsp/StringFiltersHighshelf)
 	$(call faustgen,,sources/dsp/NoiseLFO.dsp,gen/dsp/NoiseLFO)
 	$(call faustgen,,sources/dsp/PwmOscillator.dsp,gen/dsp/PwmOscillator)
+	$(call faustgen,,sources/dsp/AsymWaveshaper.dsp,gen/dsp/AsymWaveshaper)
 
 # --------------------------------------------------------------
 

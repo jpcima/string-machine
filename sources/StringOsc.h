@@ -1,6 +1,7 @@
 #pragma once
 #include "dsp/OnePoleFilter.h"
 #include "dsp/PwmOscillator.hpp"
+#include "dsp/AsymWaveshaper.hpp"
 
 class StringOsc {
 public:
@@ -23,4 +24,5 @@ private:
     float fFrequency[2] = {};
     PwmOscillator fOscillator[2];
     OnePoleHPF fFilter[2];
+    AsymWaveshaper fShaper;
 };
