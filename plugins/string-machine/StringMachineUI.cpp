@@ -55,6 +55,7 @@ StringMachineUI::StringMachineUI()
     KNOB(OscHpCutoffLower);
     KNOB(OscPwmDepth);
     KNOB(OscPwmFrequency);
+    KNOB(OscEnhance);
     KNOB(FltLpCutoffUpper);
     KNOB(FltHpCutoffUpper);
     KNOB(FltLpCutoffLower);
@@ -81,6 +82,7 @@ StringMachineUI::StringMachineUI()
     VALUE_DISPLAY(OscHpCutoffLower);
     VALUE_DISPLAY(OscPwmDepth);
     VALUE_DISPLAY(OscPwmFrequency);
+    VALUE_DISPLAY(OscEnhance);
     VALUE_DISPLAY(FltLpCutoffUpper);
     VALUE_DISPLAY(FltLpCutoffLower);
     VALUE_DISPLAY(FltHpCutoffUpper);
@@ -176,6 +178,7 @@ void StringMachineUI::onDisplay()
     const Label *subgroup_labels[] = {
         &MainLayout::subgroup_AutoDetune_label,
         &MainLayout::subgroup_StringOsc_label,
+        &MainLayout::subgroup_StringOscEnhance_label,
     };
 
     const Label *control_labels[] = {
@@ -184,6 +187,7 @@ void StringMachineUI::onDisplay()
         &MainLayout::knob_OscHpCutoffLower_label,
         &MainLayout::knob_OscPwmDepth_label,
         &MainLayout::knob_OscPwmFrequency_label,
+        &MainLayout::knob_OscEnhance_label,
         &MainLayout::knob_FltLpCutoffUpper_label,
         &MainLayout::knob_FltLpCutoffLower_label,
         &MainLayout::knob_FltHpCutoffUpper_label,
@@ -247,7 +251,7 @@ void StringMachineUI::onDisplay()
         fe.drawInBox(cr, label->text, font, textBounds, label->align);
 
         RectF frame = label->bounds.to<double>().off_by({0.5, 0.5}).reduced({1, 0});
-        cairo_rounded_rectangle(cr, frame, 5.0);
+        cairo_rounded_rectangle(cr, frame, 3.0);
         cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 1.0);
         cairo_stroke(cr);
     }

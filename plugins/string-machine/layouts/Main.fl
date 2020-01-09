@@ -5,11 +5,11 @@ code_name {.cxx}
 Function {make_window()} {open
 } {
   Fl_Window window_TopLevel {open selected
-    xywh {448 50 975 255} type Double visible
+    xywh {415 536 1050 255} type Double visible
   } {
     Fl_Group group_StringOsc {
       label {String Osc} open
-      xywh {5 5 185 170} box DOWN_BOX labelfont 1 labelsize 10 align 17
+      xywh {5 5 255 170} box DOWN_BOX labelfont 1 labelsize 10 align 17
     } {
       Fl_Group subgroup_AutoDetune {
         label {Auto Detune} open
@@ -33,208 +33,220 @@ Function {make_window()} {open
       }
       Fl_Group subgroup_StringOsc {
         label Shape open
-        xywh {105 25 80 145} box UP_BOX labelfont 1 labelsize 10 align 17
+        xywh {95 25 80 145} box UP_BOX labelfont 1 labelsize 10 align 17
       } {
         Fl_Dial knob_OscHpCutoffUpper {
           label {4' HP}
-          xywh {130 55 30 30} labelsize 10 align 1
+          xywh {120 55 30 30} labelsize 10 align 1
         }
         Fl_Dial knob_OscHpCutoffLower {
           label {8' HP}
-          xywh {130 120 30 30} labelsize 10 align 1
+          xywh {120 120 30 30} labelsize 10 align 1
         }
         Fl_Box val_OscHpCutoffUpper {
-          xywh {125 88 40 12} box THIN_UP_BOX labelsize 10
+          xywh {115 88 40 12} box THIN_UP_BOX labelsize 10
         }
         Fl_Box val_OscHpCutoffLower {
-          xywh {125 153 40 12} box THIN_UP_BOX labelsize 10
+          xywh {115 153 40 12} box THIN_UP_BOX labelsize 10
+        }
+      }
+      Fl_Group subgroup_StringOscEnhance {
+        label Enhance open
+        xywh {175 25 80 145} box UP_BOX labelfont 1 labelsize 10 align 17
+      } {
+        Fl_Dial knob_OscEnhance {
+          label {Clip Bias}
+          xywh {200 55 30 30} labelsize 10 align 1
+        }
+        Fl_Box val_OscEnhance {
+          xywh {195 88 40 12} box THIN_UP_BOX labelsize 10
         }
       }
     }
     Fl_Group group_StringFilters {
       label {String Filters} open
-      xywh {190 40 210 155} box DOWN_BOX labelfont 1 labelsize 10 align 17
+      xywh {260 40 210 155} box DOWN_BOX labelfont 1 labelsize 10 align 17
     } {
       Fl_Dial knob_FltLpCutoffUpper {
         label {4' LP}
-        xywh {205 75 30 30} labelsize 10 align 1
+        xywh {275 75 30 30} labelsize 10 align 1
       }
       Fl_Box val_FltLpCutoffUpper {
-        xywh {200 108 40 12} box THIN_UP_BOX labelsize 10
+        xywh {270 108 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_FltLpCutoffLower {
         label {8' LP}
-        xywh {205 140 30 30} labelsize 10 align 1
+        xywh {275 140 30 30} labelsize 10 align 1
       }
       Fl_Box val_FltLpCutoffLower {
-        xywh {200 173 40 12} box THIN_UP_BOX labelsize 10
+        xywh {270 173 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_FltHpCutoffUpper {
         label {4' HP}
-        xywh {255 75 30 30} labelsize 10 align 1
+        xywh {325 75 30 30} labelsize 10 align 1
       }
       Fl_Box val_FltHpCutoffUpper {
-        xywh {250 108 40 12} box THIN_UP_BOX labelsize 10
+        xywh {320 108 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_FltHpCutoffLower {
         label {8' HP}
-        xywh {255 140 30 30} labelsize 10 align 1
+        xywh {325 140 30 30} labelsize 10 align 1
       }
       Fl_Box val_FltHpCutoffLower {
-        xywh {250 173 40 12} box THIN_UP_BOX labelsize 10
+        xywh {320 173 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_FltHsCutoffEq {
         label {4' EQ}
-        xywh {355 75 30 30} labelsize 10 align 1
+        xywh {425 75 30 30} labelsize 10 align 1
       }
       Fl_Box val_FltHsCutoffEq {
-        xywh {350 108 40 12} box THIN_UP_BOX labelsize 10
+        xywh {420 108 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_FltHsBoostEq {
         label {4' Boost}
-        xywh {355 140 30 30} labelsize 10 align 1
+        xywh {425 140 30 30} labelsize 10 align 1
       }
       Fl_Box val_FltHsBoostEq {
-        xywh {350 173 40 12} box THIN_UP_BOX labelsize 10
+        xywh {420 173 40 12} box THIN_UP_BOX labelsize 10
       }
     }
     Fl_Group group_Mixer {
       label Mixer open
-      xywh {400 40 60 155} box DOWN_BOX labelfont 1 labelsize 10 align 17
+      xywh {470 40 60 155} box DOWN_BOX labelfont 1 labelsize 10 align 17
     } {
       Fl_Dial knob_MixGainUpper {
         label {Vol 4'}
-        xywh {415 75 30 30} labelsize 10 align 1
+        xywh {485 75 30 30} labelsize 10 align 1
       }
       Fl_Box val_MixGainUpper {
-        xywh {410 108 40 12} box THIN_UP_BOX labelsize 10
+        xywh {480 108 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_MixGainLower {
         label {Vol 8'}
-        xywh {415 140 30 30} labelsize 10 align 1
+        xywh {485 140 30 30} labelsize 10 align 1
       }
       Fl_Box val_MixGainLower {
-        xywh {410 173 40 12} box THIN_UP_BOX labelsize 10
+        xywh {480 173 40 12} box THIN_UP_BOX labelsize 10
       }
     }
     Fl_Group group_SolinaChorus {
       label {Solina Chorus} open
-      xywh {460 10 165 230} box DOWN_BOX labelfont 1 labelsize 10 align 17
+      xywh {530 10 165 230} box DOWN_BOX labelfont 1 labelsize 10 align 17
     } {
       Fl_Group {} {open
-        xywh {465 60 155 175} box UP_BOX labelfont 1 labelsize 10 align 17
+        xywh {535 60 155 175} box UP_BOX labelfont 1 labelsize 10 align 17
       } {
         Fl_Dial knob_ChoDepth1 {
           label {Depth 1}
-          xywh {565 80 30 30} labelsize 10 align 1
+          xywh {635 80 30 30} labelsize 10 align 1
         }
         Fl_Dial knob_ChoDepth2 {
           label {Depth 2}
-          xywh {565 145 30 30} labelsize 10 align 1
+          xywh {635 145 30 30} labelsize 10 align 1
         }
         Fl_Box val_ChoDepth1 {
-          xywh {560 113 40 12} box THIN_UP_BOX labelsize 10
+          xywh {630 113 40 12} box THIN_UP_BOX labelsize 10
         }
         Fl_Box val_ChoDepth2 {
-          xywh {560 178 40 12} box THIN_UP_BOX labelsize 10
+          xywh {630 178 40 12} box THIN_UP_BOX labelsize 10
         }
         Fl_Dial knob_ChoRate1 {
           label {Rate 1}
-          xywh {490 80 30 30} labelsize 10 align 1
+          xywh {560 80 30 30} labelsize 10 align 1
         }
         Fl_Dial knob_ChoRate2 {
           label {Rate 2}
-          xywh {490 145 30 30} labelsize 10 align 1
+          xywh {560 145 30 30} labelsize 10 align 1
         }
         Fl_Box val_ChoRate1 {
-          xywh {485 113 40 12} box THIN_UP_BOX labelsize 10
+          xywh {555 113 40 12} box THIN_UP_BOX labelsize 10
         }
         Fl_Box val_ChoRate2 {
-          xywh {485 178 40 12} box THIN_UP_BOX labelsize 10
+          xywh {555 178 40 12} box THIN_UP_BOX labelsize 10
         }
         Fl_Slider slider_ChoDepth {
           label Depth
-          xywh {510 200 100 25} type Horizontal labelsize 10 align 4
+          xywh {580 200 100 25} type Horizontal labelsize 10 align 4
         }
         Fl_Box led_Lfo1 {
           label {LFO 1}
-          xywh {537 90 9 9} box UP_BOX labelsize 10 align 1
+          xywh {607 90 9 9} box UP_BOX labelsize 10 align 1
         }
         Fl_Box led_Lfo2 {
           label {LFO 2}
-          xywh {537 155 9 9} box UP_BOX labelsize 10 align 1
+          xywh {607 155 9 9} box UP_BOX labelsize 10 align 1
         }
       }
       Fl_Button btn_ChoEnabled {
         label {On/Off}
-        xywh {485 45 35 15} labelsize 10 align 1
+        xywh {555 45 35 15} labelsize 10 align 1
       }
       Fl_Button btn_ChoModel {
         label {Analog mode}
-        xywh {565 45 35 15} labelsize 10 align 1
+        xywh {635 45 35 15} labelsize 10 align 1
       }
     }
     Fl_Group group_Level {
       label Level open
-      xywh {625 30 175 90} box DOWN_BOX labelfont 1 labelsize 10 align 17
+      xywh {695 30 175 90} box DOWN_BOX labelfont 1 labelsize 10 align 17
     } {
       Fl_Dial knob_MasterGain {
         label Output
-        xywh {640 65 30 30} labelsize 10 align 1
+        xywh {710 65 30 30} labelsize 10 align 1
       }
       Fl_Box val_MasterGain {
-        xywh {635 98 40 12} box THIN_UP_BOX labelsize 10
+        xywh {705 98 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Box vu_LeftVolume {
         label L
-        xywh {700 67 95 11} box ROUND_DOWN_BOX labelsize 10 align 4
+        xywh {770 67 95 11} box ROUND_DOWN_BOX labelsize 10 align 4
       }
       Fl_Box vu_RightVolume {
         label R
-        xywh {700 82 95 11} box ROUND_DOWN_BOX labelsize 10 align 4
+        xywh {770 82 95 11} box ROUND_DOWN_BOX labelsize 10 align 4
       }
     }
     Fl_Group group_Envelope {
       label {AHDSR Envelope} open
-      xywh {625 130 345 85} box DOWN_BOX labelfont 1 labelsize 10 align 17
+      xywh {700 130 345 85} box DOWN_BOX labelfont 1 labelsize 10 align 17
     } {
       Fl_Dial knob_EnvAttack {
         label A
-        xywh {640 160 30 30} labelsize 10 align 1
+        xywh {710 160 30 30} labelsize 10 align 1
       }
       Fl_Box val_EnvAttack {
-        xywh {635 193 40 12} box THIN_UP_BOX labelsize 10
+        xywh {705 193 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_EnvHold {
         label H
-        xywh {685 160 30 30} labelsize 10 align 1
+        xywh {755 160 30 30} labelsize 10 align 1
       }
       Fl_Box val_EnvHold {
-        xywh {680 193 40 12} box THIN_UP_BOX labelsize 10
+        xywh {750 193 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_EnvSustain {
         label S
-        xywh {775 160 30 30} labelsize 10 align 1
+        xywh {845 160 30 30} labelsize 10 align 1
       }
       Fl_Box val_EnvSustain {
-        xywh {770 193 40 12} box THIN_UP_BOX labelsize 10
+        xywh {840 193 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Dial knob_EnvRelease {
         label R
-        xywh {820 160 30 30} labelsize 10 align 1
+        xywh {890 160 30 30} labelsize 10 align 1
       }
       Fl_Box val_EnvRelease {
-        xywh {815 193 40 12} box THIN_UP_BOX labelsize 10
+        xywh {885 193 40 12} box THIN_UP_BOX labelsize 10
       }
       Fl_Box plot_Env {
-        xywh {860 155 105 50} box ENGRAVED_BOX labelsize 10
+        xywh {930 155 105 50} box ENGRAVED_BOX labelsize 10
       }
       Fl_Dial knob_EnvDecay {
         label D
-        xywh {730 160 30 30} labelsize 10 align 1
+        xywh {800 160 30 30} labelsize 10 align 1
       }
       Fl_Box val_EnvDecay {
-        xywh {725 193 40 12} box THIN_UP_BOX labelsize 10
+        xywh {795 193 40 12} box THIN_UP_BOX labelsize 10
       }
     }
     Fl_Group group_StringPwm {
