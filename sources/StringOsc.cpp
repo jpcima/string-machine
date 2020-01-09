@@ -9,13 +9,11 @@ void StringOsc::init(const Settings *settings, double sampleRate)
     fSampleRate = sampleRate;
     fSettings = settings;
 
-    fOscillator[0].init(sampleRate);
-    fOscillator[1].init(sampleRate);
-
-    fFilter[0].init(sampleRate);
-    fFilter[1].init(sampleRate);
-
-    fShaper.init(sampleRate);
+    for (unsigned osc = 0; osc < 2; ++osc) {
+        fOscillator[osc].init(sampleRate);
+        fFilter[osc].init(sampleRate);
+        fShaper[osc].init(sampleRate);
+    }
 }
 
 void StringOsc::setFrequency(float frequency)
@@ -64,8 +62,11 @@ void StringOsc::process(float *const outputs[2], const float *const detune[2], f
             output[i] = filter.process(output[i]);
         }
 
-        if (1)
-            fShaper.process(output, output, count);
+        if (1) {
+            AsymWaveshaper &shaper = fShaper[osc];
+            shaper.set_amount(1.0f - settings.enhance);
+            shaper.process(output, output, count);
+        }
         else {
             // old hard clipper, not band-limited
             for (unsigned i = 0; i < count; ++i) {

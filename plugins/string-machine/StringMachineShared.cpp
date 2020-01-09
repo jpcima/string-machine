@@ -39,6 +39,12 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.unit = "Hz";
         parameter.ranges = ParameterRanges(0.25, 0.1, 5.0);
         break;
+    case pIdOscEnhance:
+        parameter.symbol = "osc_enhance";
+        parameter.name = "Oscillator enhance";
+        parameter.hints = kParameterIsAutomable;
+        parameter.ranges = ParameterRanges(0.0, 0.0, 0.5);
+        break;
 
     case pIdFltLpCutoffUpper:
         parameter.symbol = "flt_lp_cutoff_upper";

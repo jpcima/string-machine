@@ -1,6 +1,5 @@
-#include "StringOsc.cpp"
+#include "StringOsc.h"
 #include "StringSynthDefs.h"
-#include "dsp/PwmOscillator.cpp"
 #include <getopt.h>
 #include <cmath>
 

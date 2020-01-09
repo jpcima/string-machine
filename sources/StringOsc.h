@@ -10,6 +10,7 @@ public:
         float highpassLowerCutoff = 0;
         float pwmDepth = 0;
         float pwmFrequency = 0;
+        float enhance = 0;
     };
 
     void init(const Settings *settings, double sampleRate);
@@ -24,5 +25,5 @@ private:
     float fFrequency[2] = {};
     PwmOscillator fOscillator[2];
     OnePoleHPF fFilter[2];
-    AsymWaveshaper fShaper;
+    AsymWaveshaper fShaper[2];
 };

@@ -13,10 +13,14 @@ APP_EXT := .exe
 LDFLAGS += -static
 endif
 
-SOURCES := sources/main.cpp
+SOURCES := \
+	sources/main.cpp \
+	sources/string-machine/sources/StringOsc.cpp \
+	sources/string-machine/gen/dsp/AsymWaveshaper.cpp \
+	sources/string-machine/gen/dsp/PwmOscillator.cpp
 OBJS := $(patsubst sources/%.cpp,build/%.o,$(SOURCES))
 
-CXXFLAGS += -I../../sources -I../../gen
+CXXFLAGS += -Isources/string-machine/sources -Isources/string-machine/gen
 
 all: bin/test-string-osc$(APP_EXT)
 
@@ -24,11 +28,11 @@ clean:
 	rm -rf bin build
 
 bin/test-string-osc$(APP_EXT): $(OBJS)
-	@mkdir -p bin
+	@mkdir -p $(dir $@)
 	$(CXX) -o $@ $^ $(LDFLAGS)
 
 build/%.o: sources/%.cpp
-	@mkdir -p build
+	@mkdir -p $(dir $@)
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 .PHONY: all clean
