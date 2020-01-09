@@ -274,7 +274,7 @@ class PwmOscillatorDsp : public dsp {
 			fVec4[0] = fSlow1;
 			float fTemp5 = ((fConst2 * fVec4[1]) + fRec1[1]);
 			fRec1[0] = (fTemp5 - std::floor(fTemp5));
-			float fTemp6 = std::max<float>(0.0f, std::min<float>(2047.0f, (fConst0 * (((fSlow0 * (1.0f - std::fabs(((2.0f * fRec1[0]) + -1.0f)))) + 0.100000001f) / fTemp0))));
+			float fTemp6 = std::max<float>(0.0f, std::min<float>(2047.0f, (fConst0 * ((0.5f - (fSlow0 * (1.0f - std::fabs(((2.0f * fRec1[0]) + -1.0f))))) / fTemp0))));
 			int iTemp7 = int(fTemp6);
 			float fTemp8 = std::floor(fTemp6);
 			output0[i] = FAUSTFLOAT((fConst1 * ((fTemp4 - (fVec3[((IOTA - iTemp7) & 4095)] * (fTemp8 + (1.0f - fTemp6)))) - ((fTemp6 - fTemp8) * fVec3[((IOTA - (iTemp7 + 1)) & 4095)]))));
