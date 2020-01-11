@@ -7,6 +7,13 @@ using StringSynthDefs::BufferLimit;
 using StringSynthDefs::PolyphonyLimit;
 
 ///
+#if 0
+#   define TRACE_ALLOC(fmt, ...) fprintf(stderr, "[Voices] " fmt "\n", ##__VA_ARGS__);
+#else
+#   define TRACE_ALLOC(fmt, ...)
+#endif
+
+///
 static const auto MidiPitch = []() -> std::array<float, 128>
 {
     std::array<float, 128> pitch;
@@ -15,12 +22,27 @@ static const auto MidiPitch = []() -> std::array<float, 128>
     return pitch;
 }();
 
+static const auto MidiNoteName = []() -> std::array<std::array<char, 8>, 128>
+{
+    std::array<std::array<char, 8>, 128> names;
+    for (unsigned i = 0; i < 128; ++i) {
+        const char *octave[] = {
+            "C", "C#", "D", "D#", "E",
+            "F", "F#", "G", "G#", "A", "A#", "B",
+        };
+        sprintf(names[i].data(), "%s%d", octave[i % 12], (int)(i / 12) - 1);
+    }
+    return names;
+}();
+
 ///
 StringSynth::StringSynth()
     : fVoicesReserved{new Voice[PolyphonyLimit]{}},
       fVoicesUsed{PolyphonyLimit},
       fVoicesFree{PolyphonyLimit}
 {
+    for (unsigned i = 0; i < PolyphonyLimit; ++i)
+        fVoicesReserved[i].id = i;
 }
 
 StringSynth::~StringSynth()
@@ -178,6 +200,7 @@ void StringSynth::generate(float *outputs[2], unsigned count)
         if (!finished)
             ++it;
         else {
+            TRACE_ALLOC("Finish %u note=%s", voice.id, MidiNoteName[voice.note].data());
             voicesUsed.erase(it++);
             voicesFree.push_back(&voice);
         }
@@ -212,6 +235,8 @@ void StringSynth::noteOn(unsigned note, unsigned vel)
     (void)vel;
 
     Voice &voice = allocNewVoice();
+    TRACE_ALLOC("Play %u note=%s", voice.id, MidiNoteName[note].data());
+
     voice.note = note;
     voice.osc.setFrequency(MidiPitch[note]);
     voice.env.trigger();
@@ -260,21 +285,26 @@ auto StringSynth::allocNewVoice() -> Voice &
 
     if (voicesUsed.size() < fPolyphony) {
         voice = voicesFree.front().value;
+        TRACE_ALLOC("Allocate %u", voice->id);
         voicesFree.pop_front();
         voicesUsed.push_back(voice); // new voices at the back
     }
     else {
+        TRACE_ALLOC("Exceed polyphony");
+
         // elect a voice that will be replaced
         pl_cell<Voice *> *elected = &voicesUsed.front(); // old voices at the front
 
         // search for the voice which has been released for the longest time
         // TODO optimize this O(n)?
         for (pl_cell<Voice *> &cell : voicesUsed) {
+            TRACE_ALLOC(" * Candidate %u: release=%u", cell.value->id, cell.value->release);
             if (cell.value->release > elected->value->release)
                 elected = &cell;
         }
 
         voice = elected->value;
+        TRACE_ALLOC("Override %u note=%s", voice->id, MidiNoteName[voice->note].data());
 
         // push it to the back
         voicesUsed.erase(pl_iterator<pl_cell<Voice *>>{elected});

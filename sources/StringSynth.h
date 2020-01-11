@@ -57,6 +57,8 @@ private:
         AHDSREnvelope env;
         StringOsc osc;
         StringFilters flt;
+
+        unsigned id; // only to debug voice allocs
     };
 
 private:
