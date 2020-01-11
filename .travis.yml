@@ -99,6 +99,7 @@ deploy:
   file_glob: true
   prerelease: true
   overwrite: true
+  edge: true
   on:
     branch: master
 
