@@ -307,7 +307,7 @@ void StringMachinePlugin::run(const float **, float **outputs, uint32_t totalFra
         frames = (frames < bufferLimit) ? frames : bufferLimit;
 
         while (midiCurrent != midiEvents + midiEventCount && (midiCurrent->frame < frameIndex + frames || frameIndex + frames == totalFrames)) {
-            if (midiCurrent->size <= 3)
+            if (midiCurrent->size <= 4)
                 synth.handleMessage(midiCurrent->data);
             ++midiCurrent;
         }
