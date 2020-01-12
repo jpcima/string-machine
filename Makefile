@@ -49,8 +49,8 @@ FAUSTPP ?= faustpp
 define faustgen
 	@echo faustgen: $(1) $(2) $(3)
 	@install -d $(dir $(3))
-	@$(FAUSTPP) -DIdentifier=$(notdir $(3)) -X-cn -X$(notdir $(3))Dsp -a sources/dsp/architecture/Generic.hpp $(2) > $(3).hpp
-	@$(FAUSTPP) -DIdentifier=$(notdir $(3)) -X-cn -X$(notdir $(3))Dsp -a sources/dsp/architecture/Generic.cpp $(2) > $(3).cpp
+	@$(FAUSTPP) $(1) -DIdentifier=$(notdir $(3)) -X-cn -X$(notdir $(3))Dsp -a sources/dsp/architecture/Generic.hpp $(2) > $(3).hpp
+	@$(FAUSTPP) $(1) -DIdentifier=$(notdir $(3)) -X-cn -X$(notdir $(3))Dsp -a sources/dsp/architecture/Generic.cpp $(2) > $(3).cpp
 endef
 
 dsp:
