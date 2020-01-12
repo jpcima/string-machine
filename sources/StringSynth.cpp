@@ -48,8 +48,9 @@ void StringSynth::init(double sampleRate)
     for (unsigned i = 0; i < PolyphonyLimit; ++i) {
         Voice &voice = voicesReserved[i];
 
+        voice.channel = 0;
         voice.note = 0;
-        voice.bend = 0;
+        voice.bend = 1.0;
 
         voice.env.init(&fEnvSettings, sampleRate);
         voice.osc.init(&fOscSettings, sampleRate);
@@ -60,71 +61,75 @@ void StringSynth::init(double sampleRate)
 
     fChorus.init(sampleRate);
 
-    resetAllControllers();
+    for (unsigned ch = 0; ch < 16; ++ch)
+        resetAllControllers(ch);
 }
 
 void StringSynth::handleMessage(const uint8_t *msg)
 {
     unsigned status = msg[0];
+    unsigned channel = status & 0x0f;
     unsigned d1 = msg[1] & 0x7f;
     unsigned d2 = msg[2] & 0x7f;
+    Controllers &ctl = fControllers[channel];
 
     switch (status & 0xf0) {
     case kStatusNoteOn:
         if (d2 != 0) {
-            noteOn(d1, d2);
+            noteOn(channel, d1, d2);
             break;
         }
         // fall through
     case kStatusNoteOff:
-        noteOff(d1, d2);
+        noteOff(channel, d1, d2);
         break;
     case kStatusControllerChange:
         switch (d1) {
         case kCcDataMsb: {
-            RpnIdentifier id = fCtlRpnIdentifier;
+            RpnIdentifier id = ctl.rpnIdentifier;
             if (id.registered && id.lsb == 0 && id.msb == 0)
-                fCtlPitchBendSensitivity = d2;
+                ctl.pitchBendSensitivity = d2;
             break;
         }
         case kCcNrpnLsb:
         case kCcRpnLsb:
-            fCtlRpnIdentifier.lsb = d2;
-            fCtlRpnIdentifier.registered = d1 == kCcRpnLsb;
+            ctl.rpnIdentifier.lsb = d2;
+            ctl.rpnIdentifier.registered = d1 == kCcRpnLsb;
             break;
         case kCcNrpnMsb:
         case kCcRpnMsb:
-            fCtlRpnIdentifier.msb = d2;
-            fCtlRpnIdentifier.registered = d1 == kCcRpnMsb;
+            ctl.rpnIdentifier.msb = d2;
+            ctl.rpnIdentifier.registered = d1 == kCcRpnMsb;
             break;
         case kCcSoundOff:
-            allSoundOff();
+            allSoundOff(channel);
             break;
         case kCcResetControllers:
-            resetAllControllers();
+            resetAllControllers(channel);
             break;
         case kCcNotesOff:
         case kCcOmniOff:
         case kCcOmniOn:
         case kCcMonoOn:
         case kCcPolyOn:
-            allNotesOff();
+            allNotesOff(channel);
             break;
         }
         break;
     case kStatusPitchBend:
-        fCtlPitchBend = ((int)(d1 | (d2 << 7)) - 8192) * (1.0f / 8191.0f);
+        ctl.pitchBend = ((int)(d1 | (d2 << 7)) - 8192) * (1.0f / 8191.0f);
         break;
     }
 }
 
-void StringSynth::resetAllControllers()
+void StringSynth::resetAllControllers(unsigned channel)
 {
-    fCtlPitchBend = 0.0;
-    fCtlPitchBendSensitivity = 2.0;
-    fCtlRpnIdentifier.registered = 1;
-    fCtlRpnIdentifier.msb = 0;
-    fCtlRpnIdentifier.lsb = 0;
+    Controllers &ctl = fControllers[channel];
+    ctl.pitchBend = 0.0;
+    ctl.pitchBendSensitivity = 2.0;
+    ctl.rpnIdentifier.registered = 1;
+    ctl.rpnIdentifier.msb = 0;
+    ctl.rpnIdentifier.lsb = 0;
 }
 
 void StringSynth::generate(float *outputs[2], unsigned count)
@@ -172,11 +177,14 @@ void StringSynth::generate(float *outputs[2], unsigned count)
         fLastDetuneUpper = lastDetuneUpper;
     }
 
-    float bend = std::exp2(fCtlPitchBend * fCtlPitchBendSensitivity * (1.0f / 12.0f));
-
     for (auto it = voicesUsed.begin(), end = voicesUsed.end(); it != end;) {
         Voice &voice = *it->value;
         float *detune[2] = {detuneUpper, detuneLower};
+
+        unsigned channel = voice.channel;
+        const Controllers &ctl = fControllers[channel];
+        float bend = std::exp2(ctl.pitchBend * ctl.pitchBendSensitivity * (1.0f / 12.0f));
+
         bool finished = generateVoiceAdding(voice, outL, detune, bend, count);
         if (!finished)
             ++it;
@@ -207,10 +215,10 @@ void StringSynth::setPolyphony(int value)
         return;
 
     fPolyphony = value;
-    allSoundOff();
+    allSoundOffAllChannels();
 }
 
-void StringSynth::noteOn(unsigned note, unsigned vel)
+void StringSynth::noteOn(unsigned channel, unsigned note, unsigned vel)
 {
     // TODO the key-on velocity
     (void)vel;
@@ -218,32 +226,52 @@ void StringSynth::noteOn(unsigned note, unsigned vel)
     Voice &voice = allocNewVoice();
     TRACE_ALLOC("Play %u note=%s", voice.id, MidiNoteName[note]);
 
+    voice.channel = channel;
     voice.note = note;
     voice.osc.setFrequency(MidiPitch[note]);
     voice.env.trigger();
     voice.release = 0;
 }
 
-void StringSynth::noteOff(unsigned note, unsigned vel)
+void StringSynth::noteOff(unsigned channel, unsigned note, unsigned vel)
 {
     (void)vel;
 
-    Voice *voice = findVoiceKeyedOn(note);
+    Voice *voice = findVoiceKeyedOn(channel, note);
     if (!voice)
         return;
 
     voice->env.release();
 }
 
-void StringSynth::allNotesOff()
+void StringSynth::allNotesOff(unsigned channel)
 {
     for (pl_cell<Voice *> &cell : fVoicesUsed) {
         Voice &voice = *cell.value;
-        noteOff(voice.note, 0);
+        if (voice.channel == channel && !voiceHasReleased(voice))
+            voice.env.release();
     }
 }
 
-void StringSynth::allSoundOff()
+void StringSynth::allSoundOff(unsigned channel)
+{
+    auto &voicesUsed = fVoicesUsed;
+    auto &voicesFree = fVoicesFree;
+
+    auto it = voicesUsed.begin();
+    while (!it.is_end()) {
+        Voice &voice = *it->value;
+        if (voice.channel != channel) {
+            ++it;
+            continue;
+        }
+        clearFinishedVoice(voice);
+        voicesUsed.erase(it++);
+        voicesFree.push_back(&voice);
+    }
+}
+
+void StringSynth::allSoundOffAllChannels()
 {
     auto &voicesUsed = fVoicesUsed;
     auto &voicesFree = fVoicesFree;
@@ -295,15 +323,17 @@ auto StringSynth::allocNewVoice() -> Voice &
     return *voice;
 }
 
-auto StringSynth::findVoiceKeyedOn(unsigned note) -> Voice *
+auto StringSynth::findVoiceKeyedOn(unsigned channel, unsigned note) -> Voice *
 {
     // TODO worth optimizing this O(n)? bounded by the maximum polyphony
     //      also I now support multiple voices per midi note (if I ever add MPE)
 
     for (pl_cell<Voice *> &cell : fVoicesUsed) {
         Voice &voice = *cell.value;
-        if (voice.note == note && !voiceHasReleased(voice))
-            return &voice;
+        if (voice.channel == channel && voice.note == note) {
+            if (!voiceHasReleased(voice))
+                return &voice;
+        }
     }
     return nullptr;
 }
