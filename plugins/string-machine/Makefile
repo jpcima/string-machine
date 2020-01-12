@@ -23,6 +23,7 @@ FILES_SHARED = \
 	sources/StringSynth.cpp \
 	sources/StringFilters.cpp \
 	sources/SolinaChorus.cpp \
+	sources/MidiDefs.cpp \
 	sources/bbd/bbd_line.cpp \
 	sources/bbd/bbd_filter.cpp \
 	sources/dsp/AHDSREnvelope.cpp \

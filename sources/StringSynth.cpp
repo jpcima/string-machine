@@ -1,5 +1,6 @@
 #include "StringSynth.h"
 #include "StringSynthDefs.h"
+#include "MidiDefs.h"
 #include <cmath>
 #include <cstring>
 
@@ -12,28 +13,6 @@ using StringSynthDefs::PolyphonyLimit;
 #else
 #   define TRACE_ALLOC(fmt, ...)
 #endif
-
-///
-static const auto MidiPitch = []() -> std::array<float, 128>
-{
-    std::array<float, 128> pitch;
-    for (unsigned i = 0; i < 128; ++i)
-        pitch[i] = 440.0 * std::pow(2.0, (i - 69.0) * (1.0 / 12.0));
-    return pitch;
-}();
-
-static const auto MidiNoteName = []() -> std::array<std::array<char, 8>, 128>
-{
-    std::array<std::array<char, 8>, 128> names;
-    for (unsigned i = 0; i < 128; ++i) {
-        const char *octave[] = {
-            "C", "C#", "D", "D#", "E",
-            "F", "F#", "G", "G#", "A", "A#", "B",
-        };
-        sprintf(names[i].data(), "%s%d", octave[i % 12], (int)(i / 12) - 1);
-    }
-    return names;
-}();
 
 ///
 StringSynth::StringSynth()
@@ -91,47 +70,49 @@ void StringSynth::handleMessage(const uint8_t *msg)
     unsigned d2 = msg[2] & 0x7f;
 
     switch (status & 0xf0) {
-    case 0x90:
+    case kStatusNoteOn:
         if (d2 != 0) {
             noteOn(d1, d2);
             break;
         }
         // fall through
-    case 0x80:
+    case kStatusNoteOff:
         noteOff(d1, d2);
         break;
-    case 0xb0:
+    case kStatusControllerChange:
         switch (d1) {
-        case 6: {
+        case kCcDataMsb: {
             RpnIdentifier id = fCtlRpnIdentifier;
             if (id.registered && id.lsb == 0 && id.msb == 0)
                 fCtlPitchBendSensitivity = d2;
             break;
         }
-        case 98:
-        case 100:
+        case kCcNrpnLsb:
+        case kCcRpnLsb:
             fCtlRpnIdentifier.lsb = d2;
-            fCtlRpnIdentifier.registered = d1 == 100;
+            fCtlRpnIdentifier.registered = d1 == kCcRpnLsb;
             break;
-        case 99:
-        case 101:
+        case kCcNrpnMsb:
+        case kCcRpnMsb:
             fCtlRpnIdentifier.msb = d2;
-            fCtlRpnIdentifier.registered = d1 == 101;
+            fCtlRpnIdentifier.registered = d1 == kCcRpnMsb;
             break;
-        case 120:
+        case kCcSoundOff:
             allSoundOff();
             break;
-        case 121:
+        case kCcResetControllers:
             resetAllControllers();
             break;
-        case 123:
-        case 124: case 125:
-        case 126: case 127:
+        case kCcNotesOff:
+        case kCcOmniOff:
+        case kCcOmniOn:
+        case kCcMonoOn:
+        case kCcPolyOn:
             allNotesOff();
             break;
         }
         break;
-    case 0xe0:
+    case kStatusPitchBend:
         fCtlPitchBend = ((int)(d1 | (d2 << 7)) - 8192) * (1.0f / 8191.0f);
         break;
     }
@@ -200,7 +181,7 @@ void StringSynth::generate(float *outputs[2], unsigned count)
         if (!finished)
             ++it;
         else {
-            TRACE_ALLOC("Finish %u note=%s", voice.id, MidiNoteName[voice.note].data());
+            TRACE_ALLOC("Finish %u note=%s", voice.id, MidiNoteName[voice.note]);
             voicesUsed.erase(it++);
             voicesFree.push_back(&voice);
         }
@@ -235,7 +216,7 @@ void StringSynth::noteOn(unsigned note, unsigned vel)
     (void)vel;
 
     Voice &voice = allocNewVoice();
-    TRACE_ALLOC("Play %u note=%s", voice.id, MidiNoteName[note].data());
+    TRACE_ALLOC("Play %u note=%s", voice.id, MidiNoteName[note]);
 
     voice.note = note;
     voice.osc.setFrequency(MidiPitch[note]);
@@ -304,7 +285,7 @@ auto StringSynth::allocNewVoice() -> Voice &
         }
 
         voice = elected->value;
-        TRACE_ALLOC("Override %u note=%s", voice->id, MidiNoteName[voice->note].data());
+        TRACE_ALLOC("Override %u note=%s", voice->id, MidiNoteName[voice->note]);
 
         // push it to the back
         voicesUsed.erase(pl_iterator<pl_cell<Voice *>>{elected});
