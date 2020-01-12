@@ -25,3 +25,27 @@ const char **MidiNoteName = []() -> const char **
     }
     return names;
 }();
+
+static const float *MidiVolume10bit = []() -> const float *
+{
+    static float volume[1024];
+    volume[0] = 0;
+
+    auto calc_volume_14bit = [](unsigned cc14bit) -> double {
+        if (cc14bit == 0) return 0.0;
+        double x = cc14bit / (double)(127 << 7);
+        return std::pow(10.0, 2.0 * std::log10(x)); // from GM recommendation
+    };
+
+    double mid_volume = calc_volume_14bit(100u << 7);
+    double vol_scale = 1.0 / mid_volume; // compensation to force 0 dB at default
+    for (unsigned i = 1; i < 1024; ++i)
+        volume[i] = vol_scale * calc_volume_14bit(i << 4);
+
+    return volume;
+}();
+
+float MidiGetVolume14bit(unsigned cc14bit)
+{
+    return MidiVolume10bit[cc14bit >> 4];
+}

@@ -97,6 +97,7 @@ private:
         RpnIdentifier rpnIdentifier = {};
         float pitchBend = 0;
         float pitchBendSensitivity = 0;
+        unsigned volume14bit = 0;
     };
     Controllers fControllers[16];
 
@@ -108,7 +109,7 @@ private:
     void allSoundOffAllChannels();
     Voice &allocNewVoice();
     Voice *findVoiceKeyedOn(unsigned channel, unsigned note);
-    bool generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, unsigned count);
+    bool generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, float addGain, unsigned count);
     static void clearFinishedVoice(Voice &voice);
     static bool voiceHasReleased(const Voice &voice);
     static bool voiceHasFinished(const Voice &voice);

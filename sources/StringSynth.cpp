@@ -91,6 +91,12 @@ void StringSynth::handleMessage(const uint8_t *msg)
                 ctl.pitchBendSensitivity = d2;
             break;
         }
+        case kCcVolumeMsb:
+            ctl.volume14bit = (ctl.volume14bit & 127) | (d2 << 7);
+            break;
+        case kCcVolumeLsb:
+            ctl.volume14bit = (ctl.volume14bit & (127 << 7)) | d2;
+            break;
         case kCcNrpnLsb:
         case kCcRpnLsb:
             ctl.rpnIdentifier.lsb = d2;
@@ -127,6 +133,7 @@ void StringSynth::resetAllControllers(unsigned channel)
     Controllers &ctl = fControllers[channel];
     ctl.pitchBend = 0.0;
     ctl.pitchBendSensitivity = 2.0;
+    ctl.volume14bit = 100u << 7;
     ctl.rpnIdentifier.registered = 1;
     ctl.rpnIdentifier.msb = 0;
     ctl.rpnIdentifier.lsb = 0;
@@ -184,8 +191,9 @@ void StringSynth::generate(float *outputs[2], unsigned count)
         unsigned channel = voice.channel;
         const Controllers &ctl = fControllers[channel];
         float bend = std::exp2(ctl.pitchBend * ctl.pitchBendSensitivity * (1.0f / 12.0f));
+        float volume = MidiGetVolume14bit(ctl.volume14bit);
 
-        bool finished = generateVoiceAdding(voice, outL, detune, bend, count);
+        bool finished = generateVoiceAdding(voice, outL, detune, bend, volume, count);
         if (!finished)
             ++it;
         else {
@@ -338,7 +346,7 @@ auto StringSynth::findVoiceKeyedOn(unsigned channel, unsigned note) -> Voice *
     return nullptr;
 }
 
-bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, unsigned count)
+bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, float addGain, unsigned count)
 {
     // stop handling pitch bend after release
     if (voiceHasReleased(voice))
@@ -362,9 +370,10 @@ bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *
 
     float mixGainUpper = std::pow(10.0f, 0.05f * fMixGainUpper);
     float mixGainLower = std::pow(10.0f, 0.05f * fMixGainLower);
-    for (unsigned i = 0; i < count; ++i)
-        output[i] += env[i] * (mixGainUpper * fltOutputUpper[i] +
-                               mixGainLower * fltOutputLower[i]);
+    for (unsigned i = 0; i < count; ++i) {
+        output[i] += addGain * env[i] * (mixGainUpper * fltOutputUpper[i] +
+                                         mixGainLower * fltOutputLower[i]);
+    }
 
     // accumulate release time
     if (voiceHasReleased(voice))
