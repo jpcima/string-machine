@@ -1,5 +1,6 @@
 #include "StringSynth.h"
 #include "StringSynthDefs.h"
+#include "MidiDefs.h"
 #include <cmath>
 #include <cstring>
 
@@ -12,28 +13,6 @@ using StringSynthDefs::PolyphonyLimit;
 #else
 #   define TRACE_ALLOC(fmt, ...)
 #endif
-
-///
-static const auto MidiPitch = []() -> std::array<float, 128>
-{
-    std::array<float, 128> pitch;
-    for (unsigned i = 0; i < 128; ++i)
-        pitch[i] = 440.0 * std::pow(2.0, (i - 69.0) * (1.0 / 12.0));
-    return pitch;
-}();
-
-static const auto MidiNoteName = []() -> std::array<std::array<char, 8>, 128>
-{
-    std::array<std::array<char, 8>, 128> names;
-    for (unsigned i = 0; i < 128; ++i) {
-        const char *octave[] = {
-            "C", "C#", "D", "D#", "E",
-            "F", "F#", "G", "G#", "A", "A#", "B",
-        };
-        sprintf(names[i].data(), "%s%d", octave[i % 12], (int)(i / 12) - 1);
-    }
-    return names;
-}();
 
 ///
 StringSynth::StringSynth()
@@ -69,8 +48,9 @@ void StringSynth::init(double sampleRate)
     for (unsigned i = 0; i < PolyphonyLimit; ++i) {
         Voice &voice = voicesReserved[i];
 
+        voice.channel = 0;
         voice.note = 0;
-        voice.bend = 0;
+        voice.bend = 1.0;
 
         voice.env.init(&fEnvSettings, sampleRate);
         voice.osc.init(&fOscSettings, sampleRate);
@@ -81,69 +61,89 @@ void StringSynth::init(double sampleRate)
 
     fChorus.init(sampleRate);
 
-    resetAllControllers();
+    for (unsigned ch = 0; ch < 16; ++ch)
+        resetAllControllers(ch);
 }
 
 void StringSynth::handleMessage(const uint8_t *msg)
 {
     unsigned status = msg[0];
+    unsigned channel = status & 0x0f;
     unsigned d1 = msg[1] & 0x7f;
     unsigned d2 = msg[2] & 0x7f;
+    Controllers &ctl = fControllers[channel];
 
     switch (status & 0xf0) {
-    case 0x90:
+    case kStatusNoteOn:
         if (d2 != 0) {
-            noteOn(d1, d2);
+            noteOn(channel, d1, d2);
             break;
         }
         // fall through
-    case 0x80:
-        noteOff(d1, d2);
+    case kStatusNoteOff:
+        noteOff(channel, d1, d2);
         break;
-    case 0xb0:
+    case kStatusControllerChange:
         switch (d1) {
-        case 6: {
-            RpnIdentifier id = fCtlRpnIdentifier;
+        case kCcDataMsb: {
+            RpnIdentifier id = ctl.rpnIdentifier;
             if (id.registered && id.lsb == 0 && id.msb == 0)
-                fCtlPitchBendSensitivity = d2;
+                ctl.pitchBendSensitivity = d2;
             break;
         }
-        case 98:
-        case 100:
-            fCtlRpnIdentifier.lsb = d2;
-            fCtlRpnIdentifier.registered = d1 == 100;
+        case kCcVolumeMsb:
+            ctl.volume14bit = (ctl.volume14bit & 127) | (d2 << 7);
             break;
-        case 99:
-        case 101:
-            fCtlRpnIdentifier.msb = d2;
-            fCtlRpnIdentifier.registered = d1 == 101;
+        case kCcVolumeLsb:
+            ctl.volume14bit = (ctl.volume14bit & (127 << 7)) | d2;
             break;
-        case 120:
-            allSoundOff();
+        case kCcExpressionMsb:
+            ctl.expression14bit = (ctl.expression14bit & 127) | (d2 << 7);
             break;
-        case 121:
-            resetAllControllers();
+        case kCcExpressionLsb:
+            ctl.expression14bit = (ctl.expression14bit & (127 << 7)) | d2;
             break;
-        case 123:
-        case 124: case 125:
-        case 126: case 127:
-            allNotesOff();
+        case kCcNrpnLsb:
+        case kCcRpnLsb:
+            ctl.rpnIdentifier.lsb = d2;
+            ctl.rpnIdentifier.registered = d1 == kCcRpnLsb;
+            break;
+        case kCcNrpnMsb:
+        case kCcRpnMsb:
+            ctl.rpnIdentifier.msb = d2;
+            ctl.rpnIdentifier.registered = d1 == kCcRpnMsb;
+            break;
+        case kCcSoundOff:
+            allSoundOff(channel);
+            break;
+        case kCcResetControllers:
+            resetAllControllers(channel);
+            break;
+        case kCcNotesOff:
+        case kCcOmniOff:
+        case kCcOmniOn:
+        case kCcMonoOn:
+        case kCcPolyOn:
+            allNotesOff(channel);
             break;
         }
         break;
-    case 0xe0:
-        fCtlPitchBend = ((int)(d1 | (d2 << 7)) - 8192) * (1.0f / 8191.0f);
+    case kStatusPitchBend:
+        ctl.pitchBend = ((int)(d1 | (d2 << 7)) - 8192) * (1.0f / 8191.0f);
         break;
     }
 }
 
-void StringSynth::resetAllControllers()
+void StringSynth::resetAllControllers(unsigned channel)
 {
-    fCtlPitchBend = 0.0;
-    fCtlPitchBendSensitivity = 2.0;
-    fCtlRpnIdentifier.registered = 1;
-    fCtlRpnIdentifier.msb = 0;
-    fCtlRpnIdentifier.lsb = 0;
+    Controllers &ctl = fControllers[channel];
+    ctl.pitchBend = 0.0;
+    ctl.pitchBendSensitivity = 2.0;
+    ctl.volume14bit = 100u << 7;
+    ctl.expression14bit = 127u << 7;
+    ctl.rpnIdentifier.registered = 1;
+    ctl.rpnIdentifier.msb = 0;
+    ctl.rpnIdentifier.lsb = 0;
 }
 
 void StringSynth::generate(float *outputs[2], unsigned count)
@@ -191,16 +191,20 @@ void StringSynth::generate(float *outputs[2], unsigned count)
         fLastDetuneUpper = lastDetuneUpper;
     }
 
-    float bend = std::exp2(fCtlPitchBend * fCtlPitchBendSensitivity * (1.0f / 12.0f));
-
     for (auto it = voicesUsed.begin(), end = voicesUsed.end(); it != end;) {
         Voice &voice = *it->value;
         float *detune[2] = {detuneUpper, detuneLower};
-        bool finished = generateVoiceAdding(voice, outL, detune, bend, count);
+
+        unsigned channel = voice.channel;
+        const Controllers &ctl = fControllers[channel];
+        float bend = ctl.calcBendRatio();
+        float volume = MidiGetVolume14bit((ctl.volume14bit * ctl.expression14bit) >> 14);
+
+        bool finished = generateVoiceAdding(voice, outL, detune, bend, volume, count);
         if (!finished)
             ++it;
         else {
-            TRACE_ALLOC("Finish %u note=%s", voice.id, MidiNoteName[voice.note].data());
+            TRACE_ALLOC("Finish %u note=%s", voice.id, MidiNoteName[voice.note]);
             voicesUsed.erase(it++);
             voicesFree.push_back(&voice);
         }
@@ -226,43 +230,66 @@ void StringSynth::setPolyphony(int value)
         return;
 
     fPolyphony = value;
-    allSoundOff();
+    allSoundOffAllChannels();
 }
 
-void StringSynth::noteOn(unsigned note, unsigned vel)
+void StringSynth::noteOn(unsigned channel, unsigned note, unsigned vel)
 {
     // TODO the key-on velocity
     (void)vel;
 
     Voice &voice = allocNewVoice();
-    TRACE_ALLOC("Play %u note=%s", voice.id, MidiNoteName[note].data());
+    TRACE_ALLOC("Play %u note=%s", voice.id, MidiNoteName[note]);
 
+    Controllers &ctl = fControllers[channel];
+
+    voice.channel = channel;
     voice.note = note;
     voice.osc.setFrequency(MidiPitch[note]);
     voice.env.trigger();
+    voice.bend = ctl.calcBendRatio();
     voice.release = 0;
 }
 
-void StringSynth::noteOff(unsigned note, unsigned vel)
+void StringSynth::noteOff(unsigned channel, unsigned note, unsigned vel)
 {
     (void)vel;
 
-    Voice *voice = findVoiceKeyedOn(note);
+    Voice *voice = findVoiceKeyedOn(channel, note);
     if (!voice)
         return;
 
     voice->env.release();
 }
 
-void StringSynth::allNotesOff()
+void StringSynth::allNotesOff(unsigned channel)
 {
     for (pl_cell<Voice *> &cell : fVoicesUsed) {
         Voice &voice = *cell.value;
-        noteOff(voice.note, 0);
+        if (voice.channel == channel && !voiceHasReleased(voice))
+            voice.env.release();
     }
 }
 
-void StringSynth::allSoundOff()
+void StringSynth::allSoundOff(unsigned channel)
+{
+    auto &voicesUsed = fVoicesUsed;
+    auto &voicesFree = fVoicesFree;
+
+    auto it = voicesUsed.begin();
+    while (!it.is_end()) {
+        Voice &voice = *it->value;
+        if (voice.channel != channel) {
+            ++it;
+            continue;
+        }
+        clearFinishedVoice(voice);
+        voicesUsed.erase(it++);
+        voicesFree.push_back(&voice);
+    }
+}
+
+void StringSynth::allSoundOffAllChannels()
 {
     auto &voicesUsed = fVoicesUsed;
     auto &voicesFree = fVoicesFree;
@@ -304,7 +331,7 @@ auto StringSynth::allocNewVoice() -> Voice &
         }
 
         voice = elected->value;
-        TRACE_ALLOC("Override %u note=%s", voice->id, MidiNoteName[voice->note].data());
+        TRACE_ALLOC("Override %u note=%s", voice->id, MidiNoteName[voice->note]);
 
         // push it to the back
         voicesUsed.erase(pl_iterator<pl_cell<Voice *>>{elected});
@@ -314,20 +341,22 @@ auto StringSynth::allocNewVoice() -> Voice &
     return *voice;
 }
 
-auto StringSynth::findVoiceKeyedOn(unsigned note) -> Voice *
+auto StringSynth::findVoiceKeyedOn(unsigned channel, unsigned note) -> Voice *
 {
     // TODO worth optimizing this O(n)? bounded by the maximum polyphony
     //      also I now support multiple voices per midi note (if I ever add MPE)
 
     for (pl_cell<Voice *> &cell : fVoicesUsed) {
         Voice &voice = *cell.value;
-        if (voice.note == note && !voiceHasReleased(voice))
-            return &voice;
+        if (voice.channel == channel && voice.note == note) {
+            if (!voiceHasReleased(voice))
+                return &voice;
+        }
     }
     return nullptr;
 }
 
-bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, unsigned count)
+bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, float addGain, unsigned count)
 {
     // stop handling pitch bend after release
     if (voiceHasReleased(voice))
@@ -351,9 +380,10 @@ bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *
 
     float mixGainUpper = std::pow(10.0f, 0.05f * fMixGainUpper);
     float mixGainLower = std::pow(10.0f, 0.05f * fMixGainLower);
-    for (unsigned i = 0; i < count; ++i)
-        output[i] += env[i] * (mixGainUpper * fltOutputUpper[i] +
-                               mixGainLower * fltOutputLower[i]);
+    for (unsigned i = 0; i < count; ++i) {
+        output[i] += addGain * env[i] * (mixGainUpper * fltOutputUpper[i] +
+                                         mixGainLower * fltOutputLower[i]);
+    }
 
     // accumulate release time
     if (voiceHasReleased(voice))
@@ -385,4 +415,10 @@ bool StringSynth::voiceHasReleased(const Voice &voice)
 bool StringSynth::voiceHasFinished(const Voice &voice)
 {
     return !voice.env.isTriggered() && voice.env.getCurrentLevel() < 1e-4f;
+}
+
+///
+float StringSynth::Controllers::calcBendRatio() const
+{
+    return std::exp2(pitchBend * pitchBendSensitivity * (1.0f / 12.0f));
 }

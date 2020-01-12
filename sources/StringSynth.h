@@ -16,7 +16,7 @@ public:
     void init(double sampleRate);
 
     void handleMessage(const uint8_t *msg);
-    void resetAllControllers();
+    void resetAllControllers(unsigned channel);
     void generate(float *outputs[2], unsigned count);
 
     float getDetune() const { return fDetuneAmount; }
@@ -50,6 +50,7 @@ public:
 
 private:
     struct Voice {
+        unsigned channel;
         unsigned note;
         float bend;
         unsigned release; // accumulated time in release phase, the greater the
@@ -86,24 +87,31 @@ private:
 
     unsigned fPolyphony = 16;
 
-    float fCtlPitchBend = 0;
-    float fCtlPitchBendSensitivity = 0;
-
     struct RpnIdentifier {
         unsigned registered : 1;
         unsigned msb : 7;
         unsigned lsb : 7;
     };
-    RpnIdentifier fCtlRpnIdentifier = {};
+
+    struct Controllers {
+        RpnIdentifier rpnIdentifier = {};
+        float pitchBend = 0;
+        float pitchBendSensitivity = 0;
+        unsigned volume14bit = 0;
+        unsigned expression14bit = 0;
+        float calcBendRatio() const;
+    };
+    Controllers fControllers[16];
 
 private:
-    void noteOn(unsigned note, unsigned vel);
-    void noteOff(unsigned note, unsigned vel);
-    void allNotesOff();
-    void allSoundOff();
+    void noteOn(unsigned channel, unsigned note, unsigned vel);
+    void noteOff(unsigned channel, unsigned note, unsigned vel);
+    void allNotesOff(unsigned channel);
+    void allSoundOff(unsigned channel);
+    void allSoundOffAllChannels();
     Voice &allocNewVoice();
-    Voice *findVoiceKeyedOn(unsigned note);
-    bool generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, unsigned count);
+    Voice *findVoiceKeyedOn(unsigned channel, unsigned note);
+    bool generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, float addGain, unsigned count);
     static void clearFinishedVoice(Voice &voice);
     static bool voiceHasReleased(const Voice &voice);
     static bool voiceHasFinished(const Voice &voice);
