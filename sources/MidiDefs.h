@@ -16,8 +16,10 @@ enum {
 enum {
     kCcDataMsb = 6,
     kCcVolumeMsb = 7,
+    kCcExpressionMsb = 11,
     kCcDataLsb = 38,
     kCcVolumeLsb = 39,
+    kCcExpressionLsb = 43,
     kCcNrpnLsb = 98,
     kCcNrpnMsb = 99,
     kCcRpnLsb = 100,

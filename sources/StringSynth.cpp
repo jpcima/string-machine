@@ -97,6 +97,12 @@ void StringSynth::handleMessage(const uint8_t *msg)
         case kCcVolumeLsb:
             ctl.volume14bit = (ctl.volume14bit & (127 << 7)) | d2;
             break;
+        case kCcExpressionMsb:
+            ctl.expression14bit = (ctl.expression14bit & 127) | (d2 << 7);
+            break;
+        case kCcExpressionLsb:
+            ctl.expression14bit = (ctl.expression14bit & (127 << 7)) | d2;
+            break;
         case kCcNrpnLsb:
         case kCcRpnLsb:
             ctl.rpnIdentifier.lsb = d2;
@@ -134,6 +140,7 @@ void StringSynth::resetAllControllers(unsigned channel)
     ctl.pitchBend = 0.0;
     ctl.pitchBendSensitivity = 2.0;
     ctl.volume14bit = 100u << 7;
+    ctl.expression14bit = 127u << 7;
     ctl.rpnIdentifier.registered = 1;
     ctl.rpnIdentifier.msb = 0;
     ctl.rpnIdentifier.lsb = 0;
@@ -191,7 +198,7 @@ void StringSynth::generate(float *outputs[2], unsigned count)
         unsigned channel = voice.channel;
         const Controllers &ctl = fControllers[channel];
         float bend = std::exp2(ctl.pitchBend * ctl.pitchBendSensitivity * (1.0f / 12.0f));
-        float volume = MidiGetVolume14bit(ctl.volume14bit);
+        float volume = MidiGetVolume14bit((ctl.volume14bit * ctl.expression14bit) >> 14);
 
         bool finished = generateVoiceAdding(voice, outL, detune, bend, volume, count);
         if (!finished)
