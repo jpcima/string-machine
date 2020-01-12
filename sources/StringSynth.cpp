@@ -197,7 +197,7 @@ void StringSynth::generate(float *outputs[2], unsigned count)
 
         unsigned channel = voice.channel;
         const Controllers &ctl = fControllers[channel];
-        float bend = std::exp2(ctl.pitchBend * ctl.pitchBendSensitivity * (1.0f / 12.0f));
+        float bend = ctl.calcBendRatio();
         float volume = MidiGetVolume14bit((ctl.volume14bit * ctl.expression14bit) >> 14);
 
         bool finished = generateVoiceAdding(voice, outL, detune, bend, volume, count);
@@ -241,10 +241,13 @@ void StringSynth::noteOn(unsigned channel, unsigned note, unsigned vel)
     Voice &voice = allocNewVoice();
     TRACE_ALLOC("Play %u note=%s", voice.id, MidiNoteName[note]);
 
+    Controllers &ctl = fControllers[channel];
+
     voice.channel = channel;
     voice.note = note;
     voice.osc.setFrequency(MidiPitch[note]);
     voice.env.trigger();
+    voice.bend = ctl.calcBendRatio();
     voice.release = 0;
 }
 
@@ -412,4 +415,10 @@ bool StringSynth::voiceHasReleased(const Voice &voice)
 bool StringSynth::voiceHasFinished(const Voice &voice)
 {
     return !voice.env.isTriggered() && voice.env.getCurrentLevel() < 1e-4f;
+}
+
+///
+float StringSynth::Controllers::calcBendRatio() const
+{
+    return std::exp2(pitchBend * pitchBendSensitivity * (1.0f / 12.0f));
 }
