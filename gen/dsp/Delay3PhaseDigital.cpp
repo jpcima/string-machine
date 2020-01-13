@@ -169,7 +169,7 @@ class Delay3PhaseDigitalDsp : public dsp {
 		return 4;
 	}
 	FAUSTPP_VIRTUAL int getNumOutputs() {
-		return 3;
+		return 2;
 	}
 	FAUSTPP_VIRTUAL int getInputRate(int channel) {
 		int rate;
@@ -205,10 +205,6 @@ class Delay3PhaseDigitalDsp : public dsp {
 				break;
 			}
 			case 1: {
-				rate = 1;
-				break;
-			}
-			case 2: {
 				rate = 1;
 				break;
 			}
@@ -295,7 +291,6 @@ class Delay3PhaseDigitalDsp : public dsp {
 		FAUSTFLOAT* input3 = inputs[3];
 		FAUSTFLOAT* output0 = outputs[0];
 		FAUSTFLOAT* output1 = outputs[1];
-		FAUSTFLOAT* output2 = outputs[2];
 		for (int i = 0; (i < count); i = (i + 1)) {
 			fRec2[0] = (float(input0[i]) - (fConst12 * ((fConst13 * fRec2[1]) + (fConst14 * fRec2[2]))));
 			fRec1[0] = (0.0f - (fConst12 * (((fConst13 * fRec1[1]) + (fConst14 * fRec1[2])) - (fConst8 * ((fRec2[1] + (0.5f * fRec2[0])) + (0.5f * fRec2[2]))))));
@@ -312,15 +307,13 @@ class Delay3PhaseDigitalDsp : public dsp {
 			int iTemp8 = int(fTemp7);
 			float fTemp9 = std::floor(fTemp7);
 			float fTemp10 = ((fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, iTemp8))) & 16383)] * (0.0f - (fTemp6 + (-1.0f - fTemp9)))) + ((fTemp6 - fTemp9) * fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, (iTemp8 + 1)))) & 16383)]));
-			float fTemp11 = (fTemp5 + fTemp10);
-			float fTemp12 = (fConst0 * ((0.00100000005f * float(input3[i])) + 0.00499999989f));
-			float fTemp13 = (fTemp12 + 4.99999987e-06f);
-			int iTemp14 = int(fTemp13);
-			float fTemp15 = std::floor(fTemp13);
-			float fTemp16 = ((fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, iTemp14))) & 16383)] * (0.0f - (fTemp12 + (-1.0f - fTemp15)))) + ((fTemp12 - fTemp15) * fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, (iTemp14 + 1)))) & 16383)]));
-			output0[i] = FAUSTFLOAT((fConst5 * (fTemp11 - fTemp16)));
-			output1[i] = FAUSTFLOAT((0.0f - (fConst5 * (fTemp16 - (fTemp5 - fTemp10)))));
-			output2[i] = FAUSTFLOAT((fConst5 * (fTemp11 + fTemp16)));
+			float fTemp11 = (fConst0 * ((0.00100000005f * float(input3[i])) + 0.00499999989f));
+			float fTemp12 = (fTemp11 + 4.99999987e-06f);
+			int iTemp13 = int(fTemp12);
+			float fTemp14 = std::floor(fTemp12);
+			float fTemp15 = ((fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, iTemp13))) & 16383)] * (0.0f - (fTemp11 + (-1.0f - fTemp14)))) + ((fTemp11 - fTemp14) * fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, (iTemp13 + 1)))) & 16383)]));
+			output0[i] = FAUSTFLOAT((fConst5 * ((fTemp5 + fTemp10) - fTemp15)));
+			output1[i] = FAUSTFLOAT((0.0f - (fConst5 * (fTemp15 - (fTemp5 - fTemp10)))));
 			fRec2[2] = fRec2[1];
 			fRec2[1] = fRec2[0];
 			fRec1[2] = fRec1[1];
@@ -380,7 +373,7 @@ void Delay3PhaseDigital::clear() noexcept
 
 void Delay3PhaseDigital::process(
     const float *in0,const float *in1,const float *in2,const float *in3,
-    float *out0,float *out1,float *out2,
+    float *out0,float *out1,
     unsigned count) noexcept
 {
 
@@ -389,7 +382,7 @@ void Delay3PhaseDigital::process(
         const_cast<float *>(in0),const_cast<float *>(in1),const_cast<float *>(in2),const_cast<float *>(in3),
     };
     float *outputs[] = {
-        out0,out1,out2,
+        out0,out1,
     };
     dsp.compute(count, inputs, outputs);
 

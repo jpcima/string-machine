@@ -9,7 +9,7 @@ class Delay3Phase {
 public:
     void init(double sampleRate);
     void clear();
-    void process(const float *input, const float *const mods[3], float *const outputs[3], unsigned count);
+    void process(const float *input, const float *const mods[3], float *const outputs[2], unsigned count);
 
     bool getAnalogMode() const { return fAnalogMode; }
     void setAnalogMode(bool analog);
@@ -19,7 +19,7 @@ private:
     public:
         void init(double sampleRate);
         void clear();
-        void process(const float *input, const float *const mods[3], float *const outputs[3], unsigned count);
+        void process(const float *input, const float *const mods[3], float *const outputs[2], unsigned count);
 
     private:
         float fSampleTime = 0;

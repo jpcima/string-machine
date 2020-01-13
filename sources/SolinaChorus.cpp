@@ -27,10 +27,12 @@ void SolinaChorus::process(const float *input, float *const outputs[3], unsigned
         float *discardOutputs[] = {discardBuffer[0], discardBuffer[1], discardBuffer[2]};
         fDelay.process(input, lfoOuts, discardOutputs, count);
 
-        float *output0 = outputs[0];
-        for (unsigned i = 0; i < count; ++i)
-            output0[i] = 2.0 * input[i];
-        for (unsigned c = 1; c < 3; ++c)
-            memcpy(outputs[c], output0, count * sizeof(float));
+        float *outputL = outputs[0];
+        float *outputR = outputs[1];
+
+        if (outputL != input)
+            memcpy(outputL, input, count * sizeof(float));
+        if (outputR != outputL)
+            memcpy(outputR, outputL, count * sizeof(float));
     }
 }

@@ -21,12 +21,12 @@ void Delay3Phase::clear()
         fDigital.clear();
 }
 
-void Delay3Phase::process(const float *input, const float *const mods[3], float *const outputs[3], unsigned count)
+void Delay3Phase::process(const float *input, const float *const mods[3], float *const outputs[2], unsigned count)
 {
     if (fAnalogMode)
         fAnalog.process(input, mods, outputs, count);
     else
-        fDigital.process(input, mods[0], mods[1], mods[2], outputs[0], outputs[1], outputs[2], count);
+        fDigital.process(input, mods[0], mods[1], mods[2], outputs[0], outputs[1], count);
 }
 
 void Delay3Phase::setAnalogMode(bool analog)
@@ -57,7 +57,7 @@ void Delay3Phase::AnalogDelay::clear()
         fDelayLine[l].clear();
 }
 
-void Delay3Phase::AnalogDelay::process(const float *input, const float *const mods[3], float *const outputs[3], unsigned count)
+void Delay3Phase::AnalogDelay::process(const float *input, const float *const mods[3], float *const outputs[2], unsigned count)
 {
     float sampleTime = fSampleTime;
 
@@ -89,8 +89,4 @@ void Delay3Phase::AnalogDelay::process(const float *input, const float *const mo
     float *outputR = outputs[1];
     for (unsigned i = 0; i < count; ++i)
         outputR[i] = lineOutputs[0][i] - lineOutputs[1][i] - lineOutputs[2][i];
-
-    float *outputMono = outputs[2];
-    for (unsigned i = 0; i < count; ++i)
-        outputMono[i] = lineOutputs[0][i] + lineOutputs[1][i] + lineOutputs[2][i];
 }

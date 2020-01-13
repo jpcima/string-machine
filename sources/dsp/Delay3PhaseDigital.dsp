@@ -1,7 +1,7 @@
 import("stdfaust.lib");
 msp = library("maxmsp.lib");
 
-process(input, mod1, mod2, mod3) = L, R, Mono with {
+process(input, mod1, mod2, mod3) = L, R with {
   L = line1 + line2 - line3;
   R = line1 - line2 - line3;
   Mono = line1 + line2 + line3;

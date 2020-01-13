@@ -217,8 +217,7 @@ void StringSynth::generate(float *outputs[2], unsigned count)
         }
     }
 
-    float outMono[BufferLimit];
-    float *chorusOutputs[] = {outL, outR, outMono};
+    float *chorusOutputs[] = {outL, outR};
     fChorus.process(outL, chorusOutputs, count);
 
     float finalGain = std::pow(10.0f, 0.05 * (fMasterGain - 12.0f));
