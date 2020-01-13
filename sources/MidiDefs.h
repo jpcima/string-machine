@@ -5,6 +5,8 @@ extern const float *MidiPitch/*[128]*/;
 extern const char **MidiNoteName/*[128]*/;
 
 float MidiGetVolume14bit(unsigned cc14bit);
+float MidiGetLeftPan14bit(unsigned cc14bit);
+float MidiGetRightPan14bit(unsigned cc14bit);
 
 enum {
     kStatusNoteOn = 0x90,
@@ -16,9 +18,11 @@ enum {
 enum {
     kCcDataMsb = 6,
     kCcVolumeMsb = 7,
+    kCcPanMsb = 10,
     kCcExpressionMsb = 11,
     kCcDataLsb = 38,
     kCcVolumeLsb = 39,
+    kCcPanLsb = 42,
     kCcExpressionLsb = 43,
     kCcNrpnLsb = 98,
     kCcNrpnMsb = 99,

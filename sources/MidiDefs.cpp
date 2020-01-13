@@ -1,4 +1,5 @@
 #include "MidiDefs.h"
+#include <algorithm>
 #include <cstdio>
 
 const float *MidiPitch = []() -> const float *
@@ -48,4 +49,39 @@ static const float *MidiVolume10bit = []() -> const float *
 float MidiGetVolume14bit(unsigned cc14bit)
 {
     return MidiVolume10bit[cc14bit >> 4];
+}
+
+static constexpr unsigned MaxPan10bit = 127 << 3;
+
+static const float *MidiPan10bit = []() -> const float *
+{
+    static float pan[MaxPan10bit + 1];
+
+    constexpr unsigned Center1Pan10bit = 63 << 3;
+    constexpr unsigned Center2Pan10bit = 64 << 3;
+
+    for (unsigned i = 0; i < MaxPan10bit + 1; ++i) {
+        if (i >= Center1Pan10bit && i <= Center2Pan10bit)
+            pan[i] = 1.0;
+        else {
+            double x = i / (double)MaxPan10bit;
+            double a = M_SQRT2; // + 3dB
+            pan[i] = a * std::cos(x * (M_PI / 2.0));
+        }
+    }
+
+    return pan;
+}();
+
+float MidiGetLeftPan14bit(unsigned cc14bit)
+{
+    unsigned index10bit = std::min(MaxPan10bit, cc14bit >> 4);
+    return MidiPan10bit[index10bit];
+}
+
+float MidiGetRightPan14bit(unsigned cc14bit)
+{
+    unsigned max14bit = 127 << 7;
+    unsigned index10bit = (max14bit - std::min(cc14bit, max14bit)) >> 4;
+    return MidiPan10bit[index10bit];
 }
