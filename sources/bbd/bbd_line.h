@@ -2,17 +2,18 @@
 #include "bbd_filter.h"
 #include <algorithm>
 #include <vector>
-#include <memory>
+#include <array>
 #include <complex>
 typedef std::complex<double> cdouble;
 
+template <unsigned Channels = 1>
 class BBD_Line {
 public:
     void setup(double fs, unsigned ns, const BBD_Filter_Spec &fsin, const BBD_Filter_Spec &fsout);
     void set_delay_size(unsigned ns);
     void clear();
-    void process(unsigned n, const float *input, float *output, const float *clock);
-    void process(unsigned n, float *inout, const float *clock);
+    void process(unsigned n, const float *const inputs[Channels], float *const outputs[Channels], const float *clock);
+    void process(unsigned n, float *const inouts[Channels], const float *clock);
 
     const BBD_Filter_Coef &filter_in() const noexcept { return *fin_; }
     const BBD_Filter_Coef &filter_out() const noexcept { return *fout_; }
@@ -28,12 +29,11 @@ private:
     unsigned imem_; // delay memory index
     double pclk_; // clock phase
     unsigned ptick_; // clock tick counter
-    double ybbd_old_;
     const BBD_Filter_Coef *fin_;
     const BBD_Filter_Coef *fout_;
-    std::unique_ptr<cdouble[]> Xin_;
-    std::unique_ptr<cdouble[]> Xout_;
-    std::unique_ptr<cdouble[]> Xout_mem_; // sample memory of output filter
-    std::unique_ptr<cdouble[]> Gin_;
-    std::unique_ptr<cdouble[]> Gout_;
+    std::array<double, Channels> ybbd1_;
+
+    enum { Mmax = 8 }; // the maximum filter order
+    std::array<cdouble, Mmax> Xin_[Channels];
+    std::array<cdouble, Mmax> Xout1_[Channels]; // sample memory of output filter
 };

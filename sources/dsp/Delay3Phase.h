@@ -23,7 +23,7 @@ private:
 
     private:
         float fSampleTime = 0;
-        BBD_Line fDelayLine[3];
+        BBD_Line<1> fDelayLine[3];
     };
 
 private:
