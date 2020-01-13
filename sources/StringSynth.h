@@ -99,6 +99,7 @@ private:
         float pitchBendSensitivity = 0;
         unsigned volume14bit = 0;
         unsigned expression14bit = 0;
+        unsigned pan14bit = 0;
         float calcBendRatio() const;
     };
     Controllers fControllers[16];

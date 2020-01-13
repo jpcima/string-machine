@@ -103,6 +103,12 @@ void StringSynth::handleMessage(const uint8_t *msg)
         case kCcExpressionLsb:
             ctl.expression14bit = (ctl.expression14bit & (127 << 7)) | d2;
             break;
+        case kCcPanMsb:
+            ctl.pan14bit = (ctl.pan14bit & 127) | (d2 << 7);
+            break;
+        case kCcPanLsb:
+            ctl.pan14bit = (ctl.pan14bit & (127 << 7)) | d2;
+            break;
         case kCcNrpnLsb:
         case kCcRpnLsb:
             ctl.rpnIdentifier.lsb = d2;
@@ -141,6 +147,7 @@ void StringSynth::resetAllControllers(unsigned channel)
     ctl.pitchBendSensitivity = 2.0;
     ctl.volume14bit = 100u << 7;
     ctl.expression14bit = 127u << 7;
+    ctl.pan14bit = 64u << 7;
     ctl.rpnIdentifier.registered = 1;
     ctl.rpnIdentifier.msb = 0;
     ctl.rpnIdentifier.lsb = 0;
