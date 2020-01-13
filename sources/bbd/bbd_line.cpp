@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <cassert>
 
-static unsigned interp_size = 128;
+static constexpr unsigned interp_size = 128;
 
 void BBD_Line::setup(double fs, unsigned ns, const BBD_Filter_Spec &fsin, const BBD_Filter_Spec &fsout)
 {
