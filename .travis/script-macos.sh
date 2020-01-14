@@ -43,11 +43,12 @@ export LDFLAGS="-L/opt/local/lib -arch i386 -arch x86_64"
 # dependencies
 
 build_auto_dep() {
+    echo "** Building autotools dependency $1"
     cd "$1"
     shift
-    ./configure --enable-silent-rules --enable-static --disable-shared --prefix=/opt/local "$@"
-    make $MAKE_ARGS
-    sudo make install
+    ./configure --enable-silent-rules --enable-static --disable-shared --prefix=/opt/local "$@" &> /dev/null
+    make $MAKE_ARGS &> /dev/null
+    sudo make install &> /dev/null
     cd ..
 }
 
