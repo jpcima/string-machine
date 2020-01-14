@@ -2,11 +2,17 @@
 #include "StringOsc.h"
 #include "StringFilters.h"
 #include "SolinaChorus.h"
+#include "SolinaChorusStereo.h"
 #include "dsp/AHDSREnvelope.h"
 #include "dsp/NoiseLFO.hpp"
 #include <pl_list.hpp>
 #include <memory>
 #include <cstdint>
+
+// 1 to enable stereo, increase CPU usage requirement
+#ifndef STRING_SYNTH_USE_STEREO
+#   define STRING_SYNTH_USE_STEREO 1
+#endif
 
 class StringSynth {
 public:
@@ -36,8 +42,14 @@ public:
     float getMixGainLower() const { return fMixGainLower; }
     void setMixGainLower(float value) { fMixGainLower = value; }
 
-    const SolinaChorus &getChorus() const { return fChorus; }
-    SolinaChorus &getChorus() { return fChorus; }
+#if STRING_SYNTH_USE_STEREO
+    typedef SolinaChorusStereo Chorus;
+#else
+    typedef SolinaChorus Chorus;
+#endif
+
+    const Chorus &getChorus() const { return fChorus; }
+    Chorus &getChorus() { return fChorus; }
 
     float getMasterGain() const { return fMasterGain; }
     void setMasterGain(float value) { fMasterGain = value; }
@@ -81,7 +93,7 @@ private:
     AHDSREnvelope::Settings fEnvSettings;
     StringFilters::Settings fFltSettings;
 
-    SolinaChorus fChorus;
+    Chorus fChorus;
 
     float fMasterGain = 0;
 
@@ -112,7 +124,11 @@ private:
     void allSoundOffAllChannels();
     Voice &allocNewVoice();
     Voice *findVoiceKeyedOn(unsigned channel, unsigned note);
+#if STRING_SYNTH_USE_STEREO
+    bool generateVoiceAdding(Voice &voice, float *outputL, float *outputR, const float *const detune[2], float bend, float addGainL, float addGainR, unsigned count);
+#else
     bool generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, float addGain, unsigned count);
+#endif
     static void clearFinishedVoice(Voice &voice);
     static bool voiceHasReleased(const Voice &voice);
     static bool voiceHasFinished(const Voice &voice);

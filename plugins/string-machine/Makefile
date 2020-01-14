@@ -23,13 +23,16 @@ FILES_SHARED = \
 	sources/StringSynth.cpp \
 	sources/StringFilters.cpp \
 	sources/SolinaChorus.cpp \
+	sources/SolinaChorusStereo.cpp \
 	sources/MidiDefs.cpp \
 	sources/bbd/bbd_line.cpp \
 	sources/bbd/bbd_filter.cpp \
 	sources/dsp/AHDSREnvelope.cpp \
 	sources/dsp/Delay3Phase.cpp \
+	sources/dsp/Delay3PhaseStereo.cpp \
 	sources/dsp/OnePoleFilter.cpp \
 	gen/dsp/Delay3PhaseDigital.cpp \
+	gen/dsp/Delay3PhaseDigitalStereo.cpp \
 	gen/dsp/LFO3PhaseDual.cpp \
 	gen/dsp/StringFiltersHighshelf.cpp \
 	gen/dsp/NoiseLFO.cpp \

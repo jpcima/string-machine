@@ -31,11 +31,11 @@ public:
     void clear() noexcept;
 
     void process(
-        const float *in0,const float *in1,const float *in2,const float *in3,
+        const float *in0,const float *in1,const float *in2,const float *in3,const float *in4,
         float *out0,float *out1,float *out2,float *out3,float *out4,float *out5,
         unsigned count) noexcept;
 
-    enum { NumInputs = 4 };
+    enum { NumInputs = 5 };
     enum { NumOutputs = 6 };
     enum { NumActives = 0 };
     enum { NumPassives = 0 };

@@ -170,6 +170,9 @@ void StringSynth::generate(float *outputs[2], unsigned count)
     float *outL = outputs[0];
     float *outR = outputs[1];
     memset(outL, 0, count * sizeof(float));
+#if STRING_SYNTH_USE_STEREO
+    memset(outR, 0, count * sizeof(float));
+#endif
 
     float detuneUpper[BufferLimit];
     float detuneLower[BufferLimit];
@@ -207,7 +210,13 @@ void StringSynth::generate(float *outputs[2], unsigned count)
         float bend = ctl.calcBendRatio();
         float volume = MidiGetVolume14bit((ctl.volume14bit * ctl.expression14bit) >> 14);
 
+#if STRING_SYNTH_USE_STEREO
+        float volumeL = volume * MidiGetLeftPan14bit(ctl.pan14bit);
+        float volumeR = volume * MidiGetRightPan14bit(ctl.pan14bit);
+        bool finished = generateVoiceAdding(voice, outL, outR, detune, bend, volumeL, volumeR, count);
+#else
         bool finished = generateVoiceAdding(voice, outL, detune, bend, volume, count);
+#endif
         if (!finished)
             ++it;
         else {
@@ -218,7 +227,12 @@ void StringSynth::generate(float *outputs[2], unsigned count)
     }
 
     float *chorusOutputs[] = {outL, outR};
+#if STRING_SYNTH_USE_STEREO
+    const float *chorusInputs[] = {outL, outR};
+    fChorus.process(chorusInputs, chorusOutputs, count);
+#else
     fChorus.process(outL, chorusOutputs, count);
+#endif
 
     float finalGain = std::pow(10.0f, 0.05 * (fMasterGain - 12.0f));
     for (unsigned i = 0; i < count; ++i) {
@@ -362,7 +376,11 @@ auto StringSynth::findVoiceKeyedOn(unsigned channel, unsigned note) -> Voice *
     return nullptr;
 }
 
+#if STRING_SYNTH_USE_STEREO
+bool StringSynth::generateVoiceAdding(Voice &voice, float *outputL, float *outputR, const float *const detune[2], float bend, float addGainL, float addGainR, unsigned count)
+#else
 bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, float addGain, unsigned count)
+#endif
 {
     // stop handling pitch bend after release
     if (voiceHasReleased(voice))
@@ -387,8 +405,14 @@ bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *
     float mixGainUpper = std::pow(10.0f, 0.05f * fMixGainUpper);
     float mixGainLower = std::pow(10.0f, 0.05f * fMixGainLower);
     for (unsigned i = 0; i < count; ++i) {
-        output[i] += addGain * env[i] * (mixGainUpper * fltOutputUpper[i] +
-                                         mixGainLower * fltOutputLower[i]);
+        float mixSample = (mixGainUpper * fltOutputUpper[i] +
+                           mixGainLower * fltOutputLower[i]);
+#if STRING_SYNTH_USE_STEREO
+        outputL[i] += addGainL * env[i] * mixSample;
+        outputR[i] += addGainR * env[i] * mixSample;
+#else
+        output[i] += addGain * env[i] * mixSample;
+#endif
     }
 
     // accumulate release time

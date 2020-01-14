@@ -20,10 +20,13 @@ NAME = string-machine-chorus-stereo
 FILES_SHARED = \
 	StereoChorusShared.cpp \
 	sources/SolinaChorus.cpp \
+	sources/SolinaChorusStereo.cpp \
 	sources/bbd/bbd_line.cpp \
 	sources/bbd/bbd_filter.cpp \
 	sources/dsp/Delay3Phase.cpp \
+	sources/dsp/Delay3PhaseStereo.cpp \
 	gen/dsp/Delay3PhaseDigital.cpp \
+	gen/dsp/Delay3PhaseDigitalStereo.cpp \
 	gen/dsp/LFO3PhaseDual.cpp
 
 FILES_DSP = \

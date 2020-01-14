@@ -13,7 +13,11 @@ processMono(in, mod1, mod2, mod3) = in : antiAlias <: (line1, line2, line3) with
   };
 };
 
-processStereo(in, mod1, mod2, mod3) = in <: par(i, 2, processMono(mod1, mod2, mod3));
+processStereo(inL, inR, mod1, mod2, mod3) = par(i, 2, in(i) : mono) with {
+  mono = processMono(mod1, mod2, mod3);
+  in(0) = inL;
+  in(1) = inR;
+};
 
 antiAlias = lpf1 : lpf2 : lpf3 with {
   cutoff1 = ba.midikey2hz(122.3);

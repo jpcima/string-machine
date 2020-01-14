@@ -1,12 +1,12 @@
 #pragma once
 #include "dsp/LFO3PhaseDual.hpp"
-#include "dsp/Delay3Phase.h"
+#include "dsp/Delay3PhaseStereo.h"
 
-class SolinaChorus {
+class SolinaChorusStereo {
 public:
     void init(double sampleRate);
     void clear() { fDelay.clear(); }
-    void process(const float *input, float *const outputs[2], unsigned count);
+    void process(const float *inputs[2], float *const outputs[2], unsigned count);
 
     bool getEnabled() const { return fEnabled; }
     void setEnabled(bool enabled) { fEnabled = enabled; }
@@ -23,5 +23,5 @@ public:
 private:
     bool fEnabled = false;
     LFO3PhaseDual fLfo;
-    Delay3Phase fDelay;
+    Delay3PhaseStereo fDelay;
 };
