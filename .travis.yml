@@ -17,9 +17,9 @@ matrix:
         - _MINGW=mingw32
         - _HOST=i686-w64-mingw32
       before_install:
-        - docker pull jpcima/arch-mingw
+        - docker pull archlinux
       install:
-        - container=$(docker run -d -i -t -v /home:/home jpcima/arch-mingw /bin/bash)
+        - container=$(docker run -d -i -t -v /home:/home archlinux /bin/bash)
         - |
           cross() {
             docker exec -w "$(pwd)" -e "_BUILD=$_BUILD" -e "_MINGW=$_MINGW" -e "_HOST=$_HOST" -i -t "$container" "$@"
@@ -37,9 +37,9 @@ matrix:
         - _MINGW=mingw64
         - _HOST=x86_64-w64-mingw32
       before_install:
-        - docker pull jpcima/arch-mingw
+        - docker pull archlinux
       install:
-        - container=$(docker run -d -i -t -v /home:/home jpcima/arch-mingw /bin/bash)
+        - container=$(docker run -d -i -t -v /home:/home archlinux /bin/bash)
         - |
           cross() {
             docker exec -w "$(pwd)" -e "_BUILD=$_BUILD" -e "_MINGW=$_MINGW" -e "_HOST=$_HOST" -i -t "$container" "$@"

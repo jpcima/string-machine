@@ -36,6 +36,20 @@ export CXXFLAGS="-I/opt/$_MINGW/include"
 export LDFLAGS="-L/opt/$_MINGW/lib"
 
 # ---------------------------------------------------------------------------------------------------------------------
+
+cat >>/etc/pacman.conf <<EOF
+[multilib]
+Include = /etc/pacman.d/mirrorlist
+
+[mingw-w64]
+SigLevel = Optional TrustAll
+Server = https://github.com/jpcima/arch-mingw-w64/releases/download/repo.\$arch/
+EOF
+
+pacman -Sqy --noconfirm
+pacman -Sq --noconfirm base-devel wine mingw-w64-gcc mingw-w64-pkg-config mingw-w64-cairo
+
+# ---------------------------------------------------------------------------------------------------------------------
 # prepare
 
 # invoke the Windows ttl generator using wine
