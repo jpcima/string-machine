@@ -1,22 +1,17 @@
 import("stdfaust.lib");
 msp = library("maxmsp.lib");
 
-process(input, mod1, mod2, mod3) = L, R with {
-  L = line1 + line2 - line3;
-  R = line1 - line2 - line3;
-  Mono = line1 + line2 + line3;
-
-  line1 = aaInput : line(mod1);
-  line2 = aaInput : line(mod2);
-  line3 = aaInput : line(mod3);
-
-  aaInput = input : antiAlias;
-
+process(in, mod1, mod2, mod3) = in : antiAlias <: (line1, line2, line3) with {
+  line1 = line(mod1);
+  line2 = line(mod2);
+  line3 = line(mod3);
   line(mod) = de.fdelayltv(1, delaybufsize, delay) with {
     delaybufsize = int(ceil(50e-3 * ma.SR));
     delay = (5e-3 + (1e-3 * mod)) * ma.SR;
   };
 };
+
+processStereo(in, mod1, mod2, mod3) = in <: par(i, 2, processMono(mod1, mod2, mod3));
 
 antiAlias = lpf1 : lpf2 : lpf3 with {
   cutoff1 = ba.midikey2hz(122.3);

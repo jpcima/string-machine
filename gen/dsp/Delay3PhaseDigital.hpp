@@ -32,11 +32,11 @@ public:
 
     void process(
         const float *in0,const float *in1,const float *in2,const float *in3,
-        float *out0,float *out1,
+        float *out0,float *out1,float *out2,
         unsigned count) noexcept;
 
     enum { NumInputs = 4 };
-    enum { NumOutputs = 2 };
+    enum { NumOutputs = 3 };
     enum { NumActives = 0 };
     enum { NumPassives = 0 };
     enum { NumParameters = 0 };

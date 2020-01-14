@@ -23,10 +23,24 @@ void Delay3Phase::clear()
 
 void Delay3Phase::process(const float *input, const float *const mods[3], float *const outputs[2], unsigned count)
 {
-    if (fAnalogMode)
-        fAnalog.process(input, mods, outputs, count);
+    float line1[BufferLimit];
+    float line2[BufferLimit];
+    float line3[BufferLimit];
+
+    if (fAnalogMode) {
+        float *lines[] = {line1, line2, line3};
+        fAnalog.process(input, mods, lines, count);
+    }
     else
-        fDigital.process(input, mods[0], mods[1], mods[2], outputs[0], outputs[1], count);
+        fDigital.process(input, mods[0], mods[1], mods[2], line1, line2, line3, count);
+
+    float *outputL = outputs[0];
+    for (unsigned i = 0; i < count; ++i)
+        outputL[i] = line1[i] + line2[i] - line3[i];
+
+    float *outputR = outputs[1];
+    for (unsigned i = 0; i < count; ++i)
+        outputR[i] = line1[i] - line2[i] - line3[i];
 }
 
 void Delay3Phase::setAnalogMode(bool analog)
@@ -57,11 +71,9 @@ void Delay3Phase::AnalogDelay::clear()
         fDelayLine[l].clear();
 }
 
-void Delay3Phase::AnalogDelay::process(const float *input, const float *const mods[3], float *const outputs[2], unsigned count)
+void Delay3Phase::AnalogDelay::process(const float *input, const float *const mods[3], float *const outputs[3], unsigned count)
 {
     float sampleTime = fSampleTime;
-
-    float lineOutputs[3][BufferLimit];
 
     ///
     float avgDelay = 5e-3f;
@@ -72,21 +84,13 @@ void Delay3Phase::AnalogDelay::process(const float *input, const float *const mo
     ///
     for (unsigned l = 0; l < 3; ++l) {
         BBD_Line<1> &line = fDelayLine[l];
-        float *lineOutput = lineOutputs[l];
+        float *output = outputs[l];
         const float *mod = mods[l];
 
         float clock[BufferLimit];
         for (unsigned i = 0; i < count; ++i)
             clock[i] = delayClockLo + (delayClockHi - delayClockLo) * 0.5f * (1.0f + mod[i]);
 
-        line.process(count, &input, &lineOutput, clock);
+        line.process(count, &input, &output, clock);
     }
-
-    float *outputL = outputs[0];
-    for (unsigned i = 0; i < count; ++i)
-        outputL[i] = lineOutputs[0][i] + lineOutputs[1][i] - lineOutputs[2][i];
-
-    float *outputR = outputs[1];
-    for (unsigned i = 0; i < count; ++i)
-        outputR[i] = lineOutputs[0][i] - lineOutputs[1][i] - lineOutputs[2][i];
 }
