@@ -49,6 +49,7 @@ void StringSynth::init(double sampleRate)
 
         voice.channel = 0;
         voice.note = 0;
+        voice.velocity14bit = 0;
         voice.bend = 1.0;
 
         voice.env.init(&fEnvSettings, sampleRate);
@@ -108,6 +109,9 @@ void StringSynth::handleMessage(const uint8_t *msg)
         case kCcPanLsb:
             ctl.pan14bit = (ctl.pan14bit & (127 << 7)) | d2;
             break;
+        case kCcVelocityPrefix:
+            ctl.velocityPrefix = d2;
+            break;
         case kCcNrpnLsb:
         case kCcRpnLsb:
             ctl.rpnIdentifier.lsb = d2;
@@ -147,6 +151,7 @@ void StringSynth::resetAllControllers(unsigned channel)
     ctl.volume14bit = 100u << 7;
     ctl.expression14bit = 127u << 7;
     ctl.pan14bit = 64u << 7;
+    ctl.velocityPrefix = 0;
     ctl.rpnIdentifier.registered = 1;
     ctl.rpnIdentifier.msb = 0;
     ctl.rpnIdentifier.lsb = 0;
@@ -207,7 +212,13 @@ void StringSynth::generate(float *outputs[2], unsigned count)
         unsigned channel = voice.channel;
         const Controllers &ctl = fControllers[channel];
         float bend = ctl.calcBendRatio();
+
         float volume = MidiGetVolume14bit((ctl.volume14bit * ctl.expression14bit) >> 14);
+
+#pragma message("TODO(jpc) not sure I like this velocity formula, need to check it more")
+#pragma message("TODO(jpc) also do the aftertouch")
+        if (0)
+            volume *= MidiGetVelocityVolume14bit(voice.velocity14bit);
 
 #if STRING_SYNTH_USE_STEREO
         float volumeL = volume * MidiGetLeftPan14bit(ctl.pan14bit);
@@ -254,9 +265,6 @@ void StringSynth::setPolyphony(int value)
 
 void StringSynth::noteOn(unsigned channel, unsigned note, unsigned vel)
 {
-    // TODO the key-on velocity
-    (void)vel;
-
     Voice &voice = allocNewVoice();
     TRACE_ALLOC("Play %u note=%s", voice.id, MidiNoteName[note]);
 
@@ -264,6 +272,7 @@ void StringSynth::noteOn(unsigned channel, unsigned note, unsigned vel)
 
     voice.channel = channel;
     voice.note = note;
+    voice.velocity14bit = (vel << 7) | ctl.velocityPrefix;
     voice.osc.setFrequency(MidiPitch[note]);
     voice.env.trigger();
     voice.bend = ctl.calcBendRatio();

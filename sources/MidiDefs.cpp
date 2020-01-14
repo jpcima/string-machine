@@ -27,6 +27,8 @@ const char **MidiNoteName = []() -> const char **
     return names;
 }();
 
+//==============================================================================
+
 static const float *MidiVolume10bit = []() -> const float *
 {
     static float volume[1024];
@@ -50,6 +52,8 @@ float MidiGetVolume14bit(unsigned cc14bit)
 {
     return MidiVolume10bit[cc14bit >> 4];
 }
+
+//==============================================================================
 
 static constexpr unsigned MaxPan10bit = 127 << 3;
 
@@ -84,4 +88,32 @@ float MidiGetRightPan14bit(unsigned cc14bit)
     unsigned max14bit = 127 << 7;
     unsigned index10bit = (max14bit - std::min(cc14bit, max14bit)) >> 4;
     return MidiPan10bit[index10bit];
+}
+
+//==============================================================================
+
+static const float *MidiVelocityVolume10bit = []() -> const float *
+{
+    static float volume[1024];
+
+    auto curve = [](double x) {
+        const double a = 0.01;
+        const double b = -0.02;
+        double t = a * x + b;
+        return t * t;
+    };
+
+    double scaleFactor = 1.0 / curve(64);
+
+    for (unsigned i = 0; i < 1024; ++i) {
+        double x = i * (128.0 / 1024.0);
+        volume[i] = scaleFactor * curve(x);
+    }
+
+    return volume;
+}();
+
+float MidiGetVelocityVolume14bit(unsigned vel14bit)
+{
+    return MidiVelocityVolume10bit[vel14bit >> 4];
 }

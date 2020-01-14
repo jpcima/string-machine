@@ -60,6 +60,7 @@ private:
     struct Voice {
         unsigned channel;
         unsigned note;
+        unsigned velocity14bit;
         float bend;
         unsigned release; // accumulated time in release phase, the greater the
                           // more electible as a voice allocation target
@@ -108,6 +109,7 @@ private:
         unsigned volume14bit = 0;
         unsigned expression14bit = 0;
         unsigned pan14bit = 0;
+        unsigned velocityPrefix = 0;
         float calcBendRatio() const;
     };
     Controllers fControllers[16];
