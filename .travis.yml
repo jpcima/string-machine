@@ -61,14 +61,14 @@ matrix:
         - install -d release
         - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
     - os: linux
-      dist: trusty
+      dist: xenial
       env:
         - _BITS=64
         - _BUILD=linux64
       before_install:
         - sudo apt-get update -qq
       install:
-        - sudo apt-get install checkinstall libcairo2-dev
+        - sudo apt-get install checkinstall libcairo2-dev mesa-common-dev
       script:
         - bash .travis/script-linux.sh
         - cp -drfv bin string-machine-"$_BUILD"
