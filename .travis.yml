@@ -11,64 +11,14 @@ cache:
 matrix:
   include:
     - os: linux
-      dist: bionic
-      env:
-        - _BUILD=win32
-        - _MINGW=mingw32
-        - _HOST=i686-w64-mingw32
-      before_install:
-        - docker pull archlinux
-      install:
-        - container=$(docker run -d -i -t -v /home:/home archlinux /bin/bash)
-        - |
-          cross() {
-            docker exec -w "$(pwd)" -e "_BUILD=$_BUILD" -e "_MINGW=$_MINGW" -e "_HOST=$_HOST" -i -t "$container" "$@"
-          }
-      script:
-        - cross bash .travis/script-mingw.sh
-        - cp -drfv bin string-machine-"$_BUILD"
-        - rm -f string-machine-"$_BUILD"/README
-        - install -d release
-        - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
-    - os: linux
-      dist: bionic
-      env:
-        - _BUILD=win64
-        - _MINGW=mingw64
-        - _HOST=x86_64-w64-mingw32
-      before_install:
-        - docker pull archlinux
-      install:
-        - container=$(docker run -d -i -t -v /home:/home archlinux /bin/bash)
-        - |
-          cross() {
-            docker exec -w "$(pwd)" -e "_BUILD=$_BUILD" -e "_MINGW=$_MINGW" -e "_HOST=$_HOST" -i -t "$container" "$@"
-          }
-      script:
-        - cross bash .travis/script-mingw.sh
-        - cp -drfv bin string-machine-"$_BUILD"
-        - rm -f string-machine-"$_BUILD"/README
-        - install -d release
-        - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
-    - os: osx
-      osx_image: xcode9.2
-      env:
-        - _BUILD=macos
-      script:
-        - bash .travis/script-macos.sh
-        - cp -av bin string-machine-"$_BUILD"
-        - rm -f string-machine-"$_BUILD"/README
-        - install -d release
-        - zip -9 -r release/string-machine-"$_BUILD".zip string-machine-"$_BUILD"
-    - os: linux
-      dist: trusty
+      dist: xenial
       env:
         - _BITS=64
         - _BUILD=linux64
       before_install:
         - sudo apt-get update -qq
       install:
-        - sudo apt-get install checkinstall libcairo2-dev
+        - sudo apt-get install checkinstall libcairo2-dev mesa-common-dev
       script:
         - bash .travis/script-linux.sh
         - cp -drfv bin string-machine-"$_BUILD"
@@ -106,10 +56,3 @@ deploy:
 env:
   global:
     secure: BzrfWX+zI9Ww+T1Dj1k04tomPVoMucUYwIOeaG3NkwL3CDEo98/s3GDSGRa6CQMRz9R2oT/ljXecNShb0jaueToTPA+MpbRg93WjhbeETyc0tLmttIswHjwsAZ8gDx1gfhFJ5cdxxpmoWGmT+mO5f72HxH5PT1icTdnmPFbxAq6abSR9VMV5+hVNwS9OdMTVxow4JLbVwx9w//JmWDpWP752SiNayPAoMZp5pELszqPsUawZH+AMY3X/1m69T6MU+wsWX5pdChHOlSl6jWBobetd3tojOrCamV8XNQsyeu8WMhd9hjIJU786AzwcY2S2XXpR1Qjrngo8L0mCSbDs0szwJtPgec/R2myxdJV/u2+howqNbhBuKzbJwsEL4kqhCEKvasuL9I2rG2tGc3p7Z/2YFNiisZW4TcEC23Eu02aAR3Emv/2JooIhzJfm9X4nMCz/tTpvOKrPltgiI9dQiH+JQ/53QCpGYFhlBYkmnngICrdpum9U1yjyHL4tL/a++UYXkBaezC0eU8TjtNtVR2l25Tjc5IQsiGHFiwK5IYe0yDeTEKd+EGgxfubtWpAdL4oKjRBDzaaaMaTAH5w+/8lT1+E6E3USVOWDA+RHKnAUTx0uLUuGWCojHcJ+PilrMKelaY4YDuGmFd7zfiTuqMM7cK6KYIrgLGz7cExEgTc=
-
-notifications:
-  irc:
-    template:
-      - "%{repository_slug}#%{build_number} (%{branch} - %{commit} : %{author}): %{message}"
-    channels:
-      - "ircs://chat.freenode.net:7070/#librazik"
