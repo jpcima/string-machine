@@ -1,6 +1,7 @@
 #pragma once
 #include "ChorusShared.hpp"
 #include "SolinaChorus.h"
+#include "SolinaChorusStereo.h"
 
 class ChorusPlugin : public Plugin {
 public:
@@ -30,5 +31,9 @@ private:
     float fWetGain = 0.0;
     float fDryGain = 0.0;
 
-    SolinaChorus fChorus[DISTRHO_PLUGIN_NUM_INPUTS];
+#if DISTRHO_PLUGIN_NUM_INPUTS == 1
+    SolinaChorus fChorus;
+#elif DISTRHO_PLUGIN_NUM_INPUTS == 2
+    SolinaChorusStereo fChorus;
+#endif
 };
