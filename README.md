@@ -30,6 +30,7 @@ This release breaks backwards compatibility.
 - provided two switchable chorus models, digital and BBD
 - provided the Solina chorus as independent plugins, 1-in 2-out and 2-in 2-out
 - supported dynamic changes of sample rate
+- added support of MIDI controllers: volume, pan, expression
 
 **0.1.0**
 
