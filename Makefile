@@ -55,6 +55,7 @@ endef
 
 dsp:
 	$(call faustgen,,sources/dsp/Delay3PhaseDigital.dsp,gen/dsp/Delay3PhaseDigital)
+	$(call faustgen,-X-pn -XprocessStereo,sources/dsp/Delay3PhaseDigital.dsp,gen/dsp/Delay3PhaseDigitalStereo)
 	$(call faustgen,,sources/dsp/LFO3PhaseDual.dsp,gen/dsp/LFO3PhaseDual)
 	$(call faustgen,,sources/dsp/StringFiltersHighshelf.dsp,gen/dsp/StringFiltersHighshelf)
 	$(call faustgen,,sources/dsp/NoiseLFO.dsp,gen/dsp/NoiseLFO)

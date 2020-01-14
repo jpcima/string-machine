@@ -1,7 +1,9 @@
 import("stdfaust.lib");
 msp = library("maxmsp.lib");
 
-process(in, mod1, mod2, mod3) = in : antiAlias <: (line1, line2, line3) with {
+process = processMono;
+
+processMono(in, mod1, mod2, mod3) = in : antiAlias <: (line1, line2, line3) with {
   line1 = line(mod1);
   line2 = line(mod2);
   line3 = line(mod3);
