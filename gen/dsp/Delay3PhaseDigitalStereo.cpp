@@ -143,6 +143,10 @@ class Delay3PhaseDigitalStereoDsp : public dsp {
 	int IOTA;
 	float fVec0[16384];
 	int iConst18;
+	float fRec5[3];
+	float fRec4[3];
+	float fRec3[3];
+	float fVec1[16384];
 	
  public:
 	
@@ -279,6 +283,18 @@ class Delay3PhaseDigitalStereoDsp : public dsp {
 		for (int l3 = 0; (l3 < 16384); l3 = (l3 + 1)) {
 			fVec0[l3] = 0.0f;
 		}
+		for (int l4 = 0; (l4 < 3); l4 = (l4 + 1)) {
+			fRec5[l4] = 0.0f;
+		}
+		for (int l5 = 0; (l5 < 3); l5 = (l5 + 1)) {
+			fRec4[l5] = 0.0f;
+		}
+		for (int l6 = 0; (l6 < 3); l6 = (l6 + 1)) {
+			fRec3[l6] = 0.0f;
+		}
+		for (int l7 = 0; (l7 < 16384); l7 = (l7 + 1)) {
+			fVec1[l7] = 0.0f;
+		}
 	}
 	
 	FAUSTPP_VIRTUAL void init(int sample_rate) {
@@ -317,35 +333,46 @@ class Delay3PhaseDigitalStereoDsp : public dsp {
 		FAUSTFLOAT* output4 = outputs[4];
 		FAUSTFLOAT* output5 = outputs[5];
 		for (int i = 0; (i < count); i = (i + 1)) {
-			fRec2[0] = (float(input2[i]) - (fConst12 * ((fConst13 * fRec2[1]) + (fConst14 * fRec2[2]))));
+			fRec2[0] = (float(input0[i]) - (fConst12 * ((fConst13 * fRec2[1]) + (fConst14 * fRec2[2]))));
 			fRec1[0] = (0.0f - (fConst12 * (((fConst13 * fRec1[1]) + (fConst14 * fRec1[2])) - (fConst8 * ((fRec2[1] + (0.5f * fRec2[0])) + (0.5f * fRec2[2]))))));
 			fRec0[0] = ((fConst11 * ((fRec1[1] + (0.5f * fRec1[0])) + (0.5f * fRec1[2]))) - (fConst15 * ((fConst16 * fRec0[1]) + (fConst17 * fRec0[2]))));
 			float fTemp0 = ((fRec0[1] + (0.5f * fRec0[0])) + (0.5f * fRec0[2]));
 			fVec0[(IOTA & 16383)] = fTemp0;
-			float fTemp1 = (fConst0 * ((0.00100000005f * float(input3[i])) + 0.00499999989f));
+			float fTemp1 = (fConst0 * ((0.00100000005f * float(input2[i])) + 0.00499999989f));
 			float fTemp2 = (fTemp1 + 4.99999987e-06f);
 			int iTemp3 = int(fTemp2);
-			float fTemp4 = std::floor(fTemp2);
-			float fTemp5 = (fConst5 * ((fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, iTemp3))) & 16383)] * (0.0f - (fTemp1 + (-1.0f - fTemp4)))) + ((fTemp1 - fTemp4) * fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, (iTemp3 + 1)))) & 16383)])));
-			output0[i] = FAUSTFLOAT(fTemp5);
-			float fTemp6 = (fConst0 * ((0.00100000005f * float(input4[i])) + 0.00499999989f));
-			float fTemp7 = (fTemp6 + 4.99999987e-06f);
-			int iTemp8 = int(fTemp7);
-			float fTemp9 = std::floor(fTemp7);
-			float fTemp10 = (fConst5 * ((fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, iTemp8))) & 16383)] * (0.0f - (fTemp6 + (-1.0f - fTemp9)))) + ((fTemp6 - fTemp9) * fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, (iTemp8 + 1)))) & 16383)])));
-			output1[i] = FAUSTFLOAT(fTemp10);
-			float fTemp11 = (fConst0 * ((0.00100000005f * float(input0[i])) + 0.00499999989f));
-			float fTemp12 = (fTemp11 + 4.99999987e-06f);
-			int iTemp13 = int(fTemp12);
-			float fTemp14 = std::floor(fTemp12);
-			output2[i] = FAUSTFLOAT((fConst5 * ((fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, iTemp13))) & 16383)] * (0.0f - (fTemp11 + (-1.0f - fTemp14)))) + ((fTemp11 - fTemp14) * fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, (iTemp13 + 1)))) & 16383)]))));
-			output3[i] = FAUSTFLOAT(fTemp5);
-			output4[i] = FAUSTFLOAT(fTemp10);
-			float fTemp15 = (fConst0 * ((0.00100000005f * float(input1[i])) + 0.00499999989f));
-			float fTemp16 = (fTemp15 + 4.99999987e-06f);
-			int iTemp17 = int(fTemp16);
-			float fTemp18 = std::floor(fTemp16);
-			output5[i] = FAUSTFLOAT((fConst5 * ((fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, iTemp17))) & 16383)] * (0.0f - (fTemp15 + (-1.0f - fTemp18)))) + ((fTemp15 - fTemp18) * fVec0[((IOTA - std::min<int>(iConst18, std::max<int>(0, (iTemp17 + 1)))) & 16383)]))));
+			int iTemp4 = std::min<int>(iConst18, std::max<int>(0, iTemp3));
+			float fTemp5 = std::floor(fTemp2);
+			float fTemp6 = (0.0f - (fTemp1 + (-1.0f - fTemp5)));
+			float fTemp7 = (fTemp1 - fTemp5);
+			int iTemp8 = std::min<int>(iConst18, std::max<int>(0, (iTemp3 + 1)));
+			output0[i] = FAUSTFLOAT((fConst5 * ((fVec0[((IOTA - iTemp4) & 16383)] * fTemp6) + (fTemp7 * fVec0[((IOTA - iTemp8) & 16383)]))));
+			float fTemp9 = (fConst0 * ((0.00100000005f * float(input3[i])) + 0.00499999989f));
+			float fTemp10 = (fTemp9 + 4.99999987e-06f);
+			int iTemp11 = int(fTemp10);
+			int iTemp12 = std::min<int>(iConst18, std::max<int>(0, iTemp11));
+			float fTemp13 = std::floor(fTemp10);
+			float fTemp14 = (0.0f - (fTemp9 + (-1.0f - fTemp13)));
+			float fTemp15 = (fTemp9 - fTemp13);
+			int iTemp16 = std::min<int>(iConst18, std::max<int>(0, (iTemp11 + 1)));
+			output1[i] = FAUSTFLOAT((fConst5 * ((fVec0[((IOTA - iTemp12) & 16383)] * fTemp14) + (fTemp15 * fVec0[((IOTA - iTemp16) & 16383)]))));
+			float fTemp17 = (fConst0 * ((0.00100000005f * float(input4[i])) + 0.00499999989f));
+			float fTemp18 = (fTemp17 + 4.99999987e-06f);
+			int iTemp19 = int(fTemp18);
+			int iTemp20 = std::min<int>(iConst18, std::max<int>(0, iTemp19));
+			float fTemp21 = std::floor(fTemp18);
+			float fTemp22 = (0.0f - (fTemp17 + (-1.0f - fTemp21)));
+			float fTemp23 = (fTemp17 - fTemp21);
+			int iTemp24 = std::min<int>(iConst18, std::max<int>(0, (iTemp19 + 1)));
+			output2[i] = FAUSTFLOAT((fConst5 * ((fVec0[((IOTA - iTemp20) & 16383)] * fTemp22) + (fTemp23 * fVec0[((IOTA - iTemp24) & 16383)]))));
+			fRec5[0] = (float(input1[i]) - (fConst12 * ((fConst13 * fRec5[1]) + (fConst14 * fRec5[2]))));
+			fRec4[0] = (0.0f - (fConst12 * (((fConst13 * fRec4[1]) + (fConst14 * fRec4[2])) - (fConst8 * ((fRec5[1] + (0.5f * fRec5[0])) + (0.5f * fRec5[2]))))));
+			fRec3[0] = ((fConst11 * ((fRec4[1] + (0.5f * fRec4[0])) + (0.5f * fRec4[2]))) - (fConst15 * ((fConst16 * fRec3[1]) + (fConst17 * fRec3[2]))));
+			float fTemp25 = ((fRec3[1] + (0.5f * fRec3[0])) + (0.5f * fRec3[2]));
+			fVec1[(IOTA & 16383)] = fTemp25;
+			output3[i] = FAUSTFLOAT((fConst5 * ((fTemp6 * fVec1[((IOTA - iTemp4) & 16383)]) + (fTemp7 * fVec1[((IOTA - iTemp8) & 16383)]))));
+			output4[i] = FAUSTFLOAT((fConst5 * ((fTemp14 * fVec1[((IOTA - iTemp12) & 16383)]) + (fTemp15 * fVec1[((IOTA - iTemp16) & 16383)]))));
+			output5[i] = FAUSTFLOAT((fConst5 * ((fTemp22 * fVec1[((IOTA - iTemp20) & 16383)]) + (fTemp23 * fVec1[((IOTA - iTemp24) & 16383)]))));
 			fRec2[2] = fRec2[1];
 			fRec2[1] = fRec2[0];
 			fRec1[2] = fRec1[1];
@@ -353,6 +380,12 @@ class Delay3PhaseDigitalStereoDsp : public dsp {
 			fRec0[2] = fRec0[1];
 			fRec0[1] = fRec0[0];
 			IOTA = (IOTA + 1);
+			fRec5[2] = fRec5[1];
+			fRec5[1] = fRec5[0];
+			fRec4[2] = fRec4[1];
+			fRec4[1] = fRec4[0];
+			fRec3[2] = fRec3[1];
+			fRec3[1] = fRec3[0];
 		}
 	}
 

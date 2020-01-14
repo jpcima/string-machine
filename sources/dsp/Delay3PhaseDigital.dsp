@@ -7,16 +7,14 @@ processMono(in, mod1, mod2, mod3) = in : antiAlias <: (line1, line2, line3) with
   line1 = line(mod1);
   line2 = line(mod2);
   line3 = line(mod3);
-  line(mod) = de.fdelayltv(1, delaybufsize, delay) with {
-    delaybufsize = int(ceil(50e-3 * ma.SR));
-    delay = (5e-3 + (1e-3 * mod)) * ma.SR;
-  };
 };
 
-processStereo(inL, inR, mod1, mod2, mod3) = par(i, 2, in(i) : mono) with {
-  mono = processMono(mod1, mod2, mod3);
-  in(0) = inL;
-  in(1) = inR;
+processStereo(inL, inR, mod1, mod2, mod3) =
+  processMono(inL, mod1, mod2, mod3), processMono(inR, mod1, mod2, mod3);
+
+line(mod) = de.fdelayltv(1, delaybufsize, delay) with {
+  delaybufsize = int(ceil(50e-3 * ma.SR));
+  delay = (5e-3 + (1e-3 * mod)) * ma.SR;
 };
 
 antiAlias = lpf1 : lpf2 : lpf3 with {
