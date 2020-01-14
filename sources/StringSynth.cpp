@@ -1,5 +1,4 @@
 #include "StringSynth.h"
-#include "StringSynthDefs.h"
 #include "MidiDefs.h"
 #include <cmath>
 #include <cstring>

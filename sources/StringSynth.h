@@ -3,16 +3,12 @@
 #include "StringFilters.h"
 #include "SolinaChorus.h"
 #include "SolinaChorusStereo.h"
+#include "StringSynthDefs.h"
 #include "dsp/AHDSREnvelope.h"
 #include "dsp/NoiseLFO.hpp"
 #include <pl_list.hpp>
 #include <memory>
 #include <cstdint>
-
-// 1 to enable stereo, increase CPU usage requirement
-#ifndef STRING_SYNTH_USE_STEREO
-#   define STRING_SYNTH_USE_STEREO 1
-#endif
 
 class StringSynth {
 public:
