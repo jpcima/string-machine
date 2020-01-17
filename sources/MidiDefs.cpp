@@ -97,6 +97,8 @@ static const float *MidiVelocityVolume10bit = []() -> const float *
     static float volume[1024];
 
     auto curve = [](double x) {
+        #pragma message("TODO(jpc) improve velocity formula")
+        // misbehaved near the zero, too loud in high values
         const double a = 0.01;
         const double b = -0.02;
         double t = a * x + b;
