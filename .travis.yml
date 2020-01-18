@@ -91,6 +91,10 @@ before_deploy:
       export TRAVIS_TAG=automatic
       git tag -f "$TRAVIS_TAG"
     fi
+  - |
+    if test "$_BUILD" = "macos"; then
+      gem uninstall openssl --all --force
+    fi
 
 deploy:
   provider: releases
