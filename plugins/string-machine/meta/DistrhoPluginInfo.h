@@ -2,9 +2,9 @@
 
 #define DISTRHO_PLUGIN_BRAND           "Jean Pierre Cimalando"
 #define DISTRHO_PLUGIN_NAME            "String machine"
-#define DISTRHO_PLUGIN_URI             "http://jpcima.sdf1.org/lv2/string-machine"
-#define DISTRHO_PLUGIN_HOMEPAGE        "https://github.com/jpcima/string-machine-mk2"
-#define DISTRHO_PLUGIN_UNIQUE_ID       'S','t','r','M'
+#define DISTRHO_PLUGIN_URI             "http://jpcima.sdf1.org/lv2/string-machine-mk2"
+#define DISTRHO_PLUGIN_HOMEPAGE        "https://github.com/jpcima/string-machine"
+#define DISTRHO_PLUGIN_UNIQUE_ID       'S','t','M','2'
 #define DISTRHO_PLUGIN_VERSION         0,0,0
 #define DISTRHO_PLUGIN_LABEL           "String machine"
 #define DISTRHO_PLUGIN_LICENSE         "http://spdx.org/licenses/GPL-2.0-or-later"
