@@ -54,12 +54,19 @@ Function {make_window()} {open
         label Enhance open
         xywh {175 25 80 145} box UP_BOX labelfont 1 labelsize 10 align 17
       } {
-        Fl_Dial knob_OscEnhance {
-          label {Clip Bias}
+        Fl_Dial knob_OscEnhanceUpper {
+          label {4' Clip Bias}
           xywh {200 55 30 30} labelsize 10 align 1
         }
-        Fl_Box val_OscEnhance {
+        Fl_Box val_OscEnhanceUpper {
           xywh {195 88 40 12} box THIN_UP_BOX labelsize 10
+        }
+        Fl_Dial knob_OscEnhanceLower {
+          label {8' Clip Bias}
+          xywh {200 120 30 30} labelsize 10 align 1
+        }
+        Fl_Box val_OscEnhanceLower {
+          xywh {195 153 40 12} box THIN_UP_BOX labelsize 10
         }
       }
     }

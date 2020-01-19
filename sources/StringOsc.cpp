@@ -29,6 +29,7 @@ void StringOsc::process(float *const outputs[2], const float *const detune[2], f
     Settings settings = *fSettings;
     float nyquistFreq = 0.5 * fSampleRate;
     float hpCutoff[] = {settings.highpassUpperCutoff, settings.highpassLowerCutoff};
+    float enhance[] = {settings.enhanceUpper, settings.enhanceLower};
 
     double cutoffMin = 10.0;
     double cutoffMax = 0.9 * nyquistFreq;
@@ -64,7 +65,7 @@ void StringOsc::process(float *const outputs[2], const float *const detune[2], f
 
         if (1) {
             AsymWaveshaper &shaper = fShaper[osc];
-            shaper.set_amount(1.0f - settings.enhance);
+            shaper.set_amount(1.0f - enhance[osc]);
             shaper.process(output, output, count);
         }
         else {

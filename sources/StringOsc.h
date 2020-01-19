@@ -10,7 +10,8 @@ public:
         float highpassLowerCutoff = 0;
         float pwmDepth = 0;
         float pwmFrequency = 0;
-        float enhance = 0;
+        float enhanceUpper = 0;
+        float enhanceLower = 0;
     };
 
     void init(const Settings *settings, double sampleRate);

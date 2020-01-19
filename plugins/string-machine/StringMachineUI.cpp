@@ -55,7 +55,8 @@ StringMachineUI::StringMachineUI()
     KNOB(OscHpCutoffLower);
     KNOB(OscPwmDepth);
     KNOB(OscPwmFrequency);
-    KNOB(OscEnhance);
+    KNOB(OscEnhanceUpper);
+    KNOB(OscEnhanceLower);
     KNOB(FltLpCutoffUpper);
     KNOB(FltHpCutoffUpper);
     KNOB(FltLpCutoffLower);
@@ -82,7 +83,8 @@ StringMachineUI::StringMachineUI()
     VALUE_DISPLAY(OscHpCutoffLower);
     VALUE_DISPLAY(OscPwmDepth);
     VALUE_DISPLAY(OscPwmFrequency);
-    VALUE_DISPLAY(OscEnhance);
+    VALUE_DISPLAY(OscEnhanceUpper);
+    VALUE_DISPLAY(OscEnhanceLower);
     VALUE_DISPLAY(FltLpCutoffUpper);
     VALUE_DISPLAY(FltLpCutoffLower);
     VALUE_DISPLAY(FltHpCutoffUpper);
@@ -187,7 +189,8 @@ void StringMachineUI::onDisplay()
         &MainLayout::knob_OscHpCutoffLower_label,
         &MainLayout::knob_OscPwmDepth_label,
         &MainLayout::knob_OscPwmFrequency_label,
-        &MainLayout::knob_OscEnhance_label,
+        &MainLayout::knob_OscEnhanceUpper_label,
+        &MainLayout::knob_OscEnhanceLower_label,
         &MainLayout::knob_FltLpCutoffUpper_label,
         &MainLayout::knob_FltLpCutoffLower_label,
         &MainLayout::knob_FltHpCutoffUpper_label,
