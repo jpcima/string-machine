@@ -321,10 +321,14 @@ void StringMachineUI::parameterChanged(uint32_t index, float value)
 
 void StringMachineUI::programLoaded(uint32_t index)
 {
-    DISTRHO_SAFE_ASSERT_RETURN(index < NumPrograms, );
+    DISTRHO_SAFE_ASSERT_RETURN(index < NumPresets, );
+
+    std::array<float, Parameter_Count> values = getParameterDefaults();
+    for (const Preset::Parameter *pp = Presets[index].parameters; pp->id != -1; ++pp)
+        values[pp->id] = pp->value;
 
     for (unsigned p = 0; p < Parameter_Count; ++p)
-        parameterChanged(p, Programs[index].values[p]);
+        parameterChanged(p, values[p]);
 }
 
 void StringMachineUI::uiIdle()
@@ -405,6 +409,14 @@ void StringMachineUI::updateParameterValue(uint32_t index, float value)
         break;
     }
     }
+}
+
+std::array<float, Parameter_Count> StringMachineUI::getParameterDefaults() const
+{
+    std::array<float, Parameter_Count> values;
+    for (unsigned p = 0; p < Parameter_Count; ++p)
+        values[p] = fParameters[p].ranges.def;
+    return values;
 }
 
 SkinSlider *StringMachineUI::createKnobForParameter(unsigned index, const Rect &bounds, const KnobSkin &skin)

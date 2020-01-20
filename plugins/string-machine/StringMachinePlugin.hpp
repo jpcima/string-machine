@@ -2,6 +2,7 @@
 #include "StringMachineShared.hpp"
 #include "StringSynth.h"
 #include "dsp/AmpFollower.h"
+#include <array>
 
 class StringMachinePlugin : public Plugin {
 public:
@@ -32,4 +33,5 @@ public:
 private:
     StringSynth fSynth;
     AmpFollower fOutputLevelFollower[2];
+    std::array<float, Parameter_Count> fParameterDefaults;
 };

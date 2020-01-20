@@ -19,6 +19,7 @@ NAME = string-machine
 
 FILES_SHARED = \
 	StringMachineShared.cpp \
+	StringMachinePresets.cpp \
 	sources/StringOsc.cpp \
 	sources/StringSynth.cpp \
 	sources/StringFilters.cpp \
@@ -81,6 +82,8 @@ artwork:
 	$(RES2C) Artwork artwork
 .PHONY: artwork
 
+# --------------------------------------------------------------
+
 layouts: StringMachineUILayouts.Main.inc
 .PHONY: layouts
 
@@ -90,5 +93,18 @@ $(LAYOUT_TOOL):
 
 StringMachineUILayouts.%.inc: layouts/%.fl $(LAYOUT_TOOL)
 	$(LAYOUT_TOOL) $< > $@
+
+# --------------------------------------------------------------
+
+presets: StringMachinePresets.inc
+.PHONY: presets
+
+PRESETS_TOOL := ../../tools/presets/bin/presets$(APP_EXT)
+$(PRESETS_TOOL):
+	$(MAKE) -C ../../tools/presets
+
+StringMachinePresets.inc: $(PRESETS_TOOL)
+	$(PRESETS_TOOL) ../../presets/string-machine/*.json > $@
+.PHONY: StringMachinePresets.inc
 
 # --------------------------------------------------------------

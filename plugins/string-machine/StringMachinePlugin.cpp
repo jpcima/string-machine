@@ -4,7 +4,7 @@
 #include "DenormalDisabler.h"
 
 StringMachinePlugin::StringMachinePlugin()
-    : Plugin(Parameter_Count, NumPrograms, State_Count)
+    : Plugin(Parameter_Count, NumPresets, State_Count)
 {
     double sampleRate = getSampleRate();
     fSynth.init(sampleRate);
@@ -13,6 +13,7 @@ StringMachinePlugin::StringMachinePlugin()
         Parameter param;
         InitParameter(p, param);
         setParameterValue(p, param.ranges.def);
+        fParameterDefaults[p] = param.ranges.def;
     }
 }
 
@@ -266,17 +267,21 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
 
 void StringMachinePlugin::initProgramName(uint32_t index, String &programName)
 {
-    DISTRHO_SAFE_ASSERT_RETURN(index < NumPrograms, );
+    DISTRHO_SAFE_ASSERT_RETURN(index < NumPresets, );
 
-    programName = Programs[index].name;
+    programName = Presets[index].name;
 }
 
 void StringMachinePlugin::loadProgram(uint32_t index)
 {
-    DISTRHO_SAFE_ASSERT_RETURN(index < NumPrograms, );
+    DISTRHO_SAFE_ASSERT_RETURN(index < NumPresets, );
+
+    std::array<float, Parameter_Count> values = fParameterDefaults;
+    for (const Preset::Parameter *pp = Presets[index].parameters; pp->id != -1; ++pp)
+        values[pp->id] = pp->value;
 
     for (unsigned p = 0; p < Parameter_Count; ++p)
-        setParameterValue(p, Programs[index].values[p]);
+        setParameterValue(p, values[p]);
 }
 
 void StringMachinePlugin::activate()

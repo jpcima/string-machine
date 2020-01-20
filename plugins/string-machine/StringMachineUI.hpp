@@ -5,6 +5,7 @@
 #include "ui/Geometry.h"
 #include "dsp/AHDSREnvelope.h"
 #include <random>
+#include <array>
 #include <string>
 #include <memory>
 
@@ -32,6 +33,7 @@ protected:
 
 private:
     void updateParameterValue(uint32_t index, float value);
+    std::array<float, Parameter_Count> getParameterDefaults() const;
 
     SkinSlider *createKnobForParameter(unsigned index, const Rect &bounds, const KnobSkin &skin);
     SkinToggleButton *createToggleButtonForParameter(unsigned index, const Rect &bounds, const KnobSkin &skin);
