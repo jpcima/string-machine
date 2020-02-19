@@ -1,5 +1,6 @@
 #pragma once
 #include "StringOsc.h"
+#include "BassOsc.h"
 #include "StringFilters.h"
 #include "SolinaChorus.h"
 #include "SolinaChorusStereo.h"
@@ -27,6 +28,9 @@ public:
     const StringOsc::Settings &getOscSettings() const { return fOscSettings; }
     StringOsc::Settings &getOscSettings() { return fOscSettings; }
 
+    const BassOsc::Settings &getBassSettings() const { return fBassSettings; }
+    BassOsc::Settings &getBassSettings() { return fBassSettings; }
+
     const AHDSREnvelope::Settings &getEnvSettings() const { return fEnvSettings; }
     AHDSREnvelope::Settings &getEnvSettings() { return fEnvSettings; }
 
@@ -37,6 +41,8 @@ public:
     void setMixGainUpper(float value) { fMixGainUpper = value; }
     float getMixGainLower() const { return fMixGainLower; }
     void setMixGainLower(float value) { fMixGainLower = value; }
+    float getMixGainBass() const { return fMixGainBass; }
+    void setMixGainBass(float value) { fMixGainBass = value; }
 
 #if STRING_SYNTH_USE_STEREO
     typedef SolinaChorusStereo Chorus;
@@ -66,6 +72,7 @@ private:
                           // more electible as a voice allocation target
         AHDSREnvelope env;
         StringOsc osc;
+        BassOsc bass;
         StringFilters flt;
 
         unsigned id; // only to debug voice allocs
@@ -78,15 +85,18 @@ private:
     pl_list<Voice *> fVoicesFree;
 
     float fDetuneAmount = 0;
-    NoiseLFO fDetuneLFO[2];
+    NoiseLFO fDetuneLFO[3];
 
     float fLastDetuneUpper = 0;
     float fLastDetuneLower = 0;
+    float fLastDetuneBass = 0;
 
     float fMixGainUpper = 0;
     float fMixGainLower = 0;
+    float fMixGainBass = 0;
 
     StringOsc::Settings fOscSettings;
+    BassOsc::Settings fBassSettings;
     AHDSREnvelope::Settings fEnvSettings;
     StringFilters::Settings fFltSettings;
 
@@ -123,9 +133,9 @@ private:
     Voice &allocNewVoice();
     Voice *findVoiceKeyedOn(unsigned channel, unsigned note);
 #if STRING_SYNTH_USE_STEREO
-    bool generateVoiceAdding(Voice &voice, float *outputL, float *outputR, const float *const detune[2], float bend, float addGainL, float addGainR, unsigned count);
+    bool generateVoiceAdding(Voice &voice, float *outputL, float *outputR, const float *const detune[3], float bend, float addGainL, float addGainR, bool bassSelect, unsigned count);
 #else
-    bool generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, float addGain, unsigned count);
+    bool generateVoiceAdding(Voice &voice, float *output, const float *const detune[3], float bend, float addGain, bool bassSelect, unsigned count);
 #endif
     static void clearFinishedVoice(Voice &voice);
     static bool voiceHasReleased(const Voice &voice);

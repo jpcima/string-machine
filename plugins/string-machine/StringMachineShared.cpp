@@ -25,6 +25,12 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.hints = kParameterIsAutomable;
         parameter.ranges = ParameterRanges(8.0, -20.0, 60.0);
         break;
+    case pIdOscHpCutoffBass:
+        parameter.symbol = "osc_hp_cutoff_bass";
+        parameter.name = "Oscillator HP Cutoff 16'";
+        parameter.hints = kParameterIsAutomable;
+        parameter.ranges = ParameterRanges(8.0, -20.0, 60.0);
+        break;
     case pIdOscPwmDepth:
         parameter.symbol = "osc_pwm_depth";
         parameter.name = "Oscillator PWM Depth";
@@ -48,6 +54,12 @@ void InitParameter(uint32_t index, Parameter &parameter)
     case pIdOscEnhanceLower:
         parameter.symbol = "osc_enhance_lower";
         parameter.name = "Oscillator enhance 8'";
+        parameter.hints = kParameterIsAutomable;
+        parameter.ranges = ParameterRanges(0.0, 0.0, 0.5);
+        break;
+    case pIdOscEnhanceBass:
+        parameter.symbol = "osc_enhance_bass";
+        parameter.name = "Oscillator enhance 16'";
         parameter.hints = kParameterIsAutomable;
         parameter.ranges = ParameterRanges(0.0, 0.0, 0.5);
         break;
@@ -103,6 +115,13 @@ void InitParameter(uint32_t index, Parameter &parameter)
         parameter.hints = kParameterIsAutomable;
         parameter.unit = "dB";
         parameter.ranges = ParameterRanges(0.0, -20.0, 0.0);
+        break;
+    case pIdMixGainBass:
+        parameter.symbol = "mix_gain_bass";
+        parameter.name = "Mix Gain 16'";
+        parameter.hints = kParameterIsAutomable;
+        parameter.unit = "dB";
+        parameter.ranges = ParameterRanges(-40.0, -40.0, 0.0);
         break;
 
     case pIdEnvAttack:

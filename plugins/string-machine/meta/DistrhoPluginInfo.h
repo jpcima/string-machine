@@ -25,10 +25,12 @@ enum {
     pIdOscDetune,
     pIdOscHpCutoffUpper,
     pIdOscHpCutoffLower,
+    pIdOscHpCutoffBass,
     pIdOscPwmDepth,
     pIdOscPwmFrequency,
     pIdOscEnhanceUpper,
     pIdOscEnhanceLower,
+    pIdOscEnhanceBass,
 
     pIdFltLpCutoffUpper,
     pIdFltHpCutoffUpper,
@@ -39,6 +41,7 @@ enum {
 
     pIdMixGainUpper,
     pIdMixGainLower,
+    pIdMixGainBass,
 
     pIdEnvAttack,
     pIdEnvHold,

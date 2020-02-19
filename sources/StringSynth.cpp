@@ -33,9 +33,13 @@ void StringSynth::init(double sampleRate)
     fDetuneLFO[0].set_frequency(69.0);
     fDetuneLFO[1].init(sampleRate);
     fDetuneLFO[1].set_frequency(60.0);
+    fDetuneLFO[2].init(sampleRate);
+    fDetuneLFO[2].set_frequency(52.0); // note(jpc) not sure what is logic
+                                       //   behind these choices of frequency
 
     fLastDetuneUpper = 0.0;
     fLastDetuneLower = 0.0;
+    fLastDetuneBass = 0.0;
 
     Voice *voicesReserved = fVoicesReserved.get();
     auto &voicesFree = fVoicesFree;
@@ -54,6 +58,7 @@ void StringSynth::init(double sampleRate)
 
         voice.env.init(&fEnvSettings, sampleRate);
         voice.osc.init(&fOscSettings, sampleRate);
+        voice.bass.init(&fBassSettings, sampleRate);
         voice.flt.init(&fFltSettings, sampleRate);
 
         voicesFree.push_back(&voice);
@@ -180,15 +185,19 @@ void StringSynth::generate(float *outputs[2], unsigned count)
 
     float detuneUpper[BufferLimit];
     float detuneLower[BufferLimit];
+    float detuneBass[BufferLimit];
 
     if (!voicesUsed.empty()) {
         NoiseLFO &lfoUpper = fDetuneLFO[0];
         NoiseLFO &lfoLower = fDetuneLFO[1];
-        float lastDetuneLower = fLastDetuneLower;
+        NoiseLFO &lfoBass = fDetuneLFO[2];
         float lastDetuneUpper = fLastDetuneUpper;
+        float lastDetuneLower = fLastDetuneLower;
+        float lastDetuneBass = fLastDetuneBass;
 
         float lfoOutputUpper[BufferLimit];
         float lfoOutputLower[BufferLimit];
+        float lfoOutputBass[BufferLimit];
 
         lfoUpper.process(lfoOutputUpper, count);
         for (unsigned i = 0; i < count; ++i) {
@@ -200,14 +209,27 @@ void StringSynth::generate(float *outputs[2], unsigned count)
             lastDetuneLower = detuneAmount * 0.5f * lfoOutputLower[i];
             detuneLower[i] = std::exp2(lastDetuneLower * (1.0f / 12.0f));
         }
+        lfoBass.process(lfoOutputBass, count);
+        for (unsigned i = 0; i < count; ++i) {
+            lastDetuneBass = detuneAmount * 0.5f * lfoOutputBass[i];
+            detuneBass[i] = std::exp2(lastDetuneBass * (1.0f / 12.0f));
+        }
 
-        fLastDetuneLower = lastDetuneLower;
         fLastDetuneUpper = lastDetuneUpper;
+        fLastDetuneLower = lastDetuneLower;
+        fLastDetuneBass = lastDetuneBass;
+    }
+
+    Voice *bassVoice = nullptr;
+    for (auto it = voicesUsed.begin(), end = voicesUsed.end(); it != end; ++it) {
+        Voice &voice = *it->value;
+        if (!bassVoice || (voice.note < bassVoice->note && !voiceHasReleased(voice)))
+            bassVoice = &voice;
     }
 
     for (auto it = voicesUsed.begin(), end = voicesUsed.end(); it != end;) {
         Voice &voice = *it->value;
-        float *detune[2] = {detuneUpper, detuneLower};
+        float *detune[3] = {detuneUpper, detuneLower, detuneBass};
 
         unsigned channel = voice.channel;
         const Controllers &ctl = fControllers[channel];
@@ -220,12 +242,14 @@ void StringSynth::generate(float *outputs[2], unsigned count)
         if (0)
             volume *= MidiGetVelocityVolume14bit(voice.velocity14bit);
 
+        bool hasBass = &voice == bassVoice;
+
 #if STRING_SYNTH_USE_STEREO
         float volumeL = volume * MidiGetLeftPan14bit(ctl.pan14bit);
         float volumeR = volume * MidiGetRightPan14bit(ctl.pan14bit);
-        bool finished = generateVoiceAdding(voice, outL, outR, detune, bend, volumeL, volumeR, count);
+        bool finished = generateVoiceAdding(voice, outL, outR, detune, bend, volumeL, volumeR, hasBass, count);
 #else
-        bool finished = generateVoiceAdding(voice, outL, detune, bend, volume, count);
+        bool finished = generateVoiceAdding(voice, outL, detune, bend, volume, hasBass, count);
 #endif
         if (!finished)
             ++it;
@@ -274,6 +298,7 @@ void StringSynth::noteOn(unsigned channel, unsigned note, unsigned vel)
     voice.note = note;
     voice.velocity14bit = (vel << 7) | ctl.velocityPrefix;
     voice.osc.setFrequency(MidiPitch[note]);
+    voice.bass.setFrequency(MidiPitch[note]);
     voice.env.trigger();
     voice.bend = ctl.calcBendRatio();
     voice.release = 0;
@@ -385,9 +410,9 @@ auto StringSynth::findVoiceKeyedOn(unsigned channel, unsigned note) -> Voice *
 }
 
 #if STRING_SYNTH_USE_STEREO
-bool StringSynth::generateVoiceAdding(Voice &voice, float *outputL, float *outputR, const float *const detune[2], float bend, float addGainL, float addGainR, unsigned count)
+bool StringSynth::generateVoiceAdding(Voice &voice, float *outputL, float *outputR, const float *const detune[3], float bend, float addGainL, float addGainR, bool bassSelect, unsigned count)
 #else
-bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *const detune[2], float bend, float addGain, unsigned count)
+bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *const detune[3], float bend, float addGain, bool bassSelect, unsigned count)
 #endif
 {
     // stop handling pitch bend after release
@@ -401,6 +426,12 @@ bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *
     float *oscOutputs[] = {oscOutputUpper, oscOutputLower};
     voice.osc.process(oscOutputs, detune, bend, count);
 
+    float bassOutput[BufferLimit];
+    if (bassSelect)
+        voice.bass.process(bassOutput, detune[2], bend, count);
+    else
+        memset(bassOutput, 0, sizeof(bassOutput));
+
     float fltOutputUpper[BufferLimit];
     float fltOutputLower[BufferLimit];
     float fltOutputBrass[BufferLimit];
@@ -412,9 +443,14 @@ bool StringSynth::generateVoiceAdding(Voice &voice, float *output, const float *
 
     float mixGainUpper = std::pow(10.0f, 0.05f * fMixGainUpper);
     float mixGainLower = std::pow(10.0f, 0.05f * fMixGainLower);
+    float mixGainBass = 0;
+    if (bassSelect)
+        mixGainBass = std::pow(10.0f, 0.05f * fMixGainBass);
+
     for (unsigned i = 0; i < count; ++i) {
         float mixSample = (mixGainUpper * fltOutputUpper[i] +
-                           mixGainLower * fltOutputLower[i]);
+                           mixGainLower * fltOutputLower[i] +
+                           mixGainBass * bassOutput[i]);
 #if STRING_SYNTH_USE_STEREO
         outputL[i] += addGainL * env[i] * mixSample;
         outputR[i] += addGainR * env[i] * mixSample;
@@ -442,6 +478,7 @@ void StringSynth::clearFinishedVoice(Voice &voice)
     voice.env.release();
     voice.env.clear();
     voice.osc.clear();
+    voice.bass.clear();
     voice.bend = 1.0;
 }
 

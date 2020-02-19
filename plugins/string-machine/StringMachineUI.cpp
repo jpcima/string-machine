@@ -53,10 +53,12 @@ StringMachineUI::StringMachineUI()
     KNOB(OscDetune);
     KNOB(OscHpCutoffUpper);
     KNOB(OscHpCutoffLower);
+    KNOB(OscHpCutoffBass);
     KNOB(OscPwmDepth);
     KNOB(OscPwmFrequency);
     KNOB(OscEnhanceUpper);
     KNOB(OscEnhanceLower);
+    KNOB(OscEnhanceBass);
     KNOB(FltLpCutoffUpper);
     KNOB(FltHpCutoffUpper);
     KNOB(FltLpCutoffLower);
@@ -65,6 +67,7 @@ StringMachineUI::StringMachineUI()
     KNOB(FltHsBoostEq);
     KNOB(MixGainUpper);
     KNOB(MixGainLower);
+    KNOB(MixGainBass);
     KNOB(EnvAttack);
     KNOB(EnvHold);
     KNOB(EnvDecay);
@@ -81,10 +84,12 @@ StringMachineUI::StringMachineUI()
     VALUE_DISPLAY(OscDetune);
     VALUE_DISPLAY(OscHpCutoffUpper);
     VALUE_DISPLAY(OscHpCutoffLower);
+    VALUE_DISPLAY(OscHpCutoffBass);
     VALUE_DISPLAY(OscPwmDepth);
     VALUE_DISPLAY(OscPwmFrequency);
     VALUE_DISPLAY(OscEnhanceUpper);
     VALUE_DISPLAY(OscEnhanceLower);
+    VALUE_DISPLAY(OscEnhanceBass);
     VALUE_DISPLAY(FltLpCutoffUpper);
     VALUE_DISPLAY(FltLpCutoffLower);
     VALUE_DISPLAY(FltHpCutoffUpper);
@@ -93,6 +98,7 @@ StringMachineUI::StringMachineUI()
     VALUE_DISPLAY(FltHsBoostEq);
     VALUE_DISPLAY(MixGainUpper);
     VALUE_DISPLAY(MixGainLower);
+    VALUE_DISPLAY(MixGainBass);
     VALUE_DISPLAY(ChoDepth1);
     VALUE_DISPLAY(ChoDepth2);
     VALUE_DISPLAY(ChoRate1);
@@ -169,6 +175,7 @@ void StringMachineUI::onDisplay()
 
     const Label *group_labels[] = {
         &MainLayout::group_StringOsc_label,
+        &MainLayout::group_BassOsc_label,
         &MainLayout::group_StringPwm_label,
         &MainLayout::group_StringFilters_label,
         &MainLayout::group_Mixer_label,
@@ -181,16 +188,20 @@ void StringMachineUI::onDisplay()
         &MainLayout::subgroup_AutoDetune_label,
         &MainLayout::subgroup_StringOsc_label,
         &MainLayout::subgroup_StringOscEnhance_label,
+        &MainLayout::subgroup_BassOsc_label,
+        &MainLayout::subgroup_BassOscEnhance_label,
     };
 
     const Label *control_labels[] = {
         &MainLayout::knob_OscDetune_label,
         &MainLayout::knob_OscHpCutoffUpper_label,
         &MainLayout::knob_OscHpCutoffLower_label,
+        &MainLayout::knob_OscHpCutoffBass_label,
         &MainLayout::knob_OscPwmDepth_label,
         &MainLayout::knob_OscPwmFrequency_label,
         &MainLayout::knob_OscEnhanceUpper_label,
         &MainLayout::knob_OscEnhanceLower_label,
+        &MainLayout::knob_OscEnhanceBass_label,
         &MainLayout::knob_FltLpCutoffUpper_label,
         &MainLayout::knob_FltLpCutoffLower_label,
         &MainLayout::knob_FltHpCutoffUpper_label,
@@ -199,6 +210,7 @@ void StringMachineUI::onDisplay()
         &MainLayout::knob_FltHsBoostEq_label,
         &MainLayout::knob_MixGainUpper_label,
         &MainLayout::knob_MixGainLower_label,
+        &MainLayout::knob_MixGainBass_label,
         &MainLayout::knob_ChoDepth1_label,
         &MainLayout::knob_ChoDepth2_label,
         &MainLayout::knob_ChoRate1_label,

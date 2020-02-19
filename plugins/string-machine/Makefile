@@ -21,6 +21,7 @@ FILES_SHARED = \
 	StringMachineShared.cpp \
 	StringMachinePresets.cpp \
 	sources/StringOsc.cpp \
+	sources/BassOsc.cpp \
 	sources/StringSynth.cpp \
 	sources/StringFilters.cpp \
 	sources/SolinaChorus.cpp \

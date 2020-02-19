@@ -72,12 +72,16 @@ float StringMachinePlugin::getParameterValue(uint32_t index) const
         return synth.getOscSettings().highpassUpperCutoff;
     case pIdOscHpCutoffLower:
         return synth.getOscSettings().highpassLowerCutoff;
+    case pIdOscHpCutoffBass:
+        return synth.getBassSettings().highpassCutoff;
     case pIdOscPwmDepth:
         return synth.getOscSettings().pwmDepth;
     case pIdOscPwmFrequency:
         return synth.getOscSettings().pwmFrequency;
     case pIdOscEnhanceUpper:
         return synth.getOscSettings().enhanceUpper;
+    case pIdOscEnhanceBass:
+        return synth.getBassSettings().enhance;
     case pIdOscEnhanceLower:
         return synth.getOscSettings().enhanceLower;
 
@@ -98,6 +102,8 @@ float StringMachinePlugin::getParameterValue(uint32_t index) const
         return synth.getMixGainUpper();
     case pIdMixGainLower:
         return synth.getMixGainLower();
+    case pIdMixGainBass:
+        return synth.getMixGainBass();
 
     case pIdEnvAttack:
         return synth.getEnvSettings().attack;
@@ -166,6 +172,9 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
     case pIdOscHpCutoffLower:
         synth.getOscSettings().highpassLowerCutoff = value;
         break;
+    case pIdOscHpCutoffBass:
+        synth.getBassSettings().highpassCutoff = value;
+        break;
     case pIdOscPwmDepth:
         synth.getOscSettings().pwmDepth = value;
         break;
@@ -174,6 +183,9 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
         break;
     case pIdOscEnhanceUpper:
         synth.getOscSettings().enhanceUpper = value;
+        break;
+    case pIdOscEnhanceBass:
+        synth.getBassSettings().enhance = value;
         break;
     case pIdOscEnhanceLower:
         synth.getOscSettings().enhanceLower = value;
@@ -203,6 +215,9 @@ void StringMachinePlugin::setParameterValue(uint32_t index, float value)
         break;
     case pIdMixGainLower:
         synth.setMixGainLower(value);
+        break;
+    case pIdMixGainBass:
+        synth.setMixGainBass(value);
         break;
 
     case pIdEnvAttack:
