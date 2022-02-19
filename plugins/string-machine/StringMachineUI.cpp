@@ -2,7 +2,6 @@
 #include "StringMachineUILayouts.hpp"
 #include "StringMachinePresets.hpp"
 #include "Artwork.hpp"
-#include "Window.hpp"
 #include "ui/components/SkinSlider.hpp"
 #include "ui/components/SkinToggleButton.hpp"
 #include "ui/components/SkinTriggerButton.hpp"
@@ -159,7 +158,7 @@ void StringMachineUI::onDisplay()
 {
     FontEngine &fe = *fFontEngine;
 
-    cairo_t *cr = getParentWindow().getGraphicsContext().cairo;
+    cairo_t *cr = static_cast<const CairoGraphicsContext &>(getGraphicsContext()).handle;
     cairo_set_source_rgba8(cr, bgColor);
     cairo_paint(cr);
 
@@ -338,23 +337,12 @@ void StringMachineUI::uiIdle()
 bool StringMachineUI::onKeyboard(const KeyboardEvent &event)
 {
     if (event.press && event.mod == 0) {
-        fKeyHistory[fKeyHistoryIndex++] = KeyPress{event.key, false};
+        fKeyHistory[fKeyHistoryIndex++] = event.key;
         fKeyHistoryIndex %= KeyHistorySize;
         checkForDeveloperCode();
     }
 
     return UI::onKeyboard(event);
-}
-
-bool StringMachineUI::onSpecial(const SpecialEvent &event)
-{
-    if (event.press && event.mod == 0) {
-        fKeyHistory[fKeyHistoryIndex++] = KeyPress{event.key, true};
-        fKeyHistoryIndex %= KeyHistorySize;
-        checkForDeveloperCode();
-    }
-
-    return UI::onSpecial(event);
 }
 
 void StringMachineUI::updateParameterValue(uint32_t index, float value)
@@ -524,7 +512,7 @@ void StringMachineUI::computeAdsrPlot(float *data, unsigned size)
         data[i] *= 0.9f;
 }
 
-bool StringMachineUI::checkForKeySequence(const KeyPress *sequence, unsigned sequenceSize)
+bool StringMachineUI::checkForKeySequence(const uint32_t *sequence, unsigned sequenceSize)
 {
     if (KeyHistorySize < sequenceSize)
         return false;
@@ -541,20 +529,20 @@ bool StringMachineUI::checkForKeySequence(const KeyPress *sequence, unsigned seq
 
 void StringMachineUI::checkForDeveloperCode()
 {
-    const std::array<KeyPress, 9> sequence1{{
-        {kKeyUp, true}, {kKeyUp, true},
-        {kKeyDown, true}, {kKeyDown, true},
-        {kKeyLeft, true}, {kKeyRight, true},
-        {kKeyLeft, true}, {kKeyRight, true},
-        {'\r', false},
+    const std::array<uint32_t, 9> sequence1{{
+        kKeyUp, kKeyUp,
+        kKeyDown, kKeyDown,
+        kKeyLeft, kKeyRight,
+        kKeyLeft, kKeyRight,
+        '\r',
     }};
 
-    const std::array<KeyPress, 10> sequence2{{
-        {kKeyUp, true}, {kKeyUp, true},
-        {kKeyDown, true}, {kKeyDown, true},
-        {kKeyLeft, true}, {kKeyRight, true},
-        {kKeyLeft, true}, {kKeyRight, true},
-        {'b', false}, {'a', false},
+    const std::array<uint32_t, 10> sequence2{{
+        kKeyUp, kKeyUp,
+        kKeyDown, kKeyDown,
+        kKeyLeft, kKeyRight,
+        kKeyLeft, kKeyRight,
+        'b', 'a',
     }};
 
     bool entered = checkForKeySequence(sequence1.data(), sequence1.size()) ||
@@ -629,12 +617,16 @@ void StringMachineUI::randomizeParameters()
     }
 }
 
-bool StringMachineUI::isRandomizableParameter(unsigned index)
+bool StringMachineUI::isRandomizableParameter(unsigned index) const
 {
     switch (index) {
     case pIdMasterGain:
         return false;
     default:
+        if (index >= Parameter_Count)
+            return false;
+        if (fParameters[index].hints & kParameterIsOutput)
+            return false;
         return true;
     }
 }

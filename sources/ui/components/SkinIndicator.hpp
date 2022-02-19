@@ -2,13 +2,13 @@
 #include "ui/FontEngine.h"
 #include "ui/Color.h"
 #include "ui/Geometry.h"
-#include "Widget.hpp"
+#include "SubWidget.hpp"
 #include <string>
 #include <functional>
 class KnobSkin;
 class FontEngine;
 
-class SkinIndicator : public Widget {
+class SkinIndicator : public SubWidget {
 public:
     SkinIndicator(const KnobSkin &skin, FontEngine &fe, Widget *group);
 

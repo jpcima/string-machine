@@ -1,10 +1,9 @@
 #include "SkinToggleButton.hpp"
 #include "KnobSkin.hpp"
-#include "Window.hpp"
 #include "Cairo.hpp"
 
 SkinToggleButton::SkinToggleButton(const KnobSkin &skin, Widget *group)
-    : Widget(group), fSkin(skin)
+    : SubWidget(group), fSkin(skin)
 {
     setSize(skin.getWidth(), skin.getHeight());
 }
@@ -37,7 +36,7 @@ void SkinToggleButton::setHasInvertedAppearance(bool inv)
 bool SkinToggleButton::onMouse(const MouseEvent &event)
 {
     DGL::Size<uint> wsize = getSize();
-    DGL::Point<int> mpos = event.pos;
+    DGL::Point<int> mpos{(int)event.pos.getX(), (int)event.pos.getY()};
 
     bool inside = mpos.getX() >= 0 && mpos.getY() >= 0 &&
         (unsigned)mpos.getX() < wsize.getWidth() && (unsigned)mpos.getY() < wsize.getHeight();
@@ -62,7 +61,7 @@ bool SkinToggleButton::onMouse(const MouseEvent &event)
 void SkinToggleButton::onDisplay()
 {
     const KnobSkin &skin = fSkin;
-    cairo_t *cr = getParentWindow().getGraphicsContext().cairo;
+    cairo_t *cr = static_cast<const CairoGraphicsContext &>(getGraphicsContext()).handle;
 
     int w = getWidth();
     int h = getHeight();

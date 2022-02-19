@@ -1,10 +1,9 @@
 #include "SkinIndicator.hpp"
 #include "KnobSkin.hpp"
-#include "Window.hpp"
 #include "Cairo.hpp"
 
 SkinIndicator::SkinIndicator(const KnobSkin &skin, FontEngine &fe, Widget *group)
-    : Widget(group), fSkin(skin), fFontEngine(fe)
+    : SubWidget(group), fSkin(skin), fFontEngine(fe)
 {
     setSize(skin.getWidth(), skin.getHeight());
 }
@@ -55,7 +54,7 @@ void SkinIndicator::setTextFont(const Font &font)
 void SkinIndicator::onDisplay()
 {
     const KnobSkin &skin = fSkin;
-    cairo_t *cr = getParentWindow().getGraphicsContext().cairo;
+    cairo_t *cr = static_cast<const CairoGraphicsContext &>(getGraphicsContext()).handle;
 
     int w = getWidth();
     int h = getHeight();

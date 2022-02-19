@@ -29,7 +29,6 @@ protected:
     void uiIdle() override;
 
     bool onKeyboard(const KeyboardEvent &event) override;
-    bool onSpecial(const SpecialEvent &event) override;
 
 private:
     void updateParameterValue(uint32_t index, float value);
@@ -42,7 +41,7 @@ private:
     void computeAdsrPlot(float *data, unsigned size);
 
     struct KeyPress;
-    bool checkForKeySequence(const KeyPress *sequence, unsigned sequenceSize);
+    bool checkForKeySequence(const uint32_t *sequence, unsigned sequenceSize);
 
     void checkForDeveloperCode();
     void enableDeveloperMode();
@@ -51,7 +50,7 @@ private:
     double convertNormalizedFromParameter(unsigned index, double value);
 
     void randomizeParameters();
-    static bool isRandomizableParameter(unsigned index);
+    bool isRandomizableParameter(unsigned index) const;
 
     static std::string formatDisplayValue(double value);
 
@@ -78,18 +77,8 @@ private:
 
     Parameter fParameters[Parameter_Count];
 
-    struct KeyPress {
-        uint32_t key;
-        bool special;
-
-        bool operator==(const KeyPress &other) const
-            { return key == other.key && special == other.special; }
-        bool operator!=(const KeyPress &other) const
-            { return !operator==(other); }
-    };
-
     enum { KeyHistorySize = 16 };
-    KeyPress fKeyHistory[KeyHistorySize] = {};
+    uint32_t fKeyHistory[KeyHistorySize] = {};
     unsigned fKeyHistoryIndex = 0;
 
     bool fDeveloperMode = false;

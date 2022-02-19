@@ -1,9 +1,9 @@
 #pragma once
-#include "Widget.hpp"
+#include "SubWidget.hpp"
 #include <functional>
 class KnobSkin;
 
-class SkinToggleButton : public Widget {
+class SkinToggleButton : public SubWidget {
 public:
     SkinToggleButton(const KnobSkin &skin, Widget *group);
 

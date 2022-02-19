@@ -1,10 +1,10 @@
 #pragma once
-#include "Widget.hpp"
+#include "SubWidget.hpp"
 #include "ui/Color.h"
 #include <functional>
 #include <vector>
 
-class PlotView : public Widget {
+class PlotView : public SubWidget {
 public:
     explicit PlotView(Widget *group);
 

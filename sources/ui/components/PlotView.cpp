@@ -1,10 +1,9 @@
 #include "PlotView.hpp"
-#include "Window.hpp"
 #include "Cairo.hpp"
 #include "ui/Cairo++.h"
 
 PlotView::PlotView(Widget *group)
-    : Widget(group)
+    : SubWidget(group)
 {
 }
 
@@ -16,7 +15,7 @@ void PlotView::invalidateData()
 
 void PlotView::onDisplay()
 {
-    cairo_t *cr = getParentWindow().getGraphicsContext().cairo;
+    cairo_t *cr = static_cast<const CairoGraphicsContext &>(getGraphicsContext()).handle;
 
     unsigned w = getWidth();
     unsigned h = getHeight();

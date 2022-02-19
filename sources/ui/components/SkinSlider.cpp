@@ -1,11 +1,10 @@
 #include "SkinSlider.hpp"
 #include "KnobSkin.hpp"
-#include "Window.hpp"
 #include "Cairo.hpp"
 
 ///
 SkinSlider::SkinSlider(const KnobSkin &skin, Widget *group)
-    : Widget(group), fSkin(skin)
+    : SubWidget(group), fSkin(skin)
 {
     setSize(skin.getWidth(), skin.getHeight());
 }
@@ -52,7 +51,7 @@ void SkinSlider::setOrientation(Orientation ori)
 bool SkinSlider::onMouse(const MouseEvent &event)
 {
     DGL::Size<uint> wsize = getSize();
-    DGL::Point<int> mpos = event.pos;
+    DGL::Point<int> mpos{(int)event.pos.getX(), (int)event.pos.getY()};
 
     if (!fIsDragging && event.press && event.button == 1) {
         bool insideX = mpos.getX() >= 0 && (unsigned)mpos.getX() < wsize.getWidth();
@@ -86,7 +85,7 @@ bool SkinSlider::onMouse(const MouseEvent &event)
 bool SkinSlider::onMotion(const MotionEvent &event)
 {
     DGL::Size<uint> wsize = getSize();
-    DGL::Point<int> mpos = event.pos;
+    DGL::Point<int> mpos{(int)event.pos.getX(), (int)event.pos.getY()};
 
     if (fIsDragging) {
         double fill = 0;
@@ -120,7 +119,7 @@ bool SkinSlider::onMotion(const MotionEvent &event)
 bool SkinSlider::onScroll(const ScrollEvent &event)
 {
     DGL::Size<uint> wsize = getSize();
-    DGL::Point<int> mpos = event.pos;
+    DGL::Point<int> mpos{(int)event.pos.getX(), (int)event.pos.getY()};
 
     bool inside =
         mpos.getX() >= 0 && mpos.getY() >= 0 &&
@@ -140,7 +139,7 @@ bool SkinSlider::onScroll(const ScrollEvent &event)
 void SkinSlider::onDisplay()
 {
     const KnobSkin &skin = fSkin;
-    cairo_t *cr = getParentWindow().getGraphicsContext().cairo;
+    cairo_t *cr = static_cast<const CairoGraphicsContext &>(getGraphicsContext()).handle;
 
     int w = getWidth();
     int h = getHeight();
