@@ -58,6 +58,7 @@ target_include_directories(string-machine
 
 if(MSVC)
   target_compile_options(string-machine PUBLIC "/fp:fast")
+  target_compile_definitions(string-machine PRIVATE _USE_MATH_DEFINES)
 else()
   target_compile_options(string-machine PUBLIC "-ffast-math")
 endif()
