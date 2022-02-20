@@ -455,7 +455,7 @@ void LFO3PhaseDual::process(
 
     LFO3PhaseDualDsp &dsp = static_cast<LFO3PhaseDualDsp &>(*fDsp);
     float *inputs[] = {
-        
+        0
     };
     float *outputs[] = {
         out0,out1,out2,

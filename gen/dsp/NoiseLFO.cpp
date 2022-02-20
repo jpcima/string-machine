@@ -362,7 +362,7 @@ void NoiseLFO::process(
 
     NoiseLFODsp &dsp = static_cast<NoiseLFODsp &>(*fDsp);
     float *inputs[] = {
-        
+        0
     };
     float *outputs[] = {
         out0,
