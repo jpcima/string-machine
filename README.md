@@ -54,7 +54,7 @@ Install needed packages:
 ```
 git clone https://github.com/jpcima/string-machine.git
 cd string-machine
-git submodule update --init
+git submodule update --init --recursive
 ```
 
 3. Compile
