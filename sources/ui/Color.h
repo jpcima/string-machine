@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 struct ColorRGBA8 {
     uint8_t r, g, b, a;

@@ -1,6 +1,7 @@
 #pragma once
 #include "Geometry.h"
 #include "Color.h"
+#include <cstdint>
 #include <cairo/cairo.h>
 #include <type_traits>
 #include <memory>
