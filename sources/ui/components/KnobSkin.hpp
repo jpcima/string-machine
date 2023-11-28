@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 #include "ui/Cairo++.h"
 
 class KnobSkin {
